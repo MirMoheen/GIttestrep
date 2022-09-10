@@ -1,0 +1,527 @@
+﻿@model HRandPayrollSystemModel.DBModel.GLUserGroup
+
+
+@{
+    ViewBag.Title = "User Groups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+ <!-- Theme CSS -->
+<link rel="stylesheet" href="/assets/stylesheets/theme.css" />
+
+<!-- Skin CSS -->
+<link rel="stylesheet" href="/assets/stylesheets/skins/default.css" />
+
+<!-- Theme Custom CSS -->
+<link rel="stylesheet" href="/assets/stylesheets/theme-custom.css">
+
+<div class="modal fade" id="basicEdit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <header class="panel-heading">
+                <h2 class="panel-title">Warning</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <p>This Record Already Exist</p>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
+              
+
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+
+@using (@Html.BeginForm("Save", "UserGroup", FormMethod.Post, new { @id = "myform" }))
+{
+    <input type="hidden" id="GroupdetailDatatable" name="GroupdetailDatatable" />
+
+    if (Model.GroupID > 0)
+    {
+        ViewBag.Title = "User Groups Edit";
+
+    }
+    else
+    {
+        ViewBag.Title = "User Groups Add";
+
+    }
+    @Html.HiddenFor(m => m.GroupID)
+    <header class="page-header">
+        <h2>User Group</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>User Group</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">User Group</h2>
+                        <p class="panel-subtitle">
+                            Form control for input User Group data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <label>Group Title:</label>
+                                @Html.TextBoxFor(model => model.GroupTitle, new { @class = "form-control ", @placeholder = "Enter Group Title" })
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <label>Description:</label>
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control ", @placeholder = "Enter Description" })
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div style="margin-top: 30px;" class="form-check">
+                                    @Html.CheckBoxFor(model => model.Inactive, new { })
+                                    <label for="Inactive">Status</label>
+                                </div>
+                            </div>
+                        </div>
+                  
+                           
+                          
+                    
+
+                        <hr/>
+                        <div style="overflow-y:auto">
+                            <table class="table table-bordered table-striped mb-none table-hover" id="CustomerTable">
+                                    <thead>
+
+                                        <tr >
+                                            <th >Form Name</th>
+                                            <th style="width:100px;" >Assign <input type="checkbox" id="Assign" onclick="assign()" />    </th>
+                                            <th style="width:100px;">Edit <input type="checkbox" class="checkbox-custom checkbox-default" id="Edit" onclick="assign()" /> </th>
+                                            <th style="width:100px;">Delete <input type="checkbox" class="checkbox-custom checkbox-default" id="Delete" onclick="assign()" /> </th>
+                                            <th style="width:100px;">New <input type="checkbox" class="checkbox-custom checkbox-default" id="New" onclick="assign()" /> </th>
+                                            <th style="width:100px;">Print <input type="checkbox" class="checkbox-custom checkbox-default" id="Print" onclick="assign();" /> </th>
+                                        </tr>
+                                    </thead>
+
+
+                                    <tbody id="GroupdetailTableID">
+
+                                        @if (Model.detailistGroup != null)
+                                                    {
+                                            
+                                                 int i = 0;
+                                                foreach (var item in Model.detailistGroup)
+                                                {
+
+                                                            
+                                                    if (Convert.ToBoolean(item.Assign))
+                                                    {
+                                                    <tr  id="trRow_@item.Formid" style="background-color:#d7eec8">
+                                                        <td> @item.FormTitle </td>
+                                                        @if (Convert.ToBoolean(item.Assign))
+                                                                    {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" onclick="checkForm(@item.Formid)" id="chkPost_@item.Formid" name="chkPost" value="" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" onclick="checkForm(@item.Formid)" id="chkPost_@item.Formid" name="chkPost" value="" />
+                                                            </td>
+                                                        }
+
+
+                                                        @if (Convert.ToBoolean(item.IsEdit))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkEdit_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkEdit_@item.Formid" />
+                                                            </td>
+                                                        }
+
+
+                                                        @if (Convert.ToBoolean(item.IsDelete))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkDelete_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkDelete_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        @if (Convert.ToBoolean(item.IsNew))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkView_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkView_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        @if (Convert.ToBoolean(item.IsPrint))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkPrint_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkPrint_@item.Formid" />
+                                                            </td>
+                                                        }
+
+
+                                                    </tr>
+
+                                                }
+                                                else
+                                                {
+
+                                                    <tr id="trRow_@item.Formid" >
+                                                        <td> @item.FormTitle </td>
+                                                        @if (Convert.ToBoolean(item.Assign))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" onclick="checkForm(@item.Formid)" id="chkPost_@item.Formid" name="chkPost" value="" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" onclick="checkForm(@item.Formid)" id="chkPost_@item.Formid" name="chkPost" value="" />
+                                                            </td>
+                                                        }
+
+
+                                                        @if (Convert.ToBoolean(item.IsEdit))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkEdit_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkEdit_@item.Formid" />
+                                                            </td>
+                                                        }
+
+
+                                                        @if (Convert.ToBoolean(item.IsDelete))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkDelete_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkDelete_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        @if (Convert.ToBoolean(item.IsNew))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkView_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkView_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        @if (Convert.ToBoolean(item.IsPrint))
+                                                        {
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" checked="checked" id="chkPrint_@item.Formid" />
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <td>
+                                                                <input type="checkbox" class="checkbox" id="chkPrint_@item.Formid" />
+                                                            </td>
+                                                        }
+
+
+                                                    </tr>
+
+
+
+                                                }
+                                                i++;
+
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            foreach (var item in new HRandPayrollSystemModel.DBModel.GLUserGroup(). selectallForm())
+                                            {
+                                                <tr id="trRow_@item.Formid" >
+                                                    <td> @item.FormTitle </td>
+
+                                                    <td>
+                                                        <input type="checkbox"  onclick="checkForm(@item.Formid)" id="chkPost_@item.Formid" name="chkPost"  />
+
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" id="chkEdit_@item.Formid" />
+
+
+                                                   </td>
+                                                    <td>
+                                                        <input type="checkbox"  id="chkDelete_@item.Formid"  />
+
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox"  id="chkView_@item.Formid"  />
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox"  id="chkPrint_@item.Formid" />
+
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        }
+                                    </tbody>
+
+
+                                </table>
+
+                        </div>
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+<script>
+    function postform() {
+ 
+        var ReturnValue = true
+
+        if ($("#GroupTitle").val() == "") {
+            $('#GroupTitle').css('border-color', 'red');
+            ReturnValue = false;
+            $("#GroupTitle").focus();
+        }
+    
+        var Data = { Name: $('#GroupTitle').val(), ID: $("#GroupID").val() }
+        $.ajax({
+            async: false,
+            url: "/UserGroup/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                  //  alert(c)
+                    $("#basicEdit").modal('show');
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                alert("Error")
+            }
+        })
+
+
+        var TestInformation = [];
+        $('#GroupdetailTableID tr').each(function () {
+            var numbersArray = (this.id).split('_');
+              TestInformation.push($("#chkPost_" + numbersArray[1]).is(":checked") + "|" + numbersArray[1] + "|" +$("#chkEdit_" + numbersArray[1]).is(":checked")+ "|" + $("#chkDelete_" + numbersArray[1]).is(":checked")+ "|" + $("#chkView_" + numbersArray[1]).is(":checked")+ "|" + $("#chkPrint_" + numbersArray[1]).is(":checked") )
+
+        })
+
+        document.getElementById("GroupdetailDatatable").value = TestInformation;
+
+        if (ReturnValue) {
+       
+            $("#myform").submit();
+        }
+     
+    }
+
+    function checkForm(id) {
+
+        if ($('#chkPost_'+id).is(':checked')) {
+            $('#chkPost_' + id).prop('checked', true);
+            $('#chkEdit_' + id).prop('checked', true);
+            $('#chkDelete_' + id).prop('checked', true);
+            $('#chkView_' + id).prop('checked', true);
+            $('#chkPrint_' + id).prop('checked', true);
+            $('#trRow_'+id).css({ 'background-color' : '#d7eec8'});
+        
+        }
+        else
+        {
+            $('#chkPost_' + id).prop('checked', false);
+            $('#chkEdit_' + id).prop('checked', false);
+            $('#chkDelete_' + id).prop('checked', false);
+            $('#chkView_' + id).prop('checked', false);
+            $('#chkPrint_' + id).prop('checked', false);
+
+            $('#trRow_'+id).css({ 'background-color' : 'white'});
+        
+        }
+    
+    }
+
+
+    function assign()
+    {
+        $('#GroupdetailTableID tr').each(function () {
+            var numbersArray = (this.id).split('_');
+            if ($('#Assign').is(':checked')) {
+             
+                $("#chkPost_" + numbersArray[1]).prop('checked', true);
+                $('#trRow_' + this.id).css({ 'background-color': '#d7eec8' });
+
+            }
+            else
+            {
+
+                $('#chkPost_' + numbersArray[1]).prop('checked', false);
+
+            }
+
+
+            if ($('#Edit').is(':checked')) {
+                $('#chkEdit_' + numbersArray[1]).prop('checked', true);
+
+            }
+            else {
+
+                $('#chkEdit_' + numbersArray[1]).prop('checked', false);
+
+            }
+
+            if ($('#Delete').is(':checked')) {
+                $('#chkDelete_' + numbersArray[1]).prop('checked', true);
+
+            }
+            else {
+
+                $('#chkDelete_' + numbersArray[1]).prop('checked', false);
+
+            }
+
+            if ($('#New').is(':checked')) {
+                $('#chkView_' + numbersArray[1]).prop('checked', true);
+
+            }
+            else {
+
+                $('#chkView_' + numbersArray[1]).prop('checked', false);
+
+            }
+
+
+            if ($('#Print').is(':checked')) {
+                $('#chkPrint_' + numbersArray[1]).prop('checked', true);
+
+            }
+            else {
+
+                $('#chkPrint_' + numbersArray[1]).prop('checked', false);
+
+            }
+          
+        })
+    
+    }
+
+    $(document).ready(function () {
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+       
+        }
+    });
+</script>
+<script src="/assets/javascripts/theme.init.js"></script>
+
+
+
+
+
+
+

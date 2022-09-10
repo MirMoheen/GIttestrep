@@ -1,0 +1,599 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AttendenceSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="dbid" />
+          </Key>
+          <Property Name="dbid" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeNo" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Status" Type="char" MaxLength="4" />
+          <Property Name="FingerIndex" Type="tinyint" />
+          <Property Name="Score" Type="tinyint" />
+          <Property Name="EntryTime" Type="datetime" />
+          <Property Name="OutTime" Type="datetime" />
+          <Property Name="HostName" Type="varchar" MaxLength="25" />
+          <Property Name="CreatedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="AttendanceDeviceConfiguration">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mac" Type="nvarchar" MaxLength="100" />
+          <Property Name="Location" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Registration">
+          <Key>
+            <PropertyRef Name="RegID" />
+          </Key>
+          <Property Name="RegID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PFNo" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="CNIC" Type="varchar" MaxLength="15" />
+          <Property Name="Type" Type="varchar" MaxLength="11" />
+          <Property Name="Designation" Type="varchar" MaxLength="50" />
+          <Property Name="Department" Type="varchar" MaxLength="50" />
+          <Property Name="Picture" Type="image" />
+          <Property Name="PictureLength" Type="int" />
+          <Property Name="IssueDate" Type="smalldatetime" />
+          <Property Name="ExpiryDate" Type="smalldatetime" />
+          <Property Name="UserId" Type="varchar" MaxLength="20" />
+          <Property Name="StatusId" Type="int" />
+          <Property Name="hName" Type="varchar" MaxLength="50" />
+          <Property Name="CLeave" Type="int" />
+          <Property Name="ELeave" Type="int" />
+          <Property Name="Isstd" Type="bit" />
+          <Property Name="totalCLeave" Type="int" />
+          <Property Name="totalELeave" Type="int" />
+          <Property Name="doctorid" Type="int" />
+          <Property Name="MachineCode" Type="int" />
+          <Property Name="MacAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsApp" Type="bit" Nullable="false" />
+          <Property Name="RoleID" Type="int" />
+          <Property Name="IsUpdate" Type="bit" Nullable="false" />
+          <Property Name="MOBILENO" Type="nvarchar" MaxLength="15" />
+          <Property Name="ExtensionNo" Type="nchar" MaxLength="15" />
+          <Property Name="DocID" Type="int" />
+        </EntityType>
+        <Function Name="GetEmployeesAttendanceCurrentDateStatusApi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FromDate" Type="datetime" Mode="In" />
+          <Parameter Name="ToDate" Type="datetime" Mode="In" />
+          <Parameter Name="EmpId" Type="varchar" Mode="In" />
+          <Parameter Name="Dept" Type="varchar" Mode="In" />
+          <Parameter Name="HospNo" Type="varchar" Mode="In" />
+          <Parameter Name="Status" Type="bit" Mode="In" />
+          <Parameter Name="isExt" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="GetNewEmployeesAttendanceDateWiseApi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FromDate" Type="datetime" Mode="In" />
+          <Parameter Name="ToDate" Type="datetime" Mode="In" />
+          <Parameter Name="EmpId" Type="varchar" Mode="In" />
+          <Parameter Name="Dept" Type="varchar" Mode="In" />
+          <Parameter Name="HospNo" Type="varchar" Mode="In" />
+          <Parameter Name="Status" Type="bit" Mode="In" />
+          <Parameter Name="isExt" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="SP_ApiCheckInOutAttendance" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="empcode" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="SP_Apihistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PhoneNo" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="SP_Apitofetchdata" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DoctorID" Type="int" Mode="In" />
+          <Parameter Name="RosterDate" Type="nvarchar" Mode="In" />
+          <Parameter Name="city" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_Apitofetchdays" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DoctorID" Type="int" Mode="In" />
+          <Parameter Name="cty" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_ApitoSubmit" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Patient_no" Type="nvarchar" Mode="In" />
+          <Parameter Name="PatientName" Type="nvarchar" Mode="In" />
+          <Parameter Name="PhoneNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="Sourceq" Type="nvarchar" Mode="In" />
+          <Parameter Name="Remarks" Type="nvarchar" Mode="In" />
+          <Parameter Name="entryid" Type="nvarchar" Mode="In" />
+          <Parameter Name="entryip" Type="nvarchar" Mode="In" />
+          <Parameter Name="detailid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Sp_getallspeciltyApp" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Sp_getallspeciltyAppDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FinDeptID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Sp_getallspeciltyAppDoctorall" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_getDepartmentforApi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="HospId" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_getemployeebyID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="deparmentid" Type="nvarchar" Mode="In" />
+          <Parameter Name="hospid" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="AttendenceSystemModelStoreContainer">
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendanceDeviceConfiguration" EntityType="Self.AttendanceDeviceConfiguration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Registration" EntityType="Self.Registration" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AttendenceSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="dbid" />
+          </Key>
+          <Property Name="dbid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="FingerIndex" Type="Byte" />
+          <Property Name="Score" Type="Byte" />
+          <Property Name="EntryTime" Type="DateTime" Precision="3" />
+          <Property Name="OutTime" Type="DateTime" Precision="3" />
+          <Property Name="HostName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="AttendenceSystemEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Attendances" EntityType="Self.Attendance" />
+          <FunctionImport Name="SP_ApiCheckInOutAttendance" ReturnType="Collection(AttendenceSystemModel.SP_ApiCheckInOutAttendance_Result)">
+          <Parameter Name="empcode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetNewEmployeesAttendanceDateWiseApi" ReturnType="Collection(AttendenceSystemModel.GetNewEmployeesAttendanceDateWiseApi_Result)">
+            <Parameter Name="FromDate" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EmpId" Mode="In" Type="String" />
+            <Parameter Name="Dept" Mode="In" Type="String" />
+            <Parameter Name="HospNo" Mode="In" Type="String" />
+            <Parameter Name="Status" Mode="In" Type="Boolean" />
+            <Parameter Name="isExt" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <EntitySet Name="AttendanceDeviceConfigurations" EntityType="AttendenceSystemModel.AttendanceDeviceConfiguration" />
+          <EntitySet Name="Registrations" EntityType="AttendenceSystemModel.Registration" />
+          <FunctionImport Name="GetEmployeesAttendanceCurrentDateStatusApi" ReturnType="Collection(AttendenceSystemModel.GetEmployeesAttendanceCurrentDateStatusApi_Result)">
+            <Parameter Name="FromDate" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EmpId" Mode="In" Type="String" />
+            <Parameter Name="Dept" Mode="In" Type="String" />
+            <Parameter Name="HospNo" Mode="In" Type="String" />
+            <Parameter Name="Status" Mode="In" Type="Boolean" />
+            <Parameter Name="isExt" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="sp_getDepartmentforApi" ReturnType="Collection(AttendenceSystemModel.sp_getDepartmentforApi_Result)">
+          <Parameter Name="HospId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_getemployeebyID" ReturnType="Collection(AttendenceSystemModel.sp_getemployeebyID_Result)">
+            <Parameter Name="deparmentid" Mode="In" Type="String" />
+            <Parameter Name="hospid" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Apitofetchdata" ReturnType="Collection(AttendenceSystemModel.SP_Apitofetchdata_Result)">
+            <Parameter Name="DoctorID" Mode="In" Type="Int32" />
+            <Parameter Name="RosterDate" Mode="In" Type="String" />
+            <Parameter Name="city" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Apitofetchdays" ReturnType="Collection(AttendenceSystemModel.SP_Apitofetchdays_Result)">
+            <Parameter Name="DoctorID" Mode="In" Type="Int32" />
+            <Parameter Name="cty" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_ApitoSubmit">
+            <Parameter Name="Patient_no" Mode="In" Type="String" />
+            <Parameter Name="PatientName" Mode="In" Type="String" />
+            <Parameter Name="PhoneNo" Mode="In" Type="String" />
+            <Parameter Name="Sourceq" Mode="In" Type="String" />
+            <Parameter Name="Remarks" Mode="In" Type="String" />
+            <Parameter Name="entryid" Mode="In" Type="String" />
+            <Parameter Name="entryip" Mode="In" Type="String" />
+            <Parameter Name="detailid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Sp_getallspeciltyApp" ReturnType="Collection(AttendenceSystemModel.Sp_getallspeciltyApp_Result)" />
+          <FunctionImport Name="Sp_getallspeciltyAppDoctor" ReturnType="Collection(AttendenceSystemModel.Sp_getallspeciltyAppDoctor_Result)">
+          <Parameter Name="FinDeptID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Sp_getallspeciltyAppDoctorall" ReturnType="Collection(AttendenceSystemModel.Sp_getallspeciltyAppDoctorall_Result)" />
+          <FunctionImport Name="SP_Apihistory" ReturnType="Collection(AttendenceSystemModel.SP_Apihistory_Result)">
+          <Parameter Name="PhoneNo" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="SP_ApiCheckInOutAttendance_Result">
+          <Property Type="String" Name="EmployeeNo" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="EntryTime" Nullable="true" MaxLength="30" />
+        </ComplexType>
+        <ComplexType Name="GetNewEmployeesAttendanceDateWiseApi_Result">
+          <Property Type="String" Name="HospNo" Nullable="true" MaxLength="2" />
+          <Property Type="String" Name="DeptNo" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="Adate" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="TimeIn" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="TimeOut" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="TotalTime" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="AStatus" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="sName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Designation" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Department" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="AttendanceDeviceConfiguration">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mac" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Registration">
+          <Key>
+            <PropertyRef Name="RegID" />
+          </Key>
+          <Property Name="RegID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PFNo" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CNIC" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="Designation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Department" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Picture" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="PictureLength" Type="Int32" />
+          <Property Name="IssueDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="UserId" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="StatusId" Type="Int32" />
+          <Property Name="hName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CLeave" Type="Int32" />
+          <Property Name="ELeave" Type="Int32" />
+          <Property Name="Isstd" Type="Boolean" />
+          <Property Name="totalCLeave" Type="Int32" />
+          <Property Name="totalELeave" Type="Int32" />
+          <Property Name="doctorid" Type="Int32" />
+          <Property Name="MachineCode" Type="Int32" />
+          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsApp" Type="Boolean" Nullable="false" />
+          <Property Name="RoleID" Type="Int32" />
+          <Property Name="IsUpdate" Type="Boolean" Nullable="false" />
+          <Property Name="MOBILENO" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ExtensionNo" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+          <Property Name="DocID" Type="Int32" />
+        </EntityType>
+        <ComplexType Name="GetEmployeesAttendanceCurrentDateStatusApi_Result">
+          <Property Type="Int32" Name="Noof" Nullable="true" />
+          <Property Type="String" Name="AStatus" Nullable="true" MaxLength="11" />
+        </ComplexType>
+        <ComplexType Name="sp_getDepartmentforApi_Result">
+          <Property Type="Int64" Name="Sno" Nullable="false" />
+          <Property Type="String" Name="HospNo" Nullable="true" MaxLength="2" />
+          <Property Type="String" Name="DeptID" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="DEPT_NAME" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="EmpId" Nullable="true" MaxLength="20" />
+          <Property Type="Int64" Name="OrderNo" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_getemployeebyID_Result">
+          <Property Type="String" Name="ENAME" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ECODE" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="DESIGN" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="EDEPTNO" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="SP_Apitofetchdata_Result">
+          <Property Type="Int32" Name="Code" Nullable="false" />
+          <Property Type="String" Name="RosterDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="WeekDays" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="Time" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="apStatus" Nullable="false" MaxLength="9" />
+          <Property Type="String" Name="PhoneNo" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Sourceq" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="remarks" Nullable="true" />
+          <Property Type="String" Name="Patient_no" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SP_Apitofetchdays_Result">
+          <Property Type="DateTime" Name="RosterDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="avdays" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="WeekDays" Nullable="true" MaxLength="81" />
+        </ComplexType>
+        <ComplexType Name="Sp_getallspeciltyApp_Result">
+          <Property Type="String" Name="speciality" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DeptID" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Sp_getallspeciltyAppDoctor_Result">
+          <Property Type="Int64" Name="id" Nullable="false" />
+          <Property Type="String" Name="Doctor_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="designation_id" Nullable="true" />
+          <Property Type="Int32" Name="division_id" Nullable="true" />
+          <Property Type="Int32" Name="Consultation_Fee" Nullable="true" />
+          <Property Type="Int32" Name="Registration_Fee" Nullable="true" />
+          <Property Type="DateTime" Name="date" Nullable="true" Precision="16" />
+          <Property Type="Int32" Name="dstatus" Nullable="false" />
+          <Property Type="String" Name="GROUP" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="cGroup" Nullable="true" MaxLength="4" />
+          <Property Type="Int64" Name="fororder" Nullable="true" />
+          <Property Type="String" Name="dGroup" Nullable="true" MaxLength="1" />
+          <Property Type="Boolean" Name="IsAllowPvt" Nullable="true" />
+          <Property Type="Int32" Name="sLevel" Nullable="true" />
+          <Property Type="Decimal" Name="iTtax" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Boolean" Name="isZakDeduct" Nullable="false" />
+          <Property Type="String" Name="CNIC" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="ExcludeformPvtShare" Nullable="false" />
+          <Property Type="Int32" Name="FinDeptID" Nullable="true" />
+          <Property Type="Decimal" Name="Deductions" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="String" Name="FinAccountNo" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="Sp_getallspeciltyAppDoctorall_Result">
+          <Property Type="Int64" Name="id" Nullable="false" />
+          <Property Type="String" Name="Doctor_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="designation_id" Nullable="true" />
+          <Property Type="Int32" Name="division_id" Nullable="true" />
+          <Property Type="Int32" Name="Consultation_Fee" Nullable="true" />
+          <Property Type="Int32" Name="Registration_Fee" Nullable="true" />
+          <Property Type="DateTime" Name="date" Nullable="true" Precision="16" />
+          <Property Type="Int32" Name="dstatus" Nullable="false" />
+          <Property Type="String" Name="GROUP" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="cGroup" Nullable="true" MaxLength="4" />
+          <Property Type="Int64" Name="fororder" Nullable="true" />
+          <Property Type="String" Name="dGroup" Nullable="true" MaxLength="1" />
+          <Property Type="Boolean" Name="IsAllowPvt" Nullable="true" />
+          <Property Type="Int32" Name="sLevel" Nullable="true" />
+          <Property Type="Decimal" Name="iTtax" Nullable="true" Precision="9" Scale="2" />
+          <Property Type="Boolean" Name="isZakDeduct" Nullable="false" />
+          <Property Type="String" Name="CNIC" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="ExcludeformPvtShare" Nullable="false" />
+          <Property Type="Int32" Name="FinDeptID" Nullable="true" />
+          <Property Type="Decimal" Name="Deductions" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="String" Name="FinAccountNo" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SP_Apihistory_Result">
+          <Property Type="String" Name="patientName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="DoctorName" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="RosterDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Rostertime" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Pstaus" Nullable="false" MaxLength="9" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AttendenceSystemModelStoreContainer" CdmEntityContainer="AttendenceSystemEntities">
+          <EntitySetMapping Name="Attendances">
+            <EntityTypeMapping TypeName="AttendenceSystemModel.Attendance">
+              <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="dbid" ColumnName="dbid" />
+                <ScalarProperty Name="EmployeeNo" ColumnName="EmployeeNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FingerIndex" ColumnName="FingerIndex" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="EntryTime" ColumnName="EntryTime" />
+                <ScalarProperty Name="OutTime" ColumnName="OutTime" />
+                <ScalarProperty Name="HostName" ColumnName="HostName" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_ApiCheckInOutAttendance" FunctionName="AttendenceSystemModel.Store.SP_ApiCheckInOutAttendance">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.SP_ApiCheckInOutAttendance_Result">
+                <ScalarProperty Name="EmployeeNo" ColumnName="EmployeeNo" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="EntryTime" ColumnName="EntryTime" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetNewEmployeesAttendanceDateWiseApi" FunctionName="AttendenceSystemModel.Store.GetNewEmployeesAttendanceDateWiseApi">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.GetNewEmployeesAttendanceDateWiseApi_Result">
+                <ScalarProperty Name="HospNo" ColumnName="HospNo" />
+                <ScalarProperty Name="DeptNo" ColumnName="DeptNo" />
+                <ScalarProperty Name="Adate" ColumnName="Adate" />
+                <ScalarProperty Name="TimeIn" ColumnName="TimeIn" />
+                <ScalarProperty Name="TimeOut" ColumnName="TimeOut" />
+                <ScalarProperty Name="TotalTime" ColumnName="TotalTime" />
+                <ScalarProperty Name="AStatus" ColumnName="AStatus" />
+                <ScalarProperty Name="sName" ColumnName="sName" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="AttendanceDeviceConfigurations">
+            <EntityTypeMapping TypeName="AttendenceSystemModel.AttendanceDeviceConfiguration">
+              <MappingFragment StoreEntitySet="AttendanceDeviceConfiguration">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Mac" ColumnName="Mac" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Registrations">
+            <EntityTypeMapping TypeName="AttendenceSystemModel.Registration">
+              <MappingFragment StoreEntitySet="Registration">
+                <ScalarProperty Name="DocID" ColumnName="DocID" />
+                <ScalarProperty Name="ExtensionNo" ColumnName="ExtensionNo" />
+                <ScalarProperty Name="MOBILENO" ColumnName="MOBILENO" />
+                <ScalarProperty Name="IsUpdate" ColumnName="IsUpdate" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="IsApp" ColumnName="IsApp" />
+                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
+                <ScalarProperty Name="MachineCode" ColumnName="MachineCode" />
+                <ScalarProperty Name="doctorid" ColumnName="doctorid" />
+                <ScalarProperty Name="totalELeave" ColumnName="totalELeave" />
+                <ScalarProperty Name="totalCLeave" ColumnName="totalCLeave" />
+                <ScalarProperty Name="Isstd" ColumnName="Isstd" />
+                <ScalarProperty Name="ELeave" ColumnName="ELeave" />
+                <ScalarProperty Name="CLeave" ColumnName="CLeave" />
+                <ScalarProperty Name="hName" ColumnName="hName" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="IssueDate" ColumnName="IssueDate" />
+                <ScalarProperty Name="PictureLength" ColumnName="PictureLength" />
+                <ScalarProperty Name="Picture" ColumnName="Picture" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PFNo" ColumnName="PFNo" />
+                <ScalarProperty Name="RegID" ColumnName="RegID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetEmployeesAttendanceCurrentDateStatusApi" FunctionName="AttendenceSystemModel.Store.GetEmployeesAttendanceCurrentDateStatusApi">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.GetEmployeesAttendanceCurrentDateStatusApi_Result">
+                <ScalarProperty Name="Noof" ColumnName="Noof" />
+                <ScalarProperty Name="AStatus" ColumnName="AStatus" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_getDepartmentforApi" FunctionName="AttendenceSystemModel.Store.sp_getDepartmentforApi">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.sp_getDepartmentforApi_Result">
+                <ScalarProperty Name="Sno" ColumnName="Sno" />
+                <ScalarProperty Name="HospNo" ColumnName="HospNo" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="DEPT_NAME" ColumnName="DEPT_NAME" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_getemployeebyID" FunctionName="AttendenceSystemModel.Store.sp_getemployeebyID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.sp_getemployeebyID_Result">
+                <ScalarProperty Name="ENAME" ColumnName="ENAME" />
+                <ScalarProperty Name="ECODE" ColumnName="ECODE" />
+                <ScalarProperty Name="DESIGN" ColumnName="DESIGN" />
+                <ScalarProperty Name="EDEPTNO" ColumnName="EDEPTNO" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Apitofetchdata" FunctionName="AttendenceSystemModel.Store.SP_Apitofetchdata">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.SP_Apitofetchdata_Result">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="RosterDate" ColumnName="RosterDate" />
+                <ScalarProperty Name="WeekDays" ColumnName="WeekDays" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="apStatus" ColumnName="apStatus" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="Sourceq" ColumnName="Sourceq" />
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="Patient_no" ColumnName="Patient_no" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Apitofetchdays" FunctionName="AttendenceSystemModel.Store.SP_Apitofetchdays">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.SP_Apitofetchdays_Result">
+                <ScalarProperty Name="RosterDate" ColumnName="RosterDate" />
+                <ScalarProperty Name="avdays" ColumnName="avdays" />
+                <ScalarProperty Name="WeekDays" ColumnName="WeekDays" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_ApitoSubmit" FunctionName="AttendenceSystemModel.Store.SP_ApitoSubmit" />
+          <FunctionImportMapping FunctionImportName="Sp_getallspeciltyApp" FunctionName="AttendenceSystemModel.Store.Sp_getallspeciltyApp">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.Sp_getallspeciltyApp_Result">
+                <ScalarProperty Name="speciality" ColumnName="speciality" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Sp_getallspeciltyAppDoctor" FunctionName="AttendenceSystemModel.Store.Sp_getallspeciltyAppDoctor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.Sp_getallspeciltyAppDoctor_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="SName" ColumnName="SName" />
+                <ScalarProperty Name="designation_id" ColumnName="designation_id" />
+                <ScalarProperty Name="division_id" ColumnName="division_id" />
+                <ScalarProperty Name="Consultation_Fee" ColumnName="Consultation_Fee" />
+                <ScalarProperty Name="Registration_Fee" ColumnName="Registration_Fee" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="dstatus" ColumnName="dstatus" />
+                <ScalarProperty Name="GROUP" ColumnName="GROUP" />
+                <ScalarProperty Name="cGroup" ColumnName="cGroup" />
+                <ScalarProperty Name="fororder" ColumnName="fororder" />
+                <ScalarProperty Name="dGroup" ColumnName="dGroup" />
+                <ScalarProperty Name="IsAllowPvt" ColumnName="IsAllowPvt" />
+                <ScalarProperty Name="sLevel" ColumnName="sLevel" />
+                <ScalarProperty Name="iTtax" ColumnName="iTtax" />
+                <ScalarProperty Name="isZakDeduct" ColumnName="isZakDeduct" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="ExcludeformPvtShare" ColumnName="ExcludeformPvtShare" />
+                <ScalarProperty Name="FinDeptID" ColumnName="FinDeptID" />
+                <ScalarProperty Name="Deductions" ColumnName="Deductions" />
+                <ScalarProperty Name="FinAccountNo" ColumnName="FinAccountNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Sp_getallspeciltyAppDoctorall" FunctionName="AttendenceSystemModel.Store.Sp_getallspeciltyAppDoctorall">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.Sp_getallspeciltyAppDoctorall_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="SName" ColumnName="SName" />
+                <ScalarProperty Name="designation_id" ColumnName="designation_id" />
+                <ScalarProperty Name="division_id" ColumnName="division_id" />
+                <ScalarProperty Name="Consultation_Fee" ColumnName="Consultation_Fee" />
+                <ScalarProperty Name="Registration_Fee" ColumnName="Registration_Fee" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="dstatus" ColumnName="dstatus" />
+                <ScalarProperty Name="GROUP" ColumnName="GROUP" />
+                <ScalarProperty Name="cGroup" ColumnName="cGroup" />
+                <ScalarProperty Name="fororder" ColumnName="fororder" />
+                <ScalarProperty Name="dGroup" ColumnName="dGroup" />
+                <ScalarProperty Name="IsAllowPvt" ColumnName="IsAllowPvt" />
+                <ScalarProperty Name="sLevel" ColumnName="sLevel" />
+                <ScalarProperty Name="iTtax" ColumnName="iTtax" />
+                <ScalarProperty Name="isZakDeduct" ColumnName="isZakDeduct" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="ExcludeformPvtShare" ColumnName="ExcludeformPvtShare" />
+                <ScalarProperty Name="FinDeptID" ColumnName="FinDeptID" />
+                <ScalarProperty Name="Deductions" ColumnName="Deductions" />
+                <ScalarProperty Name="FinAccountNo" ColumnName="FinAccountNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Apihistory" FunctionName="AttendenceSystemModel.Store.SP_Apihistory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AttendenceSystemModel.SP_Apihistory_Result">
+                <ScalarProperty Name="patientName" ColumnName="patientName" />
+                <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+                <ScalarProperty Name="RosterDate" ColumnName="RosterDate" />
+                <ScalarProperty Name="Rostertime" ColumnName="Rostertime" />
+                <ScalarProperty Name="Pstaus" ColumnName="Pstaus" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

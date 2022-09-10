@@ -1,0 +1,278 @@
+﻿@model HRandPayrollSystemModel.DBModel.CityInformtion
+
+@{
+    ViewBag.Title = "City Information";
+}
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Setup</span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+
+
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+
+
+                </div>
+            }
+        }
+
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped mb-none table-hover" id="UserTable">
+            <thead>
+                <tr>
+
+                    <th> City Tite </th>
+                    <th>Inactive </th>
+
+                    <th width="100px">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="ProductTableID">
+                @foreach (var item in Model.getAllCitydata())
+                {
+                    <tr>
+
+                        <td> @item.CityName </td>
+                        <td> @item.inactive </td>
+
+
+                        <td>
+                            @if (Convert.ToBoolean(Model.Isedit))
+                            {
+
+                                <a href="#basicEdit" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim" title="Edit" onclick="Edit(@item.CityID)">
+                                    <i class="fa fa-pencil"></i>
+
+                                </a>
+                            }
+                            @*@if (Convert.ToBoolean(Model.Isdelete))
+                                {
+                                    <a href="#basic" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim" title="Delete" onclick="Del(@item.ProjectID)">
+                                        <i class="glyphicon glyphicon-trash"></i>
+
+                                    </a>
+                                }*@
+                            <a href="#" class="on-default edit-row" title="View" onclick="view(@item.CityID)">
+                                <i class="fa fa-table"></i>
+
+                            </a>
+                            @*<button class="btn btn-success btn-xs" onclick="view(@item["Voucherid"])"><span class="glyphicon glyphicon-blackboard"></span> View</button>*@
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+    $(document).ready(function () {
+        //$('#btnTriggerEdit').click();
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+
+            $("#UserTable").dataTable(
+               {
+                   "aoColumns": [{ "bSearchable": true }, { "bSearchable": true },
+                       { "bSearchable": false }],
+                   "bSort": true,
+
+                   dom: 'Bfrtip',
+                   buttons: [
+                              {
+                                  extend: 'copy',
+                                  text: '<span class="glyphicon glyphicon-floppy-disk"></span><span><strong> Copy</strong></span>',
+                                  className: 'btn btn-primary  btn-sm',
+                                  title: '@ViewBag.Title',
+                                  exportOptions: {
+                                      columns: ':visible'
+                                  }
+
+                              },
+
+                            {
+                                extend: 'pdf',
+                                text: '  <span class="glyphicon glyphicon-file"></span><span> PDF</strong></span>',
+                                className: 'btn btn-primary  btn-sm',
+                                title: '@ViewBag.Title',
+                                orientation: 'portrait',
+                                pageSize: 'A4',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+
+                                customize: function (doc) {
+
+                                    doc.styles.title = {
+                                        color: 'red',
+                                        fontSize: '40',
+                                        // background: 'blue',
+                                        alignment: 'center'
+                                    }
+                                },
+
+
+
+                            },
+
+                             {
+
+                                 title: '@ViewBag.Title',
+                                 text: '<span class="glyphicon glyphicon-th"></span><span><strong> Excel</strong></span>',
+                                 className: 'btn btn-primary  btn-sm',
+                                 orientation: 'portrait',
+                                 pageSize: 'A4',
+                                 extend: 'excel',
+                                 footer: true,
+                                 exportOptions: {
+                                     columns: ':visible'
+                                 }
+                             },
+
+
+                           {
+                               extend: 'csv',
+
+                               title: '@ViewBag.Title',
+                               text: '<span class="	glyphicon glyphicon-list-alt"></span><span><strong> CSV</strong></span>',
+                               className: 'btn btn-primary  btn-sm',
+                               exportOptions: {
+                                   columns: ':visible'
+                               }
+
+                           },
+                         {
+                             extend: 'print',
+                             title: '@ViewBag.Title',
+                             text: '<span class="glyphicon glyphicon-print"></span><span><strong> Print</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             exportOptions: { columns: ':visible' }
+
+                         },
+                         {
+
+                             extend: 'colvis',
+                             text: '<span class="glyphicon glyphicon-blackboard"></span><span><strong> Column visibility</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             //  'colvis'
+                         }
+
+                   ],
+                   columnDefs: [{ targets: -1, visible: true }]
+                   //paging: false
+               })
+            var a = '@TempData["Dependancy"]'
+            if (a != "") {
+                $("#basicDendent").modal('show');
+            }
+        })
+
+        function add() {
+            window.location.href = "/City/create/"
+        }
+
+        var EditID = 0;
+        var DeleteID = 0;
+        function confirmPopupEdit()
+        {
+            window.location.href = "/City/Edit/" + EditID + "|1"
+        }
+
+        function Edit(id) {
+            EditID=id
+        }
+
+        function confirmPopupDelete() {
+            window.location.href = "/City/delete/" + DeleteID
+
+        }
+        function Del(id) {
+            DeleteID = id
+        }
+
+        function view(id) {
+            window.location.href = "/City/Edit/" + id + "|0"
+
+        }
+
+</script>
+
+
+
+
+
+
+
+

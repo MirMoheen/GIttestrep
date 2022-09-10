@@ -1,0 +1,2066 @@
+﻿@{
+    ViewBag.Title = "Welcome E-minute";
+}
+
+@Html.Partial("_minuteGudie")
+
+
+<div class="modal fade" id="basicStop">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <header class="panel-heading">
+                <h2 class="panel-title">Warning</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i class="fa fa-question-circle"></i>
+                    </div>
+                    <div class="modal-text">
+                        <p>There is no Rights, Access denied, Action not be Perform.</p>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-danger " data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="basicStopDelegate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <header class="panel-heading">
+                <h2 class="panel-title">Delegate</h2>
+            </header>
+            <div class="panel-body">
+                <div class="modal-wrapper">
+                    <div class="modal-icon">
+                        <i style="font-size:xx-large" class="glyphicon glyphicon-transfer"></i>
+                    </div>
+                    <div class="modal-text">
+                        <p><b>Please delegate E-Minute(s) approval rights in your absence.</b></p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2 control-label" style="font-size: small;margin-top: 5px;">Delegate <span class="required"></span></label>
+                        <div class="col-sm-5 " style="padding: unset;">
+                            <select class="form-control selectpicker" id="FwdEmployee" name="FwdEmployee" style="font-size: small;padding: 1px;">
+                                @{
+                                    var selectedemployee = new HRandPayrollSystemModel.DBModel.GLUser().getAlldataByID(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid));
+                                    var FwdEmployee = new HRandPayrollSystemModel.DBModel.GLUser().loadAllTransferEmployee(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid));
+
+                                    foreach (var item in FwdEmployee)
+                                    {
+                                        if (selectedemployee.TransferEmpID.ToString() == item.Value.ToString())
+                                        {
+                                            <option selected value="@item.Value" name="">@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value" name="">@item.Text</option>
+                                        }
+                                    }
+
+                                }
+
+
+                            </select>
+
+
+                        </div>
+
+                        <button class="col-sm-2 control-label" style="font-size: small;margin-top: 0px;width:47px;height:34px;    margin-left: 10px;"><span style="margin-left:-10px" class="glyphicon glyphicon-ok" onclick="SetEmployee()">Set</span>     </button>
+
+
+                    </div>
+                    <div class="modal-text" style="margin-left: 95px;">
+                        <label class="col-sm-12 control-label" style="font-size: small;margin-top: 5px;color: green;"><span id="MessagetoDisplay"></span>    </label>
+                    </div>
+
+                </div>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-danger " data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+
+
+<div id="myModall" class="modal fade">
+    <div class="modal-dialog" style="width:890px">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#820606;">
+                <button type="button" class="close" data-dismiss="modal" style="color:#ffefef;opacity: initial;">&times;</button>
+
+                <div class="row">
+
+
+
+                    <div class="col-md-8"> <h4 class="modal-title" style="color:white">E-Minute >> Top 3 Ranked Users for the Month of   @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(DateTime.Now.AddMonths(-1).Month) - @DateTime.Now.Year      </h4></div>
+
+                    <div class="col-md-3">   <button type="button" id="countdown" style="float: right; margin-right: -51px;" class="btn btn-danger btn-xs">  </button>   </div>
+
+                </div>    
+            </div>
+            <div class="modal-body">
+
+
+                <div class="row">
+                    @{var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+
+
+                               var resultrank=     new HRandPayrollSystemModel.DBModel.GLUser().sp_getranking();
+
+                        <input type="hidden" id="scoringdatacount" name="scoringdatacount" value="@resultrank.Count()" />
+
+                                    foreach (var item in  resultrank)
+                                    {
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <figure class="profile-picture">
+                                                <img src="@Url.Content(item.PhotoPath)" height="200" width="200" class="img-circle" id="imagePreview" />
+
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p>  <strong style="color:green">@item.Name</strong></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="title" style="font-size:11px" >@item.Designation</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p><b>@item.Department</b></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div style="margin: 24px 0;">
+                                                @{
+                                                    for (int i = 0; i < item.Score; i++)
+                                                    {
+                                                        if (i > 4)
+                                                        {
+                                                            break;
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="fa fa-star checked"></span>
+                                                        }
+                        }
+
+
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p><button id="bjk">@item.Score  <i class="fa fa-trophy" style="font-size:medium"></i></button></p>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        }
+
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<header class="page-header">
+    <h2>Dashboard</h2>
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+
+
+            <li>
+                <a href="/home/index">
+
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+
+            <li>
+                <a style="color: chartreuse;" href="/Eminute//create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+
+        </ol>
+        <a class="sidebar-right-toggle"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+<!-- start: page -->
+<div class="row">
+    <style>
+
+
+              .card {
+                  box-shadow: 0 20px 10px 0 rgba(0, 0, 0, 0.2);
+                  max-width: 253px;
+                  margin: initial;
+                  text-align: center;
+                  font-family: arial;
+              }
+
+              .title {
+                  color: grey;
+                  font-size: 18px;
+              }
+
+              #bjk {
+                  border: none;
+                  outline: 0;
+                  display: inline-block;
+                  padding: 8px;
+                  color: white;
+                  background-color: #000;
+                  text-align: center;
+                  cursor: pointer;
+                  width: 100%;
+                  font-size: 18px;
+              }
+
+              /*a {
+                  text-decoration: none;
+                  font-size: 22px;
+                  color: black;
+              }*/
+
+              button:hover, a:hover {
+                  opacity: 0.7;
+              }
+
+              .fa {
+                  font-size: 25px;
+              }
+
+              .checked {
+                  color: orange;
+              }
+
+              .notification {
+                  background-color: white;
+                  color: white;
+                  text-decoration: none;
+                  padding: 15px 2px;
+                  position: relative;
+                  display: inline-block;
+                  border-radius: 2px;
+              }
+
+              .profile-picture {
+                  /*width:200px;
+              height:200px;
+               position: relative;
+        display: inline-block;*/
+                  flex: 1.3344;
+              }
+
+              .notification .badge {
+                  position: absolute;
+                  top: 3px;
+                  /*right: -10px;*/
+                  padding: 5px 10px;
+                  border-radius: 50%;
+                  background-color: red;
+                  color: white;
+              }
+
+              .blink_me {
+                  animation: blinker 2s linear infinite;
+              }
+
+              @@keyframes blinker {
+                  50% {
+                      opacity: 0;
+                  }
+              }
+    </style>
+
+   
+
+
+
+
+</div>
+@{if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().Type))
+    {
+
+        <div class="row">
+            <br /><br /><br />
+
+            <div class="col-lg-12 ">
+                <section class="panel">
+
+                    <div class="panel-body">
+                        <div class="col-lg-12" style="padding:unset">
+                            <div style="display:flex;padding:unset">
+                                <div class="col-lg-6" style="padding:unset">
+                                    <h2>E-MINUTES</h2>
+                                </div>
+                                <div class="col-lg-6" style="padding:unset;text-align: right;">
+                                    @*@{
+
+                                 var FwdEmployeechk = new HRandPayrollSystemModel.DBModel.GLUser().getAlldataByID(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid));
+                                 int a = 0;
+                                 foreach (var item in FwdEmployee)
+                                 {
+                                     a++;
+                                 }
+                                 if (a > 1)
+                                 {
+                                     <h2> DELEGATE<span class="glyphicon glyphicon-transfer" onclick="SetEmployeeShow()"></span>  </h2>
+                                     }
+                        }*@
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-lg-12" style="overflow-x:auto;">
+                                <p>
+
+                                    <table>
+
+                                        <tr>
+                                            <td style="width:104px;">
+                                                <button type="button" id="btnmnew" class="btn btn-info btn-sm  col-2" style="color: black;background-color: #5047d8;border-color: #5047d8;font-size: large;width: 100px;" onclick="loadnewminutes()">
+                                                    <span class="glyphicon glyphicon-bell"></span><br /> <label style="font-size: initial;">New</label>    <br /> <span id="new" style="font-size: initial;"> <img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">   </span>
+
+
+                                                </button>
+
+                                            </td>
+                                            <td style="width:104px;">
+
+                                                <button type="button" class="btn btn-primary btn-sm col-2" style="color: black;background-color: #e3c3c3;border-color: #e3c3c3;font-size: large;width: 100px;" onclick="loadPendigminutes()">
+                                                    <span class="glyphicon glyphicon-new-window"></span><br /> <label style="font-size: initial;">In Process</label>  <br /> <span id="Pending" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                </button>
+
+                                            </td>
+                                            <td style="width:104px;">
+                                                <button type="button" class="btn btn-success btn-sm col-2" style="color: black;background-color: #a5b1ca;border-color: #a5b1ca;font-size: large;width: 100px;" onclick="sp_getAllApprovedMinute()">
+                                                    <span class="glyphicon glyphicon-ok"></span> <br /><label style="font-size: initial;">Approved</label>     <br /> <span id="Approved" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                </button>
+
+                                            </td>
+                                            <td style="width:104px;">
+
+                                                <button type="button" class="btn btn-success btn-sm col-2" style="color: black;background-color: #94e194;border-color: #94e194;font-size: large;width: 100px;padding-left:0;padding-right: 0; " onclick="sp_getAllCompletedMinute()">
+                                                    <span class="glyphicon glyphicon-tower"></span><br /> <label style="font-size: initial;">Completed</label>     <br /> <span id="Completed" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                </button>
+
+                                            </td>
+                                            <td style="width:108px;">
+
+                                                <button type="button" class="btn btn-danger btn-sm col-2" style="color: black;font-size: large;width: 104px;padding-left:0;padding-right: 0;" onclick="sp_getAllCancelMinute()">
+                                                    <span class="glyphicon glyphicon-remove"></span><br /> <label style="font-size: initial;">Disapproved</label>   <br /> <span id="Cancel" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                </button>
+
+                                            </td>
+                                            @*<td style="width:104px;">
+            <button type="button" class="btn btn-warning btn-sm col-2" style="font-size: large;width: 100px;" onclick="sp_getAllForInfoMinute()">
+                <span class="glyphicon glyphicon-info-sign"></span><br /> For-Info <br /> <span id="ForInfo" style="font-size: large"><b> 0 </b></span>
+            </button>
+
+        </td>
+        <td style="width:104px;">
+            <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color: #a2e8b8;border-color: #a2e8b8;font-size: large;width: 100px;" onclick="sp_getAllIONMinute()">
+                <span class="glyphicon glyphicon-envelope"></span><br />  ION  <br /> <span id="spIon" style="font-size: large"><b> 0 </b></span>
+            </button>
+
+        </td>*@
+                                            <td style="width:104px;">
+                                                <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color:moccasin;border-color: moccasin;font-size: large;width: 100px;" onclick="loadActivity()">
+                                                    <span class="glyphicon glyphicon-indent-right"></span><br /><label style="font-size: initial;">Activity</label>    <br /> <span id="Activity" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                </button>
+
+
+
+
+                                            </td>
+                                            <td style="width:104px;">
+
+                                                <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color:#fd7ed6;border-color:#fd7ed6;font-size: large;width: 100px;" onclick="loadHoldinutes()">
+                                                    <span class="glyphicon glyphicon-ban-circle"></span><br /><label style="font-size: initial;">Hold</label>     <br /> <span id="Holdminute" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                </button>
+
+                                            </td>
+                                            <td style="width:104px;display:none">
+
+                                                <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color:#73c5ff;border-color:#73c5ff;font-size: large;width: 100px;" onclick="loadPendingPOurchases()">
+                                                    <span class="glyphicon glyphicon-star"></span><br /><label style="font-size: initial;">Purchase</label>     <br /><span id="spIon" style="font-size: initial"><b> _ </b></span>
+                                                </button>
+
+                                            </td>
+                                            <td style="width:104px;">
+
+                                                @{
+
+                                                    var FwdEmployeechk = new HRandPayrollSystemModel.DBModel.GLUser().getAlldataByID(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid));
+                                                    int a = 0;
+                                                    foreach (var item in FwdEmployee)
+                                                    {
+                                                        a++;
+                                                    }
+                                                    if (a > 1)
+                                                    {
+                                                        <button type="button" class="btn btn-icon-right btn-sm" style="background-color: #ffffff;border-color: #efdbea;font-size: large;width: 100px;padding-left:0;padding-right: 0;" onclick="SetEmployeeShow()">
+                                                            <span class="glyphicon glyphicon-transfer"></span><br /><label style="font-size: initial;">DELEGATE</label>   <br /> <span id="spIon" style="font-size: initial"><b> _ </b></span>
+                                                        </button>
+
+                                                    }
+                                                }
+
+
+                                            </td>
+
+
+                                            <td style="width:104px;">
+
+                                                @if (new SAGERPNEW2018.Models.SystemLogin().GetUser().IsIT)
+                                                {
+                                                    <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color:#0be708;border-color:#0be708;font-size: large;width: 100px;" onclick="loadServices()">
+                                                        <span class="glyphicon glyphicon-check"></span><br /><label style="font-size: initial;">Services</label> <br /> <span id="Services" style="font-size: initial"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                    </button>
+
+                                                }
+
+                                            </td>
+
+                                            <td></td>
+
+
+                                        </tr>
+
+
+                                    </table>
+
+                                    @*<button type="button" id="btnmnew" class="btn btn-info btn-sm  col-2" style="background-color: #5047d8;border-color: #5047d8;font-size: large;" onclick="loadnewminutes()">
+                            <span class="glyphicon glyphicon-bell"></span><br />  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> <span id="new" style="font-size: large;"><b> 0 </b></span>
+                        </button>
+
+
+
+                        <button type="button" class="btn btn-primary btn-sm col-2" style="background-color: #e3c3c3;border-color: #e3c3c3;font-size: large;" onclick="loadPendigminutes()">
+                            <span class="glyphicon glyphicon-new-window"></span><br /> &nbsp;&nbsp;&nbsp; Pending &nbsp;&nbsp;&nbsp; <br /> <span id="Pending" style="font-size: large"><b> 0 </b></span>
+                        </button>*@
+                                    @*<button type="button" class="btn btn-facebook btn-sm" style="width: 13%;" onclick="sp_getAllApprovedMinute()">
+                            <span class="glyphicon glyphicon-ok"></span> <br /> Approved <br /> <span id="Approved" style="font-size: large"><b> 0 </b></span>
+                        </button>*@
+
+                                    @*<button type="button" class="btn btn-success btn-sm col-2" style="background-color: #a5b1ca;border-color: #a5b1ca;font-size: large;" onclick="sp_getAllApprovedMinute()">
+                            <span class="glyphicon glyphicon-ok"></span> <br /> &nbsp;&nbsp;&nbsp;Approved&nbsp;&nbsp;&nbsp;  <br /> <span id="Approved" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm col-2" style="background-color: #94e194;border-color: #94e194;font-size: large;" onclick="sp_getAllCompletedMinute()">
+                            <span class="glyphicon glyphicon-tower"></span><br /> &nbsp; Completed &nbsp; <br /> <span id="Completed" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm col-2" style="font-size: large;" onclick="sp_getAllCancelMinute()">
+                            <span class="glyphicon glyphicon-remove"></span><br /> Disapproved <br /> <span id="Cancel" style="font-size: large"><b> 0 </b></span>
+                        </button>
+
+                        <button type="button" class="btn btn-warning btn-sm col-2" style="font-size: large;" onclick="sp_getAllForInfoMinute()">
+                            <span class="glyphicon glyphicon-info-sign"></span><br />&nbsp;&nbsp;&nbsp; For-Info &nbsp;&nbsp;&nbsp;<br /> <span id="ForInfo" style="font-size: large"><b> 0 </b></span>
+                        </button>
+
+                        <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color: #a2e8b8;border-color: #a2e8b8;font-size: large;" onclick="sp_getAllIONMinute()">
+                            <span class="glyphicon glyphicon-envelope"></span><br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ION &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> <span id="spIon" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color:moccasin;border-color: moccasin;font-size: large;" onclick="loadActivity()">
+                            <span class="glyphicon glyphicon-indent-right"></span><br />&nbsp;&nbsp;&nbsp;&nbsp; Activity &nbsp;&nbsp;&nbsp;&nbsp; <br /> <span id="Activity" style="font-size: large"><b> 0 </b></span>
+                        </button>
+
+                        <button type="button" class="btn btn-icon-right btn-sm col-2" style="background-color:#fd7ed6;border-color:#fd7ed6;font-size: large;" onclick="loadHoldinutes()">
+                            <span class="glyphicon glyphicon-ban-circle"></span><br />&nbsp;&nbsp;&nbsp;&nbsp; Hold &nbsp;&nbsp;&nbsp;&nbsp; <br /> <span id="Holdminute" style="font-size: large"><b> 0 </b></span>
+                        </button>
+
+                        @{
+
+                            var FwdEmployeechk = new HRandPayrollSystemModel.DBModel.GLUser().getAlldataByID(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid));
+                            int a = 0;
+                            foreach (var item in FwdEmployee)
+                            {
+                                a++;
+                            }
+                            if (a > 1)
+                            {
+                                <button type="button" class="btn btn-icon-right btn-sm" style="background-color: #ffffff;border-color: #efdbea;font-size: large;" onclick="SetEmployeeShow()">
+                                    <span class="glyphicon glyphicon-transfer"></span><br /> DELEGATE <br /> <span id="spIon" style="font-size: large"><b> _ </b></span>
+                                </button>
+
+                            }
+                        }
+
+                        <br />
+                        <br />*@
+                                </p>
+                            </div>
+                        </div>
+
+
+
+
+                        @*<div class="row">
+                           
+
+                            <div class="col-sm-3">
+
+                               
+
+
+                                    <div class="col-sm-6" style="padding:unset">
+                                        <div style="display:flex;padding:unset">
+                                            <div class="col-lg-6" style="padding:unset;right:-2%">
+                                                <h2>ION</h2>
+                                            </div>
+
+
+                                            <div class="col-lg-6" style="padding:unset;text-align: right;">
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+ 
+                            </div>
+
+                            <div class="col-md-6">
+
+                              
+                                    <div class="col-sm-12" style="padding:unset">
+                                        <div style="display:flex;padding:unset">
+                                            <div class="col-lg-6" style="padding:unset;right:">
+                                                <h2>    Board Proceeding</h2>
+                                            </div>
+
+
+                                            <div class="col-lg-6" style="padding:unset;text-align: right;">
+
+
+                                            </div>
+                                        </div>
+                                        </div>
+                               
+                                    </div>
+
+                            </div>*@
+
+
+                        <table>
+                          
+                            <tr>
+                                
+                                <th style="width:52%" ><h2>ION</h2></th>
+                                @*<th ><h2>Board Proceeding</h2></th>*@
+                            </tr>
+                            </table>
+
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <p>
+
+                                        <table>
+
+                                            <tr>
+                                                <td style="width:104px;">
+                                                    <button type="button" id="NewIon" class="btn btn-icon-right btn-sm col-2" style="background-color:#a2e8b8;font-size: large;width: 100px;" onclick="sp_getAllIONMinuteIon()">
+                                                        <span class="glyphicon glyphicon-envelope"></span>
+
+                                                        <br />  New  <br />
+                                                        <span id="NIon" style="font-size: large"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                    </button>
+
+                                                </td>
+                                                <td style="width:104px;">
+
+                                                    <button type="button" class="btn btn-warning btn-sm col-2" style="font-size: large;width: 100px;color:black" onclick="sp_getAllForInfoIOn()">
+                                                        <span class="glyphicon glyphicon-info-sign"></span><br /> Viewed<br /> <span id="IonInfo" style="font-size: large"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;">  </span>
+                                                    </button>
+                                                </td>
+                                                <td style="width:55px;"></td>
+                                                <td style="width:104px; display:none">
+                                                    <button type="button" id="NewBoardSheet1" class="btn btn-icon-right btn-sm col-2" style="background-color:#cc0066;font-size:large; color:#FFFFFF ;width: 100px;" onclick="getallNewBoardSheet()">
+                                                        <span class="glyphicon glyphicon-list-alt"></span>
+
+                                                        <br />  New  <br />
+                                                        <span id="NewBoardSheet" style="font-size: large"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;"> </span>
+                                                    </button>
+
+                                                </td>
+                                                <td style="width:104px; display:none">
+
+                                                    <button type="button" id="ReadedBoardSheet1" class="btn btn-warning btn-sm col-2" style="background-color:#996600;border-color:#996600;font-size:large; color:#ffffff ;width: 100px;" onclick="getallReadedBoardSheet()">
+                                                        <span class="glyphicon glyphicon-bookmark"></span><br /> Viewed<br /> <span id="ReadedBoardSheet" style="font-size: large;color:#ffffff;"><img src="~/AppFiles/Ellipsis2.gif" style="width:30px;"> </span>
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </p>
+
+
+                                </div>
+
+                                @*<div class="col-md-6">
+
+                    <section class="panel">
+
+
+                        <div class="col-md-6" style="padding:unset">
+                            <div style="display:flex;padding:unset">
+                                <div class="col-lg-6" style="padding:unset;right:-2%">
+                                    <h2>Board Proceeding</h2>
+                                </div>
+                                <div class="col-lg-6" style="padding:unset;text-align: right;">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>*@
+                            </div>
+
+
+
+
+                            @*<div class="row">
+                <div class="col-lg-12">
+                    <p>
+
+                        <table>
+
+                            <tr>
+                                <td style="width:104px;">
+                                    <button type="button" id="NewBoardSheet1" class="btn btn-icon-right btn-sm col-2" style="background-color:#cc0066;font-size:large; color:#FFFFFF ;width: 100px;" onclick="getallNewBoardSheet()">
+                                        <span class="glyphicon glyphicon-list-alt"></span>
+
+                                        <br />  New  <br />
+                                        <span id="NewBoardSheet" style="font-size: large"><b> 0 </b></span>
+                                    </button>
+
+                                </td>
+                                <td style="width:104px;">
+
+                                    <button type="button" id="ReadedBoardSheet1" class="btn btn-warning btn-sm col-2" style="background-color:#996600;border-color:#996600;font-size:large; color:#ffffff ;width: 100px;" onclick="getallReadedBoardSheet()">
+                                        <span class="glyphicon glyphicon-bookmark"></span><br /> Viewed<br /> <span id="ReadedBoardSheet" style="font-size: large;color:#ffffff;"><b> 0 </b></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </p>
+                </div>
+                <br />
+            </div>*@
+
+
+                            @*<button type="button" class="btn btn-primary btn-sm col-sm-12" style="height: 43px;"></button>*@
+                            <div class="alert alert-info">
+
+                                <div class="row" style="margin-top: 3px">
+
+
+                                    <div class="col-lg-6 col-md-12">
+
+
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr class="bg-primary" style="background-color: #5047d8;"> <th colspan="4" style="text-align:center"> List of Pending E-Minutes (Read Only)</th></tr>
+                                                <tr class="bg-primary" style="background-color: #5047d8;">
+                                                    <th align="center" scope="col">Sr# </th>
+                                                    <th align="center" scope="col">Employees</th>
+                                                    <th align="center">Pending</th>
+                                                    <th align="center" scope="col">Detail</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @{
+                                                    int tbrow = 1;
+                                                    foreach (System.Data.DataRow item in new HRandPayrollSystemModel.DBModel.tblEminuteInfo().GetMinuteActivity(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs), new SAGERPNEW2018.Models.SystemLogin().GetUser().EmployeeID).Rows)
+                                                    {
+
+                                                        <tr>
+
+                                                            <th align="center" scope="row">@tbrow</th>
+                                                            <td> <strong>@item["DesignationTitle"]   @item["EmployeeName"] </strong>  </td>
+                                                            <td align="center">  <button type="button" class="btn btn-danger btn-xs"> @item["Noofminute"] </button>  </td>
+                                                            @{string idof = item["EmployeeID"].ToString() + "~" + item["DesignationTitle"].ToString() + item["EmployeeName"].ToString();
+                                                            }
+                                                            <td align="center"> <button type="button" class="btn btn-success btn-xs" style="width: 100%;" onclick="OpenPendMinuteList(@item["EmployeeID"])"> View </button> </td>
+                                                        </tr>
+
+
+                                                                    tbrow++;
+                                                                }
+
+
+                                                }
+
+
+
+                                            </tbody>
+                                        </table>
+
+
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr class="bg-primary">
+                                                    <th align="center" class="col-md-1" scope="col">
+
+                                                        <label style="font-size: small;margin-top: 5px;">From<span class="required"></span></label>
+                                                        <div style="padding: unset;">
+                                                            <input type="text" id="fromdate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+                                                        </div>
+
+                                                    </th>
+
+                                                    <th class="col-md-1">
+                                                        <label style="font-size: small;margin-top: 5px;">To<span class="required"></span></label>
+                                                        <div style="padding: unset;">
+                                                            <input type="text" id="Todate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+                                                        </div>
+
+                                                    </th>
+
+
+                                                    <th width="20%">
+                                                        <label control-label" style="font-size: small;margin-top: 5px;">Department<span class="required"></span></label>
+                                                        <div style="padding: unset;">
+                                                            <select class="form-control selectpicker" id="Department" name="Department" onchange="makedountenmit()" style="font-size: small;padding: 1px;">
+                                                                @{
+                                                                    var department = new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x => x.Text);
+                                                                    @*<option value="0" name="">--All--</option>*@
+                                                                foreach (var item in department)
+                                                                {
+                                                                    <option value="@item.Value" name="">@item.Text</option>
+
+                                                                }
+                                                                }
+
+                                                            </select>
+
+                                                        </div>
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <section class="panel">
+                                                <div class="panel-body">
+                                                    <canvas id="doughnutChart2" height="120"></canvas>
+                                                </div>
+                                            </section>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+</div>
+
+
+
+
+
+</section>
+            </div>
+
+
+            <div style="display:none" class="col-lg-6 col-md-6">
+                <section class="panel">
+
+                    <div class="panel-body">
+                        <h2>E-COMPLAINTS</h2>
+                        <button type="button" class="btn btn-info btn-sm" id="btnnew3" style="width: 13%;background-color: #5047d8;border-color: #5047d8" onclick="loadnewminutes3()">
+                            <span class="glyphicon glyphicon-bell"></span><br /> New <br /> <span id="new3" style="font-size: large"><b> 0 </b></span>
+                        </button>
+
+
+
+                        <button type="button" class="btn btn-primary btn-sm" style="width: 13%; background-color: #e3c3c3;border-color: #e3c3c3" onclick="loadPendigminutes3()">
+                            <span class="glyphicon glyphicon-new-window"></span><br /> Pending <br /> <span id="Pending3" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        @*<button type="button" class="btn btn-facebook btn-sm" style="width: 13%;" onclick="sp_getAllApprovedMinute3()">
+                                <span class="glyphicon glyphicon-ok"></span> <br /> Approved <br /> <span id="Approved" style="font-size: large"><b> 0 </b></span>
+                            </button>*@
+                        <button type="button" class="btn btn-success btn-sm" style="width: 13%; display:none; background-color: #a5b1ca;border-color: #a5b1ca" onclick="sp_getAllApprovedMinute3()">
+                            <span class="glyphicon glyphicon-ok"></span> <br />Approved <br /> <span id="Approved3" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm" style="width: 13%; background-color: #94e194;border-color: #94e194" onclick="sp_getAllCompletedMinute3()">
+                            <span class="glyphicon glyphicon-tower"></span><br /> Completed <br /> <span id="Completed3" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" style="width: 13%;" onclick="sp_getAllCancelMinute3()">
+                            <span class="glyphicon glyphicon-remove"></span><br /> Cancelled <br /> <span id="Cancel3" style="font-size: large"><b> 0 </b></span>
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm" style="width: 13%;" onclick="sp_getAllForInfoMinute3()">
+                            <span class="glyphicon glyphicon-info-sign"></span><br />For-Info <br /> <span id="ForInfo" style="font-size: large"><b> 0 </b></span>
+                        </button>
+
+
+                        <div style="margin-top: 3px">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-info btn-sm" style="width: 100%;height: 48px;">
+                                    <span>
+                                        <label class="col-sm-1 control-label" style="font-size: small;margin-top: 5px;">From<span class="required"></span></label>
+                                        <div class="col-sm-2 " style="padding: unset;">
+                                            <input type="text" id="fromdate3" class="form-control uneditable-input" onchange="makedountenmit3()" style="font-size: small;padding: 8px;" />
+                                        </div>
+                                        <label class="col-sm-1 control-label" style="font-size: small;margin-top: 5px;">To<span class="required"></span></label>
+                                        <div class="col-sm-2 " style="padding: unset;">
+                                            <input type="text" id="Todate3" class="form-control uneditable-input" onchange="makedountenmit3()" style="font-size: small;padding: 8px;" />
+                                        </div>
+                                        <label class="col-sm-2 control-label" style="font-size: small;margin-top: 5px;display:none">Department<span class="required"></span></label>
+                                        <div class="col-sm-3 " style="padding: unset;display:none">
+                                            <select class="form-control selectpicker" id="Department3" name="Department" onchange="makedountenmit3()" style="font-size: small;padding: 1px;">
+                                                @* <option value="0" name="">--All--</option>*@
+                                                @{
+
+                                                    foreach (var item in department)
+                                                    {
+
+                                                        <option value="@item.Value" name="">@item.Text</option>
+
+
+                                                    }
+
+
+                                                }
+                                            </select>
+                                        </div>
+                                    </span>
+                                </button>
+
+
+                                @*<button type="button" class="btn btn-default" value="View"  onclick="makedountenmit()">
+                                        View
+                                    </button>*@
+
+                            </div>
+
+
+
+                            <div class="col-lg-12 col-md-12">
+                                <section class="panel">
+                                    <div class="panel-body">
+                                        <canvas id="doughnutChart3" height="140"></canvas>
+                                    </div>
+                                </section>
+                            </div>
+
+                            @*<div class="col-lg-12 col-md-12" style="padding:unset">
+                                    <section class="panel" style="padding:unset">
+                                        <div class="panel-body" style="padding:unset">
+                                            <canvas id="doughnutChart3" height="140"></canvas>
+                                            <table class="table table-bordered table-striped mb-none table-hover" style="display:none" data-pagination="false" id="UserTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>S/N</th>
+                                                        <th >Department</th>
+                                                        <th>Total </th>
+                                                        <th>New </th>
+                                                        <th>Pending </th>
+                                                        <th>Completed </th>
+                                                        <th>Cancelled </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="ProductTableID"></tbody>
+                                            </table>
+                                        </div>
+                                    </section>
+                                </div>*@
+                        </div>
+                    </div>
+
+
+                </section>
+            </div>
+        </div>
+        <div id='ModalPopUp' class='modal'>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id='myModalContent'></div>
+                </div>
+            </div>
+
+        </div>
+    }
+
+}
+
+@{if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsHRSystem))
+    {
+
+        <div class="row">
+            <br /><br /><br />
+            <div class="col-lg-6 col-md-6">
+                <section class="panel">
+                    <div class="panel-body">
+                        <canvas id="doughnutChart" height="140"></canvas>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <section class="panel">
+                    <div class="panel-body">
+                        <canvas id="barChart" height="140"></canvas>
+                    </div>
+                </section>
+            </div>
+            @*<div class="col-lg-12 col-md-12">
+                    <section class="panel">
+                        @*<header class="panel-heading panel-heading-transparent">
+                                <div class="panel-actions">
+                                    <a href="#" class="fa fa-caret-down"></a>
+                                    <a href="#" class="fa fa-times"></a>
+                                </div>
+
+                                <h2 class="panel-title">Plot Detail Status</h2>
+                            </header>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped mb-none">
+                                    <thead>
+                                        <tr>
+                                            <th><strong> Sr.#</strong></th>
+                                            <th> Category</th>
+                                            <th>Total </th>
+                                            <th>Temp</th>
+                                            <th>All Emp </th>
+                                            <th>Available</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>*@
+        </div>
+    }
+
+}
+@*<tr>
+        <td>2</td>
+        <td>Porto - Responsive Drupal 7 Theme</td>
+        <td><span class="label label-success">Success</span></td>
+        <td>
+            <div class="progress progress-sm progress-half-rounded m-none mt-xs light">
+                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                    100%
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Tucson - Responsive HTML5 Template</td>
+        <td><span class="label label-warning">Warning</span></td>
+        <td>
+            <div class="progress progress-sm progress-half-rounded m-none mt-xs light">
+                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                    60%
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Tucson - Responsive Business WordPress Theme</td>
+        <td><span class="label label-success">Success</span></td>
+        <td>
+            <div class="progress progress-sm progress-half-rounded m-none mt-xs light">
+                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 90%;">
+                    90%
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Porto - Responsive Admin HTML5 Template</td>
+        <td><span class="label label-warning">Warning</span></td>
+        <td>
+            <div class="progress progress-sm progress-half-rounded m-none mt-xs light">
+                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 45%;">
+                    45%
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Porto - Responsive HTML5 Template</td>
+        <td><span class="label label-danger">Danger</span></td>
+        <td>
+            <div class="progress progress-sm progress-half-rounded m-none mt-xs light">
+                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                    40%
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>Porto - Responsive Drupal 7 Theme</td>
+        <td><span class="label label-success">Success</span></td>
+        <td>
+            <div class="progress progress-sm progress-half-rounded mt-xs light">
+                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 95%;">
+                    95%
+                </div>
+            </div>
+        </td>
+    </tr>*@
+<!-- end: page -->
+<!-- end: page -->
+<script src="~/Scripts/chartJs/Chart.min.js"></script>
+
+
+<script type="text/javascript">
+    var soundObject = null;
+    function PlaySound() {
+        //if (soundObject != null) {
+        //    document.body.removeChild(soundObject);
+        //    soundObject.removed = true;
+        //    soundObject = null;
+        //}
+        //soundObject = document.createElement("embed");
+        //soundObject.setAttribute("src", "sounds/sound.wav");
+        //soundObject.setAttribute("hidden", true);
+        //soundObject.setAttribute("autostart", true);
+        //document.body.appendChild(soundObject);
+
+        var audio = new Audio('../sounds/inflicted.wav');
+        audio.play();
+    }
+</script>
+
+<script>
+
+
+                var timeleft = 15;
+                var downloadTimer = setInterval(function () {
+                    if (timeleft <= 0) {
+                        clearInterval(downloadTimer);
+                        document.getElementById("countdown").innerHTML = "Finish";
+                       $("#myModall").modal('hide');
+                    } else {
+                        document.getElementById("countdown").innerHTML = timeleft + " Remaining";
+                    }
+                    timeleft -= 1;
+                }, 1000);
+
+                function loadActivity() {
+
+                    window.location.href = "/Eminute/ViewList/7"
+                }
+
+
+
+                //function sp_getAllForInfoMinute() {
+                //    window.location.href = "/Eminute/ViewList/5"
+                //}
+                //function sp_getAllIONMinute() {
+                //    window.location.href = "/ION/ViewList/6"
+                //     }
+
+
+
+    function sp_getAllForInfoIOn() {
+        window.location.href = "/ION/ViewList/5"
+    }
+
+
+    function sp_getAllIONMinuteIon() {
+        window.location.href = "/ION/ViewList/6"
+    }
+
+
+
+
+
+
+
+                function sp_getAllCancelMinute() {
+                    window.location.href = "/Eminute/ViewList/4"
+                }
+
+                function sp_getAllCompletedMinute() {
+                    window.location.href = "/Eminute/ViewList/3"
+                }
+                function loadPendigminutes() {
+                    window.location.href = "/Eminute/ViewList/1"
+
+                }
+
+                function loadnewminutes() {
+
+                    window.location.href = "/Eminute/ViewList/0"
+                }
+
+                function sp_getAllApprovedMinute() {
+                    window.location.href = "/Eminute/ViewList/2"
+                }
+
+
+
+                function sp_getAllCancelMinute3() {
+                    window.location.href = "/Comptaint/ViewList/14"
+                }
+
+                function sp_getAllCompletedMinute3() {
+                    window.location.href = "/Comptaint/ViewList/13"
+                }
+                function loadPendigminutes3() {
+                    window.location.href = "/Comptaint/ViewList/11"
+
+                }
+
+                function loadnewminutes3() {
+
+                    window.location.href = "/Comptaint/ViewList/10"
+                }
+
+                function sp_getAllApprovedMinute3() {
+                    window.location.href = "/Comptaint/ViewList/12"
+                }
+
+
+                function loadHoldinutes() {
+
+                    window.location.href = "/Eminute/ViewList/15"
+                }
+    function loadPendingPOurchases() {
+
+        window.location.href = "/Eminute/ViewList/16"
+    }
+
+    function getallNewBoardSheet() {
+        window.location.href = "/BoardProceeding/ViewList/9"
+        
+   
+    }
+
+    function getallReadedBoardSheet() {
+        window.location.href = "/BoardProceeding/ViewList/10"
+
+
+    }
+
+                var acountforold = 0;
+                function loadAllButtonStatus() {
+                    var Data = { id: 0 }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/sp_getAllButtonStatus",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                console.log(Response)
+                                var data = Response;
+
+                                if (data != '') {
+
+                                    $("#UserTable").DataTable().clear();
+
+                                    var html = '';
+                                    for (var i = 0; i < data.length; i++) {
+
+                                        //if (data[i].n == 'ION') {
+                                        //    $('#spIon').text(data[i].c)
+                                        //}
+                                        //if (data[i].n == 'ForInfo') {
+                                        //    $('#ForInfo').text(data[i].c)
+                                        //}
+
+
+                                        if (data[i].n == 'NewIon') {
+                                            $('#NIon').text(data[i].c)
+                                            if (data[i].c != "0") {
+                                                console.log(data[i].c)
+
+                                                $("#NewIon").addClass("blink_me");
+
+                                                /// acountforold1 = data[i].c;
+                                            }
+                                        }
+
+                                        if (data[i].n == 'ION') {
+                                            $('#IonInfo').text(data[i].c)
+                                        }
+
+
+                                        if (data[i].n == 'Cancel') {
+                                            $('#Cancel').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Completed') {
+                                            $('#Completed').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Approved') {
+                                            $('#Approved').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Activity') {
+                                            $('#Activity').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Pending') {
+                                            $('#Pending').text(data[i].c)
+                                        }
+
+                                        if (data[i].n == 'Hold') {
+                                            $('#Holdminute').text(data[i].c)
+                                        }
+
+                                    
+                                        if (data[i].n == 'Services') {
+                                            $('#Services').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'ReadedBoardSheet') {
+                                            $('#ReadedBoardSheet').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'NewBoardSheet') {
+
+                                            if (data[i].c != "0") {
+
+                                                $('#NewBoardSheet').text(data[i].c)
+                                                $("#NewBoardSheet1").addClass("blink_me");
+
+                                                /// acountforold1 = data[i].c;
+                                            }
+                                            else {
+
+                                                $('#NewBoardSheet').text(data[i].c)
+
+                                            }
+                                        }
+                                        if (data[i].n == 'new') {
+                                            $('#new').text(data[i].c)
+                                            // class="blink_me"
+
+                                            if (data[i].c != "0") {
+                                                console.log(data[i].c)
+                                                console.log(acountforold)
+                                                $("#btnmnew").addClass("blink_me");
+                                                if (acountforold != data[i].c) {
+                                                    PlaySound();
+
+                                                }
+                                                acountforold = data[i].c;
+                                            }
+                                            // $('#new').style.Add("style", "text-decoration:blink");
+                                            // $('#new').css("text-decoration", "blink")
+                                        }
+
+                                    }
+                                }
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+                }
+                var acountforoldc = 0;
+                function loadAllButtonStatus3() {
+                    var Data = { id: 0 }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/sp_getAllCompButtonnewStatus",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                console.log(Response)
+                                var data = Response;
+
+                                if (data != '') {
+
+                                    $("#UserTable").DataTable().clear();
+
+                                    var html = '';
+                                    for (var i = 0; i < data.length; i++) {
+
+
+                                        if (data[i].n == 'Cancel') {
+                                            $('#Cancel3').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Completed') {
+                                            $('#Completed3').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Approved') {
+                                            $('#Approved3').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'Pending') {
+                                            $('#Pending3').text(data[i].c)
+                                        }
+                                        if (data[i].n == 'new') {
+
+
+                                            $('#new3').text(data[i].c);
+                                            //if (data[i].c != "0") {
+                                            // $("#btnnew3").addClass("blink_me");
+
+
+
+                                            if (data[i].c != "0") {
+                                                console.log(data[i].c)
+                                                console.log(acountforoldc)
+                                                $("#btnnew3").addClass("blink_me");
+                                                if (acountforoldc != data[i].c) {
+                                                    PlaySound();
+
+                                                }
+                                                acountforoldc = data[i].c;
+                                            }
+
+                                            // }
+
+                                        }
+
+                                    }
+                                }
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+                }
+
+                function blinking(elm) {
+                    timer = setInterval(blink, 10000);
+                    function blink() {
+                        elm.fadeOut(5000, function () {
+                            elm.fadeIn(5000);
+                        });
+                    }
+                }
+
+                function makedountenmit() {
+
+                    var Data = { id: $('#Department').val(), fdate: $('#fromdate').val(), tdate: $("#Todate").val() }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/LoadMinuteChart",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                var LableEmp = Response.map(g =>[g.StatusofMinute])
+                                var valueEmp = Response.map(g =>[g.countofdate])
+                                //  var Colour = Response.map(g =>[g.color])
+
+
+
+                                var Colour = '';
+                                for (var i = 0; i < Response.length; i++) {
+
+                                    Colour += '"' + Response[i].Colour + '"' + ','
+
+                                }
+                                var grphColor = "[" + Colour.slice(0, -1) + "]"
+
+
+                                var objaaa = JSON.parse(grphColor);
+                                var doughnutData = {
+                                    labels: LableEmp,
+                                    datasets: [{
+                                        data: valueEmp,
+                                        backgroundColor: objaaa
+
+                                    }]
+
+                                };
+
+                                var doughnutOptions = {
+                                    responsive: true,
+                                    position: 'left',
+
+
+                                };
+
+
+
+
+
+
+
+                                var ctx4 = document.getElementById("doughnutChart2").getContext("2d");
+                                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: { legend: { position: 'left' } } });
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+
+                }
+                function SetEmployeeShow() {
+
+                    // alert("Set Employee")
+                    $("#basicStopDelegate").modal('show');
+
+
+                    //var Data = { id: $('#FwdEmployee').val() }
+                    //$.ajax({
+                    //    async: true,
+                    //    url: "/Home/SaveDataTransferEmployyee",
+                    //    data: Data,
+                    //    success: function (Response) {
+
+                    //        if (Response != null) {
+
+                    //            $('#MessagetoDisplay').text("Dalegate Employee Set");
+
+                    //        }
+                    //    },
+                    //    error: function () {
+                    //        ReturnValue = false;
+
+                    //    }
+                    //})
+
+
+
+                }
+
+                function SetEmployee() {
+
+                    // alert("Set Employee")
+                    // $("#basicStopDelegate").modal('show');
+
+
+                    var Data = { id: $('#FwdEmployee').val() }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/SaveDataTransferEmployyee",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                $('#MessagetoDisplay').text("Dalegate Saved. Now all minutes will be Transfered to Selected Employee");
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+                }
+                function makedountenmitchart() {
+
+                    var Data = { id: $('#Department').val(), fdate: $('#fromdate').val(), tdate: $("#Todate").val() }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/LoadMinuteChartChart",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                var LableEmp = Response.map(g =>[g.StatusofMinute])
+                                var valueEmp = Response.map(g =>[g.countofdate])
+                                //  var Colour = Response.map(g =>[g.color])
+
+
+
+                                var Colour = '';
+                                for (var i = 0; i < Response.length; i++) {
+
+                                    Colour += '"' + Response[i].Colour + '"' + ','
+
+                                }
+                                var grphColor = "[" + Colour.slice(0, -1) + "]"
+
+
+                                var objaaa = JSON.parse(grphColor);
+                                var doughnutData = {
+                                    labels: LableEmp,
+                                    datasets: [{
+                                        data: valueEmp,
+                                        backgroundColor: objaaa
+
+                                    }]
+
+                                };
+
+                                var doughnutOptions = {
+                                    responsive: true,
+                                    position: 'left',
+
+
+                                };
+
+
+                                var ctx4 = document.getElementById("doughnutChart3").getContext("2d");
+                                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: { legend: { position: 'left' } } });
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+
+                }
+
+                function makedountenmit3() {
+                    if ($('#fromdate3').val() == "")
+                    { return; }
+                    if ($('#Todate3').val() == "")
+                    { return; }
+
+                    var Data = { id: $('#Department3').val(), fdate: $('#fromdate3').val(), tdate: $("#Todate3").val() }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/LoadCompChart",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+                                $('#UserTable').DataTable().clear().draw();
+                                console.log(Response);
+                                for (var i = 0; i < Response.length; i++) {
+                                    // alert('aa')
+                                    $('#UserTable').DataTable().row.add([(i + 1), Response[i].departmentname,
+                                        Response[i].total,
+                                        '<a  title="New" style="cursor: pointer;" onclick="loadnewminutes3()">  ' + Response[i].new + ' </a>',
+                                       '<a  title="Pending" style="cursor: pointer;" onclick="loadPendigminutes3()">  ' + Response[i].pending + ' </a>',
+                                       '<a  title="Completed" style="cursor: pointer;" onclick="sp_getAllCompletedMinute3()">  ' + Response[i].completed + ' </a>',
+                                       '<a  title="cancelled" style="cursor: pointer;" onclick="sp_getAllCancelMinute3()">  ' + Response[i].cancelled + ' </a>']).draw();
+
+                                }
+
+                                makedountenmitchart();
+                                //var LableEmp = Response.map(g =>[g.StatusofMinute])
+                                //var valueEmp = Response.map(g =>[g.countofdate])
+                                ////  var Colour = Response.map(g =>[g.color])
+
+
+
+                                //var Colour = '';
+                                //for (var i = 0; i < Response.length; i++) {
+
+                                //    Colour += '"' + Response[i].Colour + '"' + ','
+
+                                //}
+                                //var grphColor = "[" + Colour.slice(0, -1) + "]"
+
+
+                                //var objaaa = JSON.parse(grphColor);
+                                //var doughnutData = {
+                                //    labels: LableEmp,
+                                //    datasets: [{
+                                //        data: valueEmp,
+                                //        backgroundColor: objaaa
+
+                                //    }]
+
+                                //};
+
+                                //var doughnutOptions = {
+                                //    responsive: true,
+                                //    position: 'left',
+
+
+                                //};
+
+                                //debugger
+                                //var ctx4 = document.getElementById("doughnutChart3").getContext("2d");
+                                //new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: { legend: { position: 'left' } } });
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+
+                }
+
+                $(document).ready(function () {
+
+
+
+                    var date = new Date();
+                    var val = date.getDate();
+
+                    if (parseFloat(val) >= 1 && parseFloat(val) <= 3 && $('#scoringdatacount').val()!="0") {
+                        $("#myModall").modal('show');
+                    }
+
+
+
+                 //   $("#myModall").modal('show');
+
+
+
+                    $("#btnLink").click(function () {
+                        $('#ModalPopUp').modal('show');
+                    })
+
+
+                    $("#fromdate").datepicker({
+                        format: "dd-M-yyyy",
+                        autoclose: true,
+                        todayBtn: true,
+
+
+                    });
+                    var DateofP = '01' + '/' + new Date().getMonth() + '/' + new Date().getFullYear();
+                    $('#fromdate').datepicker('setDate', DateofP);
+
+                    $("#Todate").datepicker({
+                        format: "dd-M-yyyy",
+                        autoclose: true,
+                        todayBtn: true,
+
+
+                    });
+                    // var DateofP2 = this.getDate().toString() + '/' + '05' + '/' + '2020';
+                    $('#Todate').datepicker('setDate', new Date());
+
+
+
+                    $("#fromdate3").datepicker({
+                        format: "dd-M-yyyy",
+                        autoclose: true,
+                        todayBtn: true,
+
+
+                    });
+                    var DateofP = '01' + '/' + '05' + '/' + '2020';
+                    $('#fromdate3').datepicker('setDate', DateofP);
+
+                    $("#Todate3").datepicker({
+                        format: "dd-M-yyyy",
+                        autoclose: true,
+                        todayBtn: true,
+
+
+                    });
+                    // var DateofP2 = this.getDate().toString() + '/' + '05' + '/' + '2020';
+                    $('#Todate3').datepicker('setDate', new Date());
+
+                    loadAllButtonStatus(); loadAllButtonStatus3();
+
+                    $("#modals").load('/CustomClasses/IndexModaling.html')
+
+                    $("#UserTable").dataTable(
+                         {
+                             "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }],
+                             "bSort": false,
+
+                             dom: 'Bfrtip',
+                             buttons: [],
+                             columnDefs: [{ targets: -1, visible: true }],
+                             bFilter: false, bInfo: false, "bPaginate": false,
+
+                         })
+
+
+                    var a = '@TempData["Dependancy"]'
+                    if (a != "") {
+                        $("#basicDendent").modal('show');
+                    }
+
+                    var getdra = '';
+
+
+                    var Data = { id: 0 }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/LoadChart",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                var LableEmp = Response.map(g =>[g.EmployeeTypeName])
+                                var valueEmp = Response.map(g =>[g.numberofemp])
+                                //  var ColorEmp = Response.map(g =>[g.color])
+
+
+
+                                var ColorEmp = '';
+                                for (var i = 0; i < Response.length; i++) {
+
+                                    ColorEmp += '"' + Response[i].color + '"' + ','
+
+                                }
+                                var grphColor = "[" + ColorEmp.slice(0, -1) + "]"
+
+
+                                var objaaa = JSON.parse(grphColor);
+                                var doughnutData = {
+                                    labels: LableEmp,
+                                    datasets: [{
+                                        data: valueEmp,
+                                        backgroundColor: objaaa
+
+                                    }]
+
+                                };
+
+                                var doughnutOptions = {
+                                    responsive: true,
+                                    position: 'left',
+
+
+                                };
+
+
+                                var ctx4 = document.getElementById("doughnutChart").getContext("2d");
+                                new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: { legend: { position: 'left' } } });
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+                    makedountenmit();
+                    makedountenmit3();
+
+                    var Data = { id: 0 }
+                    $.ajax({
+                        async: true,
+                        url: "/Home/LoadChartDepartmentSalry",
+                        data: Data,
+                        success: function (Response) {
+
+                            if (Response != null) {
+
+                                var LableDepartment = Response.map(g =>[g.DepartmentName])
+                                var valueDepartment = Response.map(g =>[g.total])
+
+                                var LbDepartment = '';
+                                for (var i = 0; i < Response.length; i++) {
+
+                                    LbDepartment += '"' + Response[i].DepartmentName + '"' + ','
+
+                                }
+                                var LbDepartment = "[" + LbDepartment.slice(0, -1) + "]"
+
+                                var dptext = JSON.parse(LbDepartment)
+
+
+
+
+                                var valsalDepartment = '';
+                                for (var i = 0; i < Response.length; i++) {
+
+                                    valsalDepartment += '"' + Response[i].total + '"' + ','
+
+                                }
+                                var valsalDepartment = "[" + valsalDepartment.slice(0, -1) + "]"
+
+                                var dpasal = JSON.parse(valsalDepartment)
+
+
+
+
+
+                                ////get total
+
+                                var lbtotal = 0;
+                                for (var i = 0; i < Response.length; i++) {
+
+                                    lbtotal += parseFloat(Response[i].total)
+
+                                }
+                                var lbtotal = "[" + lbtotal + "]"
+
+                                var totalAmountsalary = JSON.parse(lbtotal)
+
+
+                                var barData = {
+                                    labels: dptext,
+                                    datasets: [
+                                        {
+                                            label: "Total",
+                                            backgroundColor: 'rgba(26,179,72)',
+                                            pointBorderColor: "#fff",
+                                            data: totalAmountsalary
+                                        },
+                                        {
+
+                                            label: dptext,
+                                            backgroundColor: 'rgba(28,132,198)',
+                                            borderColor: "rgba(26,179,148,0.7)",
+                                            pointBackgroundColor: "rgba(26,179,148,1)",
+                                            pointBorderColor: "#fff",
+                                            data: dpasal
+                                        }
+                                    ]
+                                };
+
+                                var barOptions = {
+                                    responsive: true
+                                };
+
+
+                                var ctx2 = document.getElementById("barChart").getContext("2d");
+                                new Chart(ctx2, { type: 'bar', data: barData, options: barOptions });
+
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+
+
+
+
+
+
+
+                    var ttt = '@TempData["NORights"]'
+
+                    if (ttt != "") {
+                        $("#basicStop").modal('show');
+                    }
+
+                    var check = '@TempData["Isminute"]';
+                    if (check) {
+                        setInterval(function () {
+
+                         
+                            makedountenmit();
+                            makedountenmit3();
+                            loadAllButtonStatus();
+                            loadAllButtonStatus3();
+
+                        }, 600000);
+
+                    }
+
+                })
+
+
+
+                function ViewMinute(elment0) {
+
+
+                    window.location.href = "/Eminute/Edit/" + elment0
+
+                }
+
+</script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("btnGeneratePieChart").on('click', function (e) {
+            e.preventDefault();
+            var gData = [];
+            gData[0] = $("#ddlyear").val();
+            gData[1] = $("#ddlMonth").val();
+
+            var jsonData = JSON.stringify({
+                gData: gData
+            });
+            $.ajax({
+                type: "POST",
+                url: "WebService.asmx/getTrafficSourceData",
+                data: jsonData,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: OnSuccess_,
+                error: OnErrorCall_
+            });
+
+            function OnSuccess_(response) {
+                var aData = response.d;
+                var arr = [];
+                $.each(aData, function (inx, val) {
+                    var obj = {};
+                    obj.color = val.color;
+                    obj.value = val.value;
+                    obj.label = val.label;
+                    arr.push(obj);
+                });
+                var ctx = $("#myChart").get(0).getContext("2d");
+                var myPieChart = new Chart(ctx).Pie(arr);
+            }
+
+            function OnErrorCall_(response) { }
+            e.preventDefault();
+        });
+    });
+
+
+
+
+
+
+
+
+    //var Data = { id: 0 }
+    //$.ajax({
+    //    async: true,
+    //    url: "/Home/LoadChartDepartmentSalry",
+    //    data: Data,
+    //    success: function (Response) {
+
+    //        if (Response != null) {
+
+    //            var LableEmp = Response.map(g =>[g.DepartmentName])
+    //            var valueEmp = Response.map(g =>[g.total])
+    //            //  var ColorEmp = Response.map(g =>[g.color])
+
+
+
+    //            var ColorEmp = '';
+    //            for (var i = 0; i < Response.length; i++) {
+
+    //                ColorEmp += '"' + Response[i].color + '"' + ','
+
+    //            }
+    //            var grphColor = "[" + ColorEmp.slice(0, -1) + "]"
+
+
+    //            var objaaa = JSON.parse(grphColor);
+    //            var doughnutData = {
+    //                labels: LableEmp,
+    //                datasets: [{
+    //                    data: valueEmp,
+    //                    backgroundColor: objaaa
+
+    //                }]
+
+    //            };
+
+    //            var doughnutOptions = {
+    //                responsive: true,
+    //                position: 'left',
+
+
+    //            };
+
+    //            debugger
+    //            var ctx4 = document.getElementById("doughnutChart").getContext("2d");
+    //            new Chart(ctx4, { type: 'pie', data: doughnutData, options: { legend: { position: 'left' } } });
+
+
+
+
+    //        }
+    //    },
+    //    error: function () {
+    //        ReturnValue = false;
+
+    //    }
+    //})
+
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+    function OpenPendMinuteList(e) {
+
+        window.location.href = "/Eminute/ViewPendingList/" + e
+
+    }
+
+    function loadServices() {
+        window.location.href = "/ActivityLog/viewlist"
+    }
+
+
+</script>

@@ -1,0 +1,478 @@
+﻿@model HRandPayrollSystemModel.DBModel.MonthlyDeduction
+
+@{
+    ViewBag.Title = "Monthly Deduction ";
+}
+
+
+@using (@Html.BeginForm("Save", "MonthlyDeductionC", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.MonthlyDeductionID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = "Monthly Deduction View";
+        }
+        else
+        {
+            ViewBag.Title = "Monthly Deduction Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = " Monthly Deduction Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>Monthly Deduction</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+
+
+
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Monthly Deduction</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Project data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+                        <input type="hidden" id="ExperinceDetailRowNo" />
+
+                        @Html.HiddenFor(model => model.MonthlyDeductionID)
+                        <br />
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">Remarks <span class="required">*</span></label>
+                            <div class="col-sm-4 ">
+                                @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control uneditable-input ",  @placeholder = "Enter Remarks", @required = "required" })
+                             
+                            </div>
+
+                            <label class="col-sm-1 control-label">Date<span class="required">*</span></label>
+                            <div class="col-sm-2 ">
+                                @Html.TextBoxFor(model => model.DeductionMonth, new { @class = "form-control uneditable-input " })
+
+                            </div>
+                            <label class="col-sm-1 control-label">InActive<span class="required">*</span></label>
+                            <div class="col-sm-1 ">
+                                @Html.CheckBoxFor(model => model.Inactive)
+                                @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                          
+                          
+                        </div>
+
+                        <div class="col-md-12">
+                            <h3>Deduction Detail</h3>
+                            <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                    <thead>
+                                        <tr>
+                                            <th  style="width:250px"> <strong>Department</strong> </th>
+                                            <th  style="width:250px"> <strong>Employee</strong></th>
+                                            <th style="width:250px"><strong>Deduction</strong></th>
+                                            <th  style="width:150px"><strong>Amount</strong></th>
+                                            <th style="width:80px"><strong>Action</strong>  </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ExperinceBodyID">
+                                        @{
+
+                                            if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+
+                                                int a = 0;
+                                                foreach (var item in Model.MonthlyDeductionDetaillist)
+                                                {
+                                                    <tr id="@a">
+                                                        @{
+                                                            int countserial = 0;
+                                                            countserial = 1 + @a;
+                                                        }
+                                                        <td> <select style="" class="form-control selectpicker" id="Department_@a" name="Department" onchange="loadEmployee(this)">
+                                                            @foreach (var item1 in Model.LoadAllDepartment(Convert.ToInt32("0" + new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)))
+                                                            {
+                                                                if (item1.DepartmentID == item.DepartmentID)
+                                                                {
+                                                                    <option selected="selected" value="@item1.DepartmentID" name="">@item1.DepartmentName</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@item1.DepartmentID" name="">@item1.DepartmentName</option>
+                                                                }
+                                                            }
+                                                            </select>  </td>
+                                                        <td> 
+                                                        
+
+                                                        
+                                                        
+                                                        <select style="" class="form-control selectpicker" id="Employee_@a" name="Employee" >
+
+
+                                                            @foreach (var item1 in Model.LoadAllemployees(Convert.ToInt32("0" + new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs),Convert.ToInt32(item.DepartmentID)))
+                                                            {
+                                                                if (item1.EmployeeID == item.EmployeeID)
+                                                                {
+                                                                    <option selected="selected" value="@item1.EmployeeID" name="">@item1.EmployeeName - @item1.EmployeeNo</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@item1.EmployeeID" name="">@item1.EmployeeName - @item1.EmployeeNo</option>
+                                                                }
+                                                            }
+
+
+
+                                                        </select>
+                                                        
+                                                         </td>
+                                                        <td> <select style="" class="form-control selectpicker" id="Deduction_@a" name="Deduction" >
+                                                                 @foreach (var item1 in Model.LoadAllDeduction(Convert.ToInt32("0" + new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)))
+                                                                 {
+                                                                     if (item1.AllowanceDeductionID == item.AllowanceDeductionID)
+                                                                     {
+                                                                         <option selected="selected" value="@item1.AllowanceDeductionID" name="">@item1.AllowanceDeductionTitle</option>
+                                                                     }
+                                                                     else
+                                                                     {
+                                                                         <option value="@item1.AllowanceDeductionID" name="">@item1.AllowanceDeductionTitle</option>
+                                                                     }
+                                                                 }
+                                                             </select> </td>
+                                                        <td> <input type="text" class="form-control number " id="Amount_@a" value="@item.Amount" name="Amount" />  </td>
+                                                      
+
+                                                        <td>
+                                                            <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDataAdd_@a" value="+" onclick="AddExperincedetailData($(this).parent().parent().attr('id'), false)" title="Add">
+                                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span>
+                                                            </button>
+                                                            <button type="button" style="" id="detailDataDelete_@a" title="Remove" value="-" onclick="DeleteExperinceDetailData(this)" class="btn btn-danger  btn-xs btn-circle">
+                                                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                                    a++;
+                                                                }
+                                                            }
+
+
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" id="saveid" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+
+
+
+    function postform() {
+        debugger;
+        var ReturnValue = true
+
+        $("#myform").validate();
+
+        
+        if ($('#Department_0').val() == '-1') {
+            bootbox.alert("Please Enter Detail data of Deduction")
+            ReturnValue = false
+        }
+        //var Data = { Name: $('#ProjectName').val(), ID: $("#ProjectID").val() }
+        //$.ajax({
+        //    async: false,
+        //    url: "/Project/Duplicate",
+        //    data: Data,
+        //    success: function (data) {
+
+        //        var c =JSON.parse(data);
+        //        if (c!="") {
+        //            bootbox.alert(c)
+        //            ReturnValue = false;
+        //        }
+        //    },
+        //    error: function () {
+        //        ReturnValue = false;
+        //        bootbox.alert("Error")
+        //    }
+        //})
+
+        if (ReturnValue) {
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+
+
+
+                }
+            });
+
+        }
+    }
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+        $("#DeductionMonth").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+         if ('@Model.MonthlyDeductionDetaillist.Count()' < 1) {
+            AddExperincedetailData(0, true)
+             }
+        var DateofP = '@Model.DeductionMonth.Value.Day' + '/' + '@Model.DeductionMonth.Value.Month' + '/' + '@Model.DeductionMonth.Value.Year';
+        $('#DeductionMonth').datepicker('setDate', DateofP);
+
+        debugger;
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+            $('#saveid').hide();
+
+        }
+
+    });
+
+
+
+    function AddExperincedetailData(ThisRowID, FromDocumentDotReady) {
+        var dtExperinceDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("Department_" + ThisRowID).value == -1) {
+
+                $('#Department_' + ThisRowID).selectpicker({ style: 'btn-danger' });
+                $('#Department_' + ThisRowID).selectpicker('refresh');
+                $('#btnTriggerMessage1').click();
+                return false;
+            }
+        }
+
+        ////experinceDetailRowNo
+        $("#ExperinceBodyID tr").each(function () {
+
+            debugger;
+
+            if (document.getElementById("Department_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("ExperinceDetailRowNo").value = $('#ExperinceBodyID tr:last').attr('id');
+                document.getElementById("ExperinceDetailRowNo").value++;
+            }
+            else {
+                document.getElementById("ExperinceDetailRowNo").value = 0
+            }
+
+
+            var q = document.getElementById("ExperinceDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+
+            //  <input   id="File_' + document.getElementById("TotDetailRowNo").value + '"  multiple = "true"   type="file"  name="Chdate_Name[]"  />
+            //
+            dtExperinceDetailInfoHtml = '';
+            dtExperinceDetailInfoHtml = '<tr   id="' + q + '">';
+            @{
+                string DepartmentData = "";
+                string DeductionData = "";
+            }
+
+
+            var DepartmentData = '@Model.DepartmentTableComboJson'.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+
+            var jsonConverted = JSON.parse(DepartmentData);
+            var groups = '<option value="-1">--Select Department--</option>';
+            for (var i = 0; i < jsonConverted.length; i++) {
+                groups += '<option value="' + jsonConverted[i]['DepartmentID'] + '">' + jsonConverted[i]['DepartmentName'] + '</option>';
+            }
+
+           
+            dtExperinceDetailInfoHtml += '<td  > <select style="" class="form-control selectpicker" id="Department_' + q + '" name="Department" onchange="loadEmployee(this)"  class="form-control"> ' + groups + ' </select>  </td>';
+
+            var groups = '<option value="-1">--Select Employee--</option>';
+            dtExperinceDetailInfoHtml += '<td  > <select style="" class="form-control selectpicker" id="Employee_' + q + '" name="Employee"  class="form-control"> ' + groups + ' </select>  </td>';
+
+            var DeductionData = '@Model.DeductionTableComboJson'.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+
+            var jsonConverted = JSON.parse(DeductionData);
+            var groups = '<option value="-1">--Select Deduction--</option>';
+            for (var i = 0; i < jsonConverted.length; i++) {
+                groups += '<option value="' + jsonConverted[i]['AllowanceDeductionID'] + '">' + jsonConverted[i]['AllowanceDeductionTitle'] + '</option>';
+            }
+            dtExperinceDetailInfoHtml += '<td  >  <select style="" class="form-control selectpicker" id="Deduction_' + q + '" name="Deduction"  class="form-control"> ' + groups + ' </select>  </td>';
+            dtExperinceDetailInfoHtml += '<td >  <input  type="text"  class="form-control" onkeypress="return isNumber(event)" id="Amount_' + q + '" name="Amount" /> </td>';
+            dtExperinceDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="VoucherdetailDataAdd_' + document.getElementById("ExperinceDetailRowNo").value +
+            '" value="+" onclick="AddExperincedetailData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="ProductdetailDataDelete'
+            + document.getElementById("ExperinceDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteExperinceDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtExperinceDetailInfoHtml += '</tr>';
+            $("#ExperinceBodyID").append(dtExperinceDetailInfoHtml);
+
+
+           
+
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10,
+
+                // width: 'auto',
+                container: "body"
+            });
+            $('.selectpicker').selectpicker('refresh');
+
+            $(".datepickerAssign").datepicker({
+                format: "dd-M-yyyy",
+                autoclose: true,
+
+                orientation: 'top'
+
+
+            });
+            // loadShopFlatDetail();
+            $('.datepickerAssign').datepicker('setDate', new Date());
+
+            //  document.getElementById("Description_" + document.getElementById("TotDetailRowNo").value);
+
+
+        }
+    }
+
+    function loadEmployee(a)
+    {
+       
+       // alert($("#" + a.id).val())
+        var idrow=a.id.split('_')
+        var group = "";
+         group = { departmentid: $("#" + a.id).val() }
+       // group = $("#" + a.id).val();
+            $.ajax({
+                type: "POST",
+                url: "/MonthlyDeductionC/GetDDListData",
+                data: group,
+                dataType: "json",
+                success: function (data) {
+                    var c = JSON.parse(data);
+                       console.log(c);
+
+                    for (var i = 0; i < c.length; i++) {
+                        group += "<option value = '" + c[i]["EmployeeID"] + "'>" + c[i]["EmployeeName"] + "-" + c[i]["EmployeeNo"] + "   </option>";
+                    }
+                    $("#Employee_" + idrow[1]).empty();
+                    $("#Employee_" + idrow[1]).append(group);
+
+                    $('.selectpicker').selectpicker('refresh');
+
+                },
+                error: function () {
+                    //location.reload();
+                }
+            });
+        
+    }
+    function DeleteExperinceDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#ExperinceBodyID tr").remove();
+            AddExperincedetailData(0, true);
+        }
+    }
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+</script>
+
+
+

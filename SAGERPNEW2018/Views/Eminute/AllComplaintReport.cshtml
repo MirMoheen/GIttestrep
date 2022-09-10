@@ -1,0 +1,281 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+
+@{
+    ViewBag.Title = "Complaint Report";
+}
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Setup</span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="form-group">
+
+
+            <div class="col-sm-1 " style="padding: 5px;">
+                <strong> From Date</strong>
+                <input type="text" id="fromdate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+            </div>
+            <div class="col-sm-1 " style="padding: 5px;">
+                <strong> To Date</strong>
+                <input type="text" id="Todate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+            </div>
+            <div class="col-sm-3 " style="padding: 5px;">
+                <strong>Department</strong>
+                <select class="form-control selectpicker" id="Department" name="Department" style="font-size: small;padding: 1px;">
+                    @{
+                        var department = new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x=>x.Text).ToList();
+                        @*<option value="0" name="">--All--</option>*@
+                    foreach (var item in department)
+                    {
+
+                        <option value="@item.Value" name="">@item.Text</option>
+
+
+
+                    }
+
+
+                    }
+
+
+                </select>
+            </div>
+
+            <div class="col-sm-3 " style="padding: 5px;">
+                <strong>Status</strong>
+                <select class="form-control selectpicker" data-style="btn-warning" id="statsuid" name="statsuid"   style="font-size: large;padding: 1px;">
+
+                    <option value="1" name=""> Recevied</option>
+                    <option value="2" name="">Forwarded</option>
+                    <option value="7" name="">Pending</option>
+                    <option value="8" name="">Approved</option>
+                    <option value="3" name="">Cancelled</option>
+                    <option value="4" name="">Completed</option>
+                    @*<option value="5" name="">ION</option>
+                    <option value="6" name="">For Info</option>*@
+
+                </select>
+            </div>
+
+            <a type="button" class="btn btn-success btn-sm" style="margin-top:28px" onclick="loadminutes()"> View Report </a>
+            @* <button type="button" class="btn btn-info btn-sm" style="width: 100%;height: 148px;"></button>*@
+
+
+        </div>
+
+
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+        <table class="table table-bordered table-striped mb-none table-hover" id="UserTable">
+            <thead>
+                <tr>
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">Ticket-No</span></th>
+                    <th style="width:80px">Date </th>
+                    <th style="width:80px">Department </th>
+                    <th>Subject </th>
+                    <th>Forwarded Info </th>
+                    <th style="width:80px">Priority </th>
+                    <th width="70px">Status</th>
+                    <th width="70px">View</th>
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#ProductTableID").on('click', 'tr', function (e) {
+            //console.log($(this).children().first().next().text());
+            ViewMinute($(this).children().first().next().text());
+        });
+
+
+
+        $("#fromdate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+        var DateofP = '01' + '/' + '05' + '/' + '2020';
+        $('#fromdate').datepicker('setDate', DateofP);
+
+        $("#Todate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+        // var DateofP2 = this.getDate().toString() + '/' + '05' + '/' + '2020';
+        $('#Todate').datepicker('setDate', new Date());
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+                     { "bSearchable": false }],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [],
+                 columnDefs: [{ targets: -1, visible: true }]
+
+             })
+    })
+
+    function loadminutes() {
+        var Data = { QuryStatus: $('#statsuid').val(), Deptid: $('#Department').val(), fromdate: $('#fromdate').val(), todate: $("#Todate").val() }
+        $.ajax({
+            async: true,//statsuid
+            url: "/Eminute/loadalComplainttatus",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-sm" style="width: 100%;">  ' + data[i].Priority + ' </button>'
+                            }
+
+                            if (data[i].Priority == 'Height') {
+                                html = ' <button type="button" class="btn btn-info btn-sm" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" >  ' + data[i].Priority + ' </button>'
+                            }
+                            if (data[i].Priority == 'Very Height') {
+                                html = ' <button type="button" class="btn btn-info btn-sm" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  ' + data[i].Priority + ' </button>'
+                            }
+
+
+                            //    \''+post['itm_code']+'\'
+
+                            var splitedata = data[i].MinuteCode.split('-')
+                            ///        + splitedata[0] + ',' + splitedata[1] + ',' + splitedata[2]+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                 data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                                 data[i].Subject.split('-')[0],  "<strong>"+   data[i].Subject.split('-')[1] +"</strong>",
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html,
+                                 data[i].Statusofminute, '<button  class="btn btn-success btn-sm" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+                                ]).draw();
+
+                        }
+                    }
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function ViewMinute(elment0) {
+
+
+        window.location.href = "/Comptaint/Edit/" + elment0
+
+    }
+
+</script>
+
+
+
+
+
+

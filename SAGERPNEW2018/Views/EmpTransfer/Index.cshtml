@@ -1,0 +1,502 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEmployeeTransfer
+
+@{
+    ViewBag.Title = "Employee Transfer ";
+}
+
+
+@using (@Html.BeginForm("Save", "EmpTransfer", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+        ViewBag.Title = ViewBag.Title ;
+
+    
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">EmployeeType Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input EmployeeType data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+                        @if (TempData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(TempData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> Record Save Successfully .
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        }
+
+
+                        <div class="row" >
+
+                            <div class="col-md-3">
+                                <label class="control-label">Project From <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.fromProjectID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject(), new { @class = "form-control selectpicker ", @required = "required", @onchange = "fromloadDepartment()" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Department From <span class="required">*</span></label>
+                                    @Html.DropDownListFor(model => model.fromDepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = " fromloadDesignation()" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Designation From <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.fromDesignation, new HRandPayrollSystemModel.DBModel.tblEmployee().LoadDesignation(0), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadEmployee()" })
+
+                             </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Employee From <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.EmployeeID, new HRandPayrollSystemModel.DBModel.EmployeePlacement().loadEmployee(Model.DepartmentID, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required" })
+
+
+                            </div>
+
+                        </div>
+
+                        <br />
+
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <label class="control-label">Project To <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.ProjectID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject(), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadDepartment()" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Department To <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.DepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = " loadDesignation()" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Designation To <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.Designation, new HRandPayrollSystemModel.DBModel.tblEmployee().LoadDesignation(0), new { @class = "form-control selectpicker ", @required = "required" })
+
+                            </div>
+
+                        </div>
+
+                      
+                        <div class="form-group">
+                        </div>
+                        <div class="form-group">
+                        
+
+                        </div>
+                        <hr />
+
+          
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+                                                                                }
+<script>
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+
+        if ($('#fromProjectID').val() == $('#ProjectID').val() ) {
+            ReturnValue = false;
+        }
+
+        $("#myform").validate();
+
+
+
+        var Data = { Name: $('#EmployeeID').val(), ID: $("#PlacementID").val() }
+        $.ajax({
+            async: false,
+            url: "/EmployeePlacement/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c = JSON.parse(data);
+                if (c != "") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+
+        bootbox.confirm("Are sure to transfer data!", function (result) {
+            if (result) {
+                if (ReturnValue) {
+                    $("#myform").submit();
+
+                }
+
+            }
+        });
+
+
+    }
+    $(document).ready(function () {
+        
+
+  
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+
+
+    });
+
+
+
+
+
+
+
+
+    function loadDepartment() {
+
+        if ($('#ProjectID').val() == "0") {
+
+            //var employee = $('#EmployeeID');
+            //employee.empty();
+            //employee.selectpicker('refresh');
+            //return;
+        }
+
+
+        var Data = { id: $('#ProjectID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loaddepartmentbyProject",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Department = $('#DepartmentID');
+                    Department.empty();
+                    console.log(data)
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Department.append(datafil);
+                        });
+
+                    Department.selectpicker('refresh');
+
+                    Department.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+
+
+    function fromloadDepartment() {
+
+        if ($('#fromProjectID').val() == "0") {
+
+            //var employee = $('#EmployeeID');
+            //employee.empty();
+            //employee.selectpicker('refresh');
+            //return;
+        }
+
+
+        var Data = { id: $('#fromProjectID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loaddepartmentbyProject",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Department = $('#fromDepartmentID');
+                    Department.empty();
+                    console.log(data)
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Department.append(datafil);
+                        });
+
+                    Department.selectpicker('refresh');
+
+                    Department.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+
+
+    function loadDesignation() {
+
+        if ($('#DepartmentID').val() == "0") {
+
+            var Designation = $('#Designation');
+            Designation.empty();
+            Designation.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadDesginationbyDepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Designation = $('#Designation');
+                    Designation.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Designation.append(datafil);
+                        });
+
+                    Designation.selectpicker('refresh');
+
+                    Designation.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+      ///  loadEmployee();
+    }
+
+
+
+
+    function fromloadDesignation() {
+
+        if ($('#fromDepartmentID').val() == "0") {
+
+            var Designation = $('#fromDesignation');
+            Designation.empty();
+            Designation.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#fromDepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadDesginationbyDepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Designation = $('#fromDesignation');
+                    Designation.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Designation.append(datafil);
+                        });
+
+                    Designation.selectpicker('refresh');
+
+                    Designation.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+        ///  loadEmployee();
+    }
+
+
+    function loadEmployee() {
+
+        if ($('#fromDesignation').val() == "0") {
+
+            var employee = $('#EmployeeID');
+            employee.empty();
+            employee.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#fromDesignation').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadEmployeebyDesgination",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var employee = $('#EmployeeID');
+                    employee.empty();
+                    console.log(data)
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            employee.append(datafil);
+                        });
+
+                    employee.selectpicker('refresh');
+
+                    employee.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+</script>
+
+

@@ -1,0 +1,339 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblSalaryGeneration
+
+@{
+    ViewBag.Title = "Salary Generation ";
+}
+
+
+@using (@Html.BeginForm("Save", "SalaryGeneration", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.SalaryID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = "Salary Generation View";
+        }
+        else
+        {
+            ViewBag.Title = "Salary Generation Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = " Salary Generation Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>Salary Generation</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Salary Generation</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Project data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                 
+                           @{TempData["listmontlySalaryof"] = Model.listmontlySalary;}
+
+                               @Html.HiddenFor(model => model.SalaryID)
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Remarks <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control uneditable-input ", @placeholder = "Enter Remarks" })
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Date<span class="required">*</span></label>
+                            <div class="col-sm-2 " style="display:flex">
+                                @*@Html.TextBoxFor(model => model.SalaryGenerationDate, new { @class = "form-control uneditable-input " })*@
+                              @Html.DropDownListFor(model => model.month, Model.loadmonth(), " Month", new { @class = "form-control selectpicker", required = "required" })
+                                @Html.DropDownListFor(model => model.Year, Model.loadyear(), " Year", new { @class = "form-control selectpicker", required = "required" })
+                            </div>
+                            <input type="button" class="btn btn-primary" value="View Salary " onclick="Generate();" />
+                            @Html.LabelFor(m => m.lbmsg,Model.lbmsg)
+                        </div>
+
+                        <div class="col-md-12">
+                            <h3>Employee Salary</h3>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-12" >
+                                <div style="overflow-x:auto;">
+                                    <table class="table table-bordered table-striped mb-none table-hover table-responsive" id="UserTable">
+                                        <thead>
+                                            <tr>
+                                                @if (Model.dtforsalary != null)
+                                                {
+                                                    for (int i = 0; i < Model.dtforsalary.Columns.Count; i++)
+                                                    {
+                                                        if (i == 1 || i == 3 || i == 5 || i == 7)
+                                                        {
+                                                            <th style="display:none">
+                                                                @Model.dtforsalary.Columns[i].Caption
+                                                            </th>
+                                                        }
+                                                        else if (i == 2)
+                                                        {
+                                                            <th style="">
+                                                                Employee No
+                                                            </th>
+                                                        }
+                                                        else
+                                                        {
+                                                            <th>
+                                                                @Model.dtforsalary.Columns[i].Caption
+                                                            </th>
+                                                        }
+                                                    }
+                                                    <th>
+                                                        Net Salary
+                                                    </th>
+                                                }
+
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @if (Model.dtforsalary != null)
+                                            {
+                                                for (int i = 0; i < Model.dtforsalary.Rows.Count; i++)
+                                                {
+                                                    double sum = 0;
+                                                    double gross = 0;
+                                                    <tr>
+                                                        @for (int x = 0; x < Model.dtforsalary.Columns.Count; x++)
+                                                        {
+                                                            if (x == 1 || x == 3 || x == 5 || x == 7)
+                                                            {
+                                                                <td style="display:none">
+                                                                    @Model.dtforsalary.Rows[i][x].ToString()
+                                                                </td>
+                                                            }
+                                                            else if (x == 2)
+                                                            {
+                                                                <td style="background-color: aquamarine;">
+                                                                    @Model.dtforsalary.Rows[i][x].ToString()
+
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                if ((x > 8 && Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString()) > 0))
+                                                                {
+                                                                    if (Model.dtforsalary.Columns[x].Caption == "GrossSalary")
+                                                                    {@*@{gross = Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString());}
+                        @gross*@
+                                                                        <td style="background-color: lightgray;">
+                                                                            @{
+                                                                                gross = Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString());
+                                                                            }
+                                                                            @gross.ToString("N")
+                                                                        </td>
+
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <td style="background-color: greenyellow;">
+                                                                                        @{
+                                                                                            double allowances = Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString());
+                                                                                        }
+                                                                                        @allowances.ToString("N")
+                                                                                    </td> }
+
+                                                                                            }
+                                                                                            else if ((x > 8 && Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString()) < 0))
+                                                                                            {
+                                                                                                <td style="background-color: pink;">
+
+                                                                                                    @{
+                                                                                                        double ded = Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString()) * -1;
+                                                                                                        sum += Convert.ToDouble(Model.dtforsalary.Rows[i][x].ToString());
+
+                                                                                                    }
+                                                                                                    @ded.ToString("N")
+                                                                                                </td>
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            <td style="background-color: white;">
+                                                                                                                @Model.dtforsalary.Rows[i][x].ToString()
+                                                                                                            </td> }
+                                                                                                            }
+                                                                                                        }
+                                                        <td style="background-color: yellow;">
+                                                            @{
+
+                                                                double net = gross + sum;
+                                                            }
+                                                            @net.ToString("N")
+                                                        </td>
+                                                    </tr>
+                                                                    }
+                                                                }
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                               
+
+                            </div>
+                        
+
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+                                                        }
+
+
+
+
+
+<script>
+
+
+
+
+    function postform() {
+        debugger;
+        var ReturnValue = true
+
+        $("#myform").validate();
+
+
+        if (ReturnValue) {
+            $("#myform").submit();
+
+        }
+
+    }
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+        
+        $("#SalaryGenerationDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+       
+        var DateofP = '@Model.SalaryGenerationDate.Value.Day' + '/' + '@Model.SalaryGenerationDate.Value.Month' + '/' + '@Model.SalaryGenerationDate.Value.Year';
+        $('#SalaryGenerationDate').datepicker('setDate', DateofP);
+
+
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+
+    function Generate() {
+        window.location.href = "/SalaryGeneration/Generate/" + $("#month").val() + "|" + $("#Year").val();
+
+    }
+    function loadEmployeeSalary() {
+
+
+        //var group = "";
+        //group = { salaryDate: $("#SalaryGenerationDate").val() }
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/SalaryGeneration/GetDDListData",
+        //        data: group,
+        //        dataType: "json",
+        //        success: function (data) {
+        //            var c = JSON.parse(data);
+        //               console.log(c);
+
+        //               for (var i = 0; i < c.length; i++) {
+        //                   for (var x   = 0; x < c[i].keys; x++) {
+
+        //                       console.log(c[i][x]);
+        //                   }
+
+        //            }
+
+
+        //        },
+        //        error: function () {
+        //            //location.reload();
+        //        }
+        //    });
+
+    }
+
+
+</script>
+
+
+

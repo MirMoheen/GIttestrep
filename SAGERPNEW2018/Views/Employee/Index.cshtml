@@ -1,0 +1,357 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEmployee
+@{
+    ViewBag.Title = "Employee Search";
+}
+
+<div id="modals"></div>
+<header class="page-header">
+    <h2></h2>
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Setup</span></li>
+            <li><span> @ViewBag.Title</span></li>
+        </ol>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+
+                </div>
+            }
+        }
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                       <br />
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-3 ">
+                <label>Department</label>
+                @Html.DropDownListFor(model => model.DepartmentID, Model.loadDepartmentAll(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @onchange = "loaddata()" })
+            </div>
+
+
+
+            <div class="col-md-3 ">
+                <label>Status</label>
+                <select id="empStatus" name="empStatus" onchange="loaddata()" class="form-control selectpicker">
+                    <option value="0">Active</option>
+                    <option value="1">Inactive</option>
+
+                </select>
+            </div>
+        </div>
+
+   
+        <table class="table table-bordered table-striped mb-none table-hover" id="UserTable">
+            <thead>
+                <tr>
+                    <th width="26">Srno</th>
+                    <th  width="150px">Employee Code</th>
+                    <th width="300px">Employee </th>
+                    <th width="440px">Placement </th>
+
+                    <th width="80">Status </th>
+
+                    <th width="100px">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ProductTableID">
+
+                @{
+                    int a = 1;
+                    foreach (var item in Model.employedatalistObbj)
+                    {
+
+                        <tr>
+                            <td>@a</td>
+                            <td>@item.EmployeeNo</td>
+                            <td>@item.EmployeeName</td>
+                            <td>@item.ProjectName   >> @item.DepartmentName >> @item.DesignationTitle</td>
+                            <td><button class="btn btn-default btn-xs " type="button" style="background-color: @item.color "><strong>@item.EmployeeTypeName </strong></button></td>
+                            <td>
+
+                                @if(Convert.ToBoolean( Model.Isedit)) {
+                                    <a title="Edit" onclick="confirmPopupEdit(  @item.EmployeeID )">  <i class="fa fa-pencil"></i> </a>
+
+                                }
+
+                                <a href="#" class="on-default edit-row" title="View" onclick="view( @item.EmployeeID)"><i class="fa fa-table"></i> </a>
+
+                                @if (Convert.ToBoolean( Model.Isdelete)) {
+                                <a title="Delete" onclick="confirmPopupDelete( @item.EmployeeID)"><i class="glyphicon glyphicon-trash"></i></a> 
+
+                                }
+
+
+                            </td>
+
+
+                       
+                        </tr>
+                        a++;
+                    }
+
+                }
+               
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+
+    $(document).ready(function () {
+  
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+                     { "bSearchable": false }],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [],
+                 pageLength: 20,
+                 columnDefs: [{ targets: -1, visible: true }]
+                 //paging: false
+             })
+       
+
+        var a = '@TempData["Dependancy"]'
+        if (a != "") {
+            $("#basicDendent").modal('show');
+        }
+    })
+
+    function add() {
+        window.location.href = "/Employee/create/"
+    }
+
+    var EditID = 0;
+    var DeleteID = 0;
+    function confirmPopupEdit(EditID) {
+        window.location.href = "/Employee/Edit/" + EditID + "|1"
+    }
+
+    function Edit(id) {
+        EditID = id
+    }
+
+    function confirmPopupDelete(DeleteID) {
+        window.location.href = "/Employee/delete/" + DeleteID
+
+    }
+    function Del(id) {
+        DeleteID = id
+    }
+
+    function view(id) {
+        window.location.href = "/Employee/Edit/" + id + "|0"
+
+    }
+    function Print(id) {
+        window.location.href = "/Employee/Print/" + id
+
+    }
+
+    function InfoPrint(id) {
+        window.location.href = "/Employee/CustomerInfoPrint/" + id
+
+    }
+
+
+
+    function loaddata() {
+
+
+        var Data = { id: $('#DepartmentID').val(), status: $("#empStatus").val() }
+        $.ajax({
+            async: false,
+            url: "/Employee/LoademployeeData",
+            data: Data,
+            success: function (data) {
+
+
+                console.log(data)
+
+                if (data != '') {
+
+                    $("#UserTable").DataTable().clear();
+
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        html = '';
+                        html += '<td>'
+                        if ('@Model.Isedit' == 'True') {
+                            html += '<a  title="Edit" onclick="confirmPopupEdit( ' + data[i].EmployeeID + ')">  <i class="fa fa-pencil"></i> </a>'
+
+                        }
+
+                        html += '<a href="#" class="on-default edit-row" title="View" onclick="view(' + data[i].EmployeeID + ')"><i class="fa fa-table"></i> </a>'
+
+                        if ('@Model.Isdelete' == 'True') {
+                            html += '   <a  title="Delete" onclick="confirmPopupDelete(' + data[i].EmployeeID + ')"><i class="glyphicon glyphicon-trash"></i></a> '
+
+                        }
+                        html += '</td>'
+
+
+                       
+
+                        $('#UserTable').DataTable(
+
+                            ).row.add([
+                             (i+1), data[i].EmployeeNo,
+                             data[i].EmployeeName,                            
+                             data[i].ProjectName.toUpperCase() + '>>' + data[i].DepartmentName.toUpperCase() + '>>' + data[i].DesignationTitle.toUpperCase(),
+                              '<button  class="btn btn-default btn-xs " type="button" style="background-color:' + data[i].color + '"><strong>' + data[i].EmployeeTypeName + '</strong></button>',
+                             html]).draw();
+
+                    }
+
+
+
+                }
+                else {
+
+                    bootbox.alert('Record Not Found')
+                }
+
+            },
+            error: function () {
+                ReturnValue = false;
+                alert("Error")
+            }
+        })
+
+
+
+
+    }
+
+  
+
+    //$(function () {
+    //    $("#example").DataTable();
+
+    //    // Premade test data, you can also use your own
+    //    var testDataUrl = "https://raw.githubusercontent.com/chennighan/RapidlyPrototypeJavaScript/master/lesson4/data.json"
+
+    //    $("#loadData").click(function () {
+    //        loadData();
+    //    });
+
+    //    function loadData() {
+    //        $.ajax({
+    //            type: 'GET',
+    //            url: testDataUrl,
+    //            contentType: "text/plain",
+    //            dataType: 'json',
+    //            success: function (data) {
+    //                myJsonData = data;
+    //                populateDataTable(myJsonData);
+    //            },
+    //            error: function (e) {
+    //                console.log("There was an error with your request...");
+    //                console.log("error: " + JSON.stringify(e));
+    //            }
+    //        });
+    //    }
+
+    //    // populate the data table with JSON data
+    //    function populateDataTable(data) {
+    //        console.log("populating data table...");
+    //        // clear the table before populating it with more data
+    //        $("#example").DataTable().clear();
+    //        var length = Object.keys(data.customers).length;
+    //        for (var i = 1; i < length + 1; i++) {
+    //            var customer = data.customers['customer' + i];
+
+    //            // You could also use an ajax property on the data table initialization
+    //            $('#example').dataTable().fnAddData([
+    //              customer.first_name,
+    //              customer.last_name,
+    //              customer.occupation,
+    //              customer.email_address
+    //            ]);
+    //        }
+    //    }
+    //})();
+
+
+
+    @*html += '<tr>'
+    html += '<td>' + i + '</td>'
+
+    html += '<td>' + data[i].EmployeeNo + '</td>'
+    html += '<td>' + data[i].EmployeeName + '</td>'
+    html += '<td> <button  class="btn btn-default btn-sm " type="button" style="background-color:' + data[i].color + '"  ><strong></button>   ' + data[i].EmployeeTypeName + '</strong> </td>'
+    html += '<td>' + data[i].ProjectName + '>>' + data[i].DepartmentName + '>>' + data[i].DesignationTitle + '</td>'
+
+    html += '<td>'
+    if ('@Model.Isedit' == 'True') {
+        html += '<a href="#basicEdit" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim" title="Edit" onclick="Edit( ' + data[i].EmployeeID + ')">  <i class="fa fa-pencil"></i> </a>'
+
+    }
+
+    html += '<a href="#" class="on-default edit-row" title="View" onclick="view(' + data[i].EmployeeID + ')"><i class="fa fa-table"></i> </a>'
+
+    if ('@Model.Isdelete' == 'True') {
+        html += '   <a href="#basic" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim" title="Delete" onclick="Del(' + data[i].EmployeeID + ')"><i class="glyphicon glyphicon-trash"></i></a> '
+
+    }
+    html += '</td>'
+
+    html += '</tr>'*@
+
+
+</script>
+
+
+

@@ -1,0 +1,404 @@
+﻿@model HRandPayrollSystemModel.DBModel.tbl_BoardProceeding
+
+@{
+    ViewBag.Title = "Board Sheet Minute List";
+}
+
+<style>
+    .redz {
+        background-color: ;
+    }
+</style>
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute//create">
+                    Create E-Minute      
+                </a>
+            </li>
+            <li>
+                
+                <a style="color: chartreuse;" href="/ION/Create1">
+                    Create ION     
+                </a>
+            </li>
+
+            
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+          
+        </ol>
+
+           <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+
+        @if (TempData["St"].ToString() == "9")
+        {
+            <h3><strong style="color:#137324;">For - Info </strong>  </h3>
+        }
+        @if (TempData["St"].ToString() == "10")
+        {
+            <h3><strong style="color:#137324;">Readed Board Proceeding </strong>  </h3>
+        }
+        
+
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+
+       
+
+       
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-8 col-md-9 col-md-offset-0" style="top:10px">
+                    <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row.  </strong> </p></h5>
+                </div>
+            </div>
+        
+       
+
+
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+     
+        <table class="table table-bordered  mb-none  " id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">Board Sheet-No</span></th>
+                    <th class="sorting" style="width:80px">Date </th>
+                    <th style="width:230px">Department </th>
+                    <th>Subject </th>
+                    <th>DFN</th>
+                  <th width="70px">Days</th>
+                    <th width="70px">Status</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+
+    $(document).ready(function () {
+
+        $("#ProductTableID").on('click', 'tr', function (e) {
+
+            ViewION($(this).children().first().next().text());
+
+
+
+        });
+
+
+
+        var a = '@TempData["St"]'
+
+    
+        if (a == "9") {
+            $('#headtitle').text("List of New Board Sheet")
+            sp_GetBoardSheet();
+        }
+
+        if (a == "10") {
+            $('#headtitle').text("List of Board Sheet")
+            sp_GetReadedBoardSheet();
+        }
+
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [  { "bSearchable": true }, { "bSearchable": true },{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+                     { "bSearchable": true }],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [],
+                 "pageLength": 50,
+                 "paging": true,
+
+                 "createdRow": function (row, data, dataIndex) {
+
+                     if (data[5] == 1) {
+                         $(row).addClass('redz');
+
+                     }
+
+
+                 },
+                columnDefs: [{ targets: 5, visible: false }],
+                 //columnDefs: [{ targets: -1, visible: true }],
+
+
+             })
+
+
+    })
+
+
+
+    function sp_GetBoardSheet() {
+
+        $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/BoardProceeding/sp_GetBoardSheet",
+          
+            data: Data,
+
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small">Today</button></td>'
+
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                 data[i].MinuteSheetCode,
+                                 data[i].MinuteSheetDate,
+                                   data[i].InitiatedDepartment,
+                                  '<strong>'+ data[i].Subject + '</strong>',
+                                   data[i].Displayfornew,
+                                   htmlPendingDays,
+                                ' <button type="button" id="StatusCheck"  class="btn btn-primary  btn-xs" style="width: 100%;">Board</button>'
+
+
+                                ]).draw();
+
+
+
+                        }
+
+
+                    }
+
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+
+            },
+
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+    function sp_GetReadedBoardSheet() {
+
+        $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/BoardProceeding/sp_GetReadedBoardSheet",
+
+            data: Data,
+
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small">Today</button></td>'
+
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                 data[i].MinuteSheetCode,
+                                 data[i].MinuteSheetDate,
+                                   data[i].InitiatedDepartment,
+                                  '<strong>' + data[i].Subject + '</strong>',
+                                   data[i].Displayfornew,
+                                   htmlPendingDays,
+                                ' <button type="button" id="StatusCheck"  class="btn btn-primary  btn-xs" style="width: 100%;">Board</button>'
+
+
+                                ]).draw();
+
+
+
+                        }
+
+
+                    }
+
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+
+            },
+
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+
+
+   
+    function ViewION(elment0) {
+
+
+        window.location.href = "/BoardProceeding/Edit/" + elment0
+
+    }
+
+
+</script>
+
+
+
+
+
+

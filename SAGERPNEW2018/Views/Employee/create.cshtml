@@ -1,0 +1,1535 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEmployee
+@{
+    ViewBag.Title = "Employee Profile";
+}
+
+
+<style>
+
+    .datepickerAssign {
+
+    }
+
+     .FormatNomieCnic {
+
+    }
+     .FormatNomieMobile {
+
+    }
+</style>
+
+<!-- Modal Animation -->
+<div id="basicCapture" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Capture Photo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+
+                </div>
+                <div class="modal-text">
+                    <h3 class="panel-title">Instructions for Capture Picture </h3>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div id="my_photo_booth">
+                                <div id="my_camera"></div>
+
+                                <!-- A button for taking snaps -->
+                                <form>
+
+                                    <div id="pre_take_buttons">
+                                        <!-- This button is shown before the user takes a snapshot -->
+                                    </div>
+
+                                    <div id="post_take_buttons" style="display:none">
+                                        <!-- These buttons are shown after a snapshot is taken -->
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+
+                            <ul>
+                                <li>Your full face must be clearly visible.</li>
+                                <li>Background must be plain </li>
+                                <li>The photograph must be Captured clearly and must not be blurry or pixelated.</li>
+                                <li>Uploaded photograph must be in JPEG (.jpg) file format.</li>
+                            </ul>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-default modal-dismiss" onclick="Webcam.reset();">Cancel</button>
+                    <input class="btn btn-success" type=button value="Take Snapshot" onClick="preview_snapshot()">
+                    <input type=button class="btn btn-primary" value="Take Another" onClick="cancel_preview()">
+
+                    <input type=button class="btn btn-primary  modal-dismiss" value="Save Photo " onClick="save_photo()" style="font-weight:bold;">
+
+
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+@using (@Html.BeginForm("Save", "Employee", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+
+
+
+
+    @*<button type="button" class="btn btn-primary " onclick="confirmPopupEdit()">Confirm</button>*@
+
+
+    <input type="hidden" id="TotDetailRowNo" />
+    <input type="hidden" id="DocDetailRowNo" />
+    <input type="hidden" id="ExperinceDetailRowNo" />
+    <input type="hidden" id="EductionDetailRowNo" />
+
+
+
+
+    @Html.HiddenFor(m => m.EmployeeID)
+    @*<input id="Id" name="Id" type="hidden" value="@Model.EmployeeID">*@
+
+if (Model.EmployeeID > 0)
+{
+    ViewBag.Title = "Employee Edit";
+
+}
+else
+{
+
+    ViewBag.Title = "Employee Create";
+
+}
+    <header class="page-header">
+        <h2>Employee Registration</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>Employee Registration</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">Employee Registration</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Employee Registration data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @if (ViewData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(ViewData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> Record Save Successfully .
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        }
+
+                        <div class="row" style="padding-left: 18px;">
+                          
+                            <div class="col-md-2">
+                                <label>Department<span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.DepartmentID, Model.loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadDesignation()" })
+
+                            </div>
+                            <div class="col-md-2">
+                                <label> Designation<span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.DesignationID, Model.LoadDesignation(0), new { @class = "form-control selectpicker ", @required = "required" })
+
+                                @*<select id="DesignationID" name="DesignationID" class="form-control selectpicker" ></select>*@
+
+                            </div>
+                            <div class="col-md-3">
+                                @Html.Label("Employee No", new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.EmployeeNo, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Employee    Name <span class="required">*</span></label>
+                                @Html.TextBoxFor(model => model.EmployeeName, new { @class = "form-control", @required = "required" })
+                            </div>
+                            
+                            <div class="col-sm-2">
+                                <a href="#basicCapture" class="mb-xs mt-xs mr-xs modal-with-zoom-anim" onclick="Setupcam()">
+                                  
+                                        <img src="@Url.Content(Model.EmployeePhotoPath)" height="100" width="100" style="float:right" class="img-circle img-responsive img-fluid img-thumbnail " id="imagePreview" />
+                                 
+                                         </a>
+                            </div>
+
+                        </div>
+                       <hr />
+
+                        <div class="col-md-12">
+                            <div class="tabs tabs-primary">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> Personal</a>
+                                    </li>
+                                    <li>
+                                        <a href="#ItemsOffical" data-toggle="tab"><i class="fa fa-building-o"></i> Offical</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#ItemsContact" data-toggle="tab"><i class="fa fa-phone"></i> Contact</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#ItemsDetail" data-toggle="tab"><i class="fa fa-users"></i> Dependents </a>
+                                    </li>
+                                    <li>
+                                        <a href="#CommunicatonDetail" data-toggle="tab"><i class="fa fa-tachometer"></i> Experience </a>
+                                    </li>
+                                    <li>
+                                        <a href="#EductionDetail" data-toggle="tab"><i class="fa fa-graduation-cap"></i> Education </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#DocDetail" data-toggle="tab"><i class="fa fa-file-pdf-o"></i> Document </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#AssetDetail" data-toggle="tab"><i class="fa fa-cubes"></i> Assets </a>
+                                    </li>
+                                    <li>
+                                        <a href="#LeavesDetail" data-toggle="tab"><i class="fa fa-star"></i> Leave </a>
+                                    </li>
+                                    <li>
+                                        <a href="#BiomatricDetail" data-toggle="tab"><i class="fa fa-globe"></i> Biomatric </a>
+                                    </li>
+                                 
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="ItemsInfo" class="tab-pane active ">
+                                      
+                                            @*start tap data customer*@
+                                        
+                                         
+                                            <div class="row">
+
+                                                <div class="col-md-3">
+                                                    @Html.Label("Relationship", new { @class = "control-label " })
+                                                    <select id="Relationship" name="Relationship" class="form-control">
+                                                        <option value="S/O">S/O</option>
+                                                        <option value="D/O">D/O</option>
+                                                        <option value="W/O">W/O</option>
+                                                    </select>
+                                                </div>
+
+                                             
+                                                <div class="col-md-3">
+                                                    @Html.Label("Father /Husband Name ", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.RelativeName, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="control-label">Employee CNIC  <span class="required">*</span></label>
+                                                    @Html.TextBoxFor(model => model.EmployeeCNIC, new { @class = "form-control", @required = "required" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Gender", new { @class = "control-label" })<br />
+                                                    <div style="padding: 4px;">
+                                                        Male:   @Html.RadioButtonFor(model => model.Gender, "true", true)
+                                                        Female: @Html.RadioButtonFor(model => model.Gender, "false", false)
+                                                    </div>
+                                                </div> 
+                                            
+
+                                                
+                                            </div>
+                                            <br />
+                                            <div class="row">
+
+                                                <div class="col-md-3">
+                                                    @Html.Label("Date Of Birth", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Nationality", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label(" City ", new { @class = "control-label" })
+                                                    @Html.DropDownListFor(model => model.PresentCity, Model.loadCities(), new { @class = "form-control selectpicker ", @required = "required" })
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    @Html.Label("Domicile ", new { @class = "control-label" })
+                                                    @Html.DropDownListFor(model => model.Domicile, Model.loadCities(), new { @class = "form-control selectpicker ", @required = "required" })
+
+
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row" >
+                                                <div class="col-md-3">
+                                                    @Html.Label("Religion", new { @class = "control-label " })
+                                                    <select id="Relationship" name="Relationship" class="form-control">
+                                                        <option value="Muslim">Muslim</option>
+                                                        <option value="Christianity">Christianity </option>
+                                                        <option value="Hinduism">Hinduism</option>
+                                                        <option value="Other">Other</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Blood Group", new { @class = "control-label" })
+                                                    @Html.DropDownListFor(model => model.Bloodgroup, Model.LoadBloodgroup(), new { @class = "form-control selectpicker " })
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    @Html.Label("Marital Status", new { @class = "control-label" })<br />
+                                                    <div style="padding: 4px;">
+                                                        Single:   @Html.RadioButtonFor(model => model.MatrialStatus, "false", true)
+                                                        Married: @Html.RadioButtonFor(model => model.MatrialStatus, "true", true)
+                                                    </div>
+                                                </div> 
+
+                                                <div class="col-md-3">
+                                                    @Html.Label("Disability", new { @class = "control-label" })<br />
+                                                    <div style="padding: 4px;">
+                                                        Yes:   @Html.RadioButtonFor(model => model.isDisability, "true", true)
+                                                        No: @Html.RadioButtonFor(model => model.isDisability, "false", true)
+                                                    </div>
+                                                </div>
+                                                
+
+                                            </div>
+                                            <br />
+                                           
+                                         
+                                            <div class="form-group">
+                                                    <label class="col-sm-1 control-label" for="inactive">InActive </label>
+                                                    <div class="col-sm-1 ">
+                                                       
+
+                                                        @Html.CheckBoxFor(model =>model.inactive, new { })
+                                                            
+                                                    </div>
+                                                </div>
+                                            <div class="row">
+
+
+                                            </div>
+
+                                           
+                                           
+                                        
+                                    </div>
+                                      <div id="ItemsOffical" class="tab-pane">
+                                        
+                          
+                                          <div class="row">
+                                              <div class="col-md-3">
+                                                  @Html.Label("Grade", new { @class = "control-label" })
+                                                  @Html.DropDownListFor(model => model.GradeID, Model.loadGrade(), new { @class = "form-control selectpicker " })
+                                              </div>
+                                              <div class="col-md-3">
+                                                  <label>Employee Type<span class="required">*</span></label>
+                                                  @Html.DropDownListFor(model => model.EmployeetypeID, Model.LoadEmployeetype(), new { @class = "form-control selectpicker ", @required = "required" })
+
+                                              </div>
+
+                                            
+
+                                              <div class="col-md-3">
+                                                  @Html.Label("Seniority Level", new { @class = "control-label" })
+                                                  @Html.DropDownListFor(model => model.Seniortylevel, Model.LoadSeniorLevel(), new { @class = "form-control selectpicker " })
+                                              </div>
+
+                                            
+
+
+                                              <div class="col-md-3">
+                                                  @Html.Label("Is EOBI", new { @class = "control-label" })<br />
+                                                  <div style="padding: 4px;">
+                                                      Yes:   @Html.RadioButtonFor(model => model.isEOBI, "true", true)
+                                                      No: @Html.RadioButtonFor(model => model.isEOBI, "false", true)
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                           
+                                          <br />
+                                          <div class="row">
+
+
+                                              <div class="col-md-3">
+                                                  <label class="control-label">EOBI No<span class="required">*</span></label>
+
+                                                  @Html.TextBoxFor(model => model.EMIno, new { @class = "form-control", @required = "required" })
+                                              </div>
+                                            
+                                              <div class="col-md-3">
+                                                  @Html.Label("Date of Join", new { @class = "control-label" })
+                                                  @Html.TextBoxFor(model => model.DateofJoining, new { @class = "form-control " })
+                                              </div>
+                                              <div class="col-md-3">
+                                                  @Html.Label("Probation End Date", new { @class = "control-label " })
+                                                  @Html.TextBoxFor(model => model.ProbationEnd, new { @class = "form-control" })
+                                              </div>
+                                             
+                                              <div class="col-md-3">
+                                                  <label class="control-label" for="pic">Picture <span class="required">*</span></label>
+
+                                                  <input type="hidden" id="EmployeePhotoPath" name="EmployeePhotoPath" value="@Model.EmployeePhotoPath" />
+                                                  <input type="hidden" id="base64image" name="base64image" value="" />
+                                                  <input type="file" value="" name="ImageUpload" size="40" accept="image/jpeg, image/png" class="form-control" onchange="ShowImagePreview(this,document.getElementById('imagePreview'))" />
+
+                                              </div>
+
+                                              <div class="col-md-3">
+
+                                                  <label for="IsMinute">IsMinute </label>
+                                                  <div class="col-sm-1 ">
+
+
+                                                      @Html.CheckBoxFor(model => model.IsMinute, new { })
+
+                                                  </div>
+
+                                              </div>
+
+                                          </div>
+                                          <br />
+                                 
+                                      
+                                      </div>
+
+
+                                    <div id="ItemsContact" class="tab-pane">
+                                        
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label">Mobile No  <span class="required">*</span></label>
+                                                @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", @required = "required", @placeholder = "92XXXXXXXXXX" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.Label("Res Phone", new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.ResPhone, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.Label("Office EXT ", new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.OfficePhone, new { @class = "form-control" })
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                @Html.Label("Email", new { @class = "control-label " })
+                                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                                            </div>
+                                            @*<div class="col-md-3">
+                                                @Html.Label("Fax ", new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.Fax, new { @class = "form-control" })
+                                            </div>*@
+                                           
+                                        </div>
+                                        <br />  
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.Label("Present Address", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.PresentAddress1, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="control-label">Permanent Address <span class="required">*</span></label>
+                                                    @Html.TextBoxFor(model => model.PermanentAddress1, new { @class = "form-control", @required = "required" })
+                                                </div>
+                                                @*<div class="col-md-3">
+                                                    @Html.Label("Present Address 2", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.PresentAddress2, new { @class = "form-control" })
+                                                </div>*@
+                                              
+                                              
+
+                                            </div>
+                                     
+
+                                        @*<div class="row">
+                                          
+                                            <div class="col-md-3">
+                                                @Html.Label("Permanent Address 2 ", new { @class = "control-label" })
+                                                @Html.TextBoxFor(model => model.PermanentAddress2, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.Label("Permanent Country  ", new { @class = "control-label " })
+                                                @Html.TextBoxFor(model => model.PermanentCountry, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.Label("Permanent City ", new { @class = "control-label " })
+                                                @Html.DropDownListFor(model => model.PermanentCity, Model.loadCities(), new { @class = "form-control selectpicker ", @required = "required" })
+
+                                               
+                                            </div>
+                                        </div>*@
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                @Html.Label("Country ", new { @class = "control-label " })
+                                                @Html.TextBoxFor(model => model.PresntCountry, new { @class = "form-control" })
+                                            </div>
+                                        
+                                            <div class="col-md-3">
+                                                <label class="control-label">Emergency Person<span class="required">*</span></label>
+
+                                                @Html.TextBoxFor(model => model.EmergencyPersonName, new { @class = "form-control", @required = "required" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label">Emergency Contact<span class="required">*</span></label>
+                                                @Html.TextBoxFor(model => model.EmergencyContact, new { @class = "form-control", @required = "required", @placeholder = "92XXXXXXXXXX" })
+                                            </div>
+                                           
+
+                                        </div>
+
+                                        
+
+
+                                    </div>
+
+
+
+                                      <div id="ItemsDetail" class="tab-pane">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h3>Dependents Detail</h3>
+                                                    <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                                        <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                            @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                            <thead>
+                                                                <tr>
+                                                                    <th> <strong>No#</strong> </th>
+                                                                    <th> <strong>Name</strong></th>
+                                                                    <th><strong>Father</strong></th>
+                                                                    <th><strong>CNIC</strong></th>
+                                                                    <th><strong>Mobile</strong></th>
+                                                                    <th><strong>Relation</strong></th>
+                                                                    <th><strong>Address</strong></th>
+                                                                    <th style="width:80px"><strong>Action</strong>  </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="DocmentBodyID">
+                                                                @{
+
+                                                                    if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                                    {
+
+                                                                        int a = 0;
+                                                                        foreach (var item in Model.detailistnomine)
+                                                                        {
+                                                                            <tr id="@a">
+                                                                                @{
+                                                                                    int countserial = 0;
+                                                                                    countserial = 1 + @a;
+                                                                                }
+                                                                                <td><span id="SerialNo_@a" readonly="readonly" class="form-control">@countserial </span></td>
+                                                                                <td> <input type="text" class="form-control" value="@item.NomineeName" id="NomineeName_@a" name="NomineeName" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.FatherName" id="FatherName_@a" name="FatherName" /> </td>
+                                                                                <td> <input type="text" class="form-control FormatNomieCnic" value="@item.CNIC" id="CNIC_@a" name="CNIC" /> </td>
+                                                                                <td> <input type="text" class="form-control FormatNomieMobile" value="@item.Mobile" id="Mobile_@a" name="Mobile" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Relation" id="Relation_@a" name="Relation" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Address" id="Address_@a" name="Address" /> </td>
+                                                                                <td>
+                                                                                    <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDataAdd_@a" value="+" onclick="AddTOTdetailData($(this).parent().parent().attr('id'), false)" title="Add">
+                                                                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span>
+                                                                                    </button>
+                                                                                    <button type="button" style="" id="detailDataDelete_@a" title="Remove" value="-" onclick="DeleteDetailData(this)" class="btn btn-danger  btn-xs btn-circle">
+                                                                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span>
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                                            a++;
+                                                                                        }
+                                                                                    }
+
+
+
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                        </div>
+                                        <div id="CommunicatonDetail" class="tab-pane">
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h3>Experience Detail</h3>
+                                                    <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                                        <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                            @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                            <thead>
+                                                                <tr>
+                                                                    
+                                                                    @*Designation*@
+                                                                    <th> <strong>No#</strong> </th>
+                                                                    <th> <strong>Org/Institute</strong></th>
+                                                                    <th><strong>Salary</strong></th>
+                                                                    <th><strong>Starting Date</strong></th>
+                                                                    <th><strong>Ending Date</strong></th>
+                                                                    <th><strong> Leaving resason</strong></th>
+                                                                    <th style="width:80px"><strong>Action</strong>  </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="ExperinceBodyID">
+                                                                @{
+
+                                                                    if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                                    {
+
+                                                                        int a = 0;
+                                                                        foreach (var item in Model.detailistExpernce)
+                                                                        {
+                                                                            <tr id="@a">
+                                                                                @{
+                                                                                    int countserial = 0;
+                                                                                    countserial = 1 + @a;
+                                                                                }
+                                                                                <td><span id="SerialNo_@a" readonly="readonly" class="form-control">@countserial </span></td>
+                                                                                <td> <input type="text" class="form-control" value="@item.FirmName" id="FirmName_@a" name="FirmName" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Firmaddress" id="Firmaddress_@a" name="Firmaddress" /> </td>
+                                                                                <td> <input type="text" class="form-control datepickerAssign" value="@item.StartingDate.Value.ToString("dd-MMM-yyyy")" id="StartingDate_@a" name="StartingDate" /> </td>
+                                                                                <td> <input type="text" class="form-control datepickerAssign" value="@item.EndingDate.Value.ToString("dd-MMM-yyyy")" id="EndingDate_@a" name="EndingDate" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Remarks" id="Remarks_@a" name="Remarks" /> </td>
+
+                                                                                <td>
+                                                                                    <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDataAdd_@a" value="+" onclick="AddExperincedetailData($(this).parent().parent().attr('id'), false)" title="Add">
+                                                                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span>
+                                                                                    </button>
+                                                                                    <button type="button" style="" id="detailDataDelete_@a" title="Remove" value="-" onclick="DeleteExperinceDetailData(this)" class="btn btn-danger  btn-xs btn-circle">
+                                                                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span>
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                                            a++;
+                                                                                        }
+                                                                                    }
+
+
+
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div id="EductionDetail" class="tab-pane">
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h3>Education Detail</h3>
+                                                    <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                                        <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                            @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                            <thead>
+                                                                <tr>
+
+                                                                    <th> <strong>No#</strong> </th>
+                                                                    <th> <strong>Degree/Certificate</strong></th>
+                                                                    <th><strong>Institute</strong></th>
+                                                                    <th><strong>Board/University</strong></th>
+                                                                    <th><strong>Obtained Marks</strong></th>
+                                                                    <th><strong>Total Marks</strong></th>
+                                                                    <th><strong>Remarks</strong></th>
+                                                                    <th style="width:80px"><strong>Action</strong>  </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="eductionBodyID">
+                                                                @{
+
+                                                                    if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                                    {
+
+                                                                        int a = 0;
+                                                                        foreach (var item in Model.detailistEduction)
+                                                                        {
+                                                                            <tr id="@a">
+                                                                                @{
+                                                                                    int countserial = 0;
+                                                                                    countserial = 1 + @a;
+                                                                                }
+                                                                                <td><span id="SerialNo_@a" readonly="readonly" class="form-control">@countserial </span></td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Degree" id="Degree_@a" name="Degree" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Institute" id="Institute_@a" name="Institute" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.Boarduniversity" id="Boarduniversity_@a" name="Boarduniversity" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.ObtainMarks" id="ObtainMarks_@a" name="ObtainMarks" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.TotalMarks" id="TotalMarks_@a" name="TotalMarks" /> </td>
+                                                                                <td> <input type="text" class="form-control" value="@item.PassingYear" id="PassingYear_@a" name="PassingYear" /> </td>
+
+                                                                                <td>
+                                                                                    <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDataAdd_@a" value="+" onclick="AddEductiondetailData($(this).parent().parent().attr('id'), false)" title="Add">
+                                                                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span>
+                                                                                    </button>
+                                                                                    <button type="button" style="" id="detailDataDelete_@a" title="Remove" value="-" onclick="DeleteEductionDetailData(this)" class="btn btn-danger  btn-xs btn-circle">
+                                                                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span>
+                                                                                    </button>
+                                                                                </td>
+                                                                            </tr>
+                                                                                            a++;
+                                                                                        }
+                                                                                    }
+
+
+
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="DocDetail" class="tab-pane">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                                        <h3>Employee Document</h3>
+                                                        <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                            @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Document Title</th>
+                                                                    <th>Document File</th>
+                                                                    <th> Action </th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="DocBodyID">
+                                                                @{ if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                                    {
+                                                                        var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                                                        //  string host = Request.Url.Authority;
+                                                                        int a = 0;
+                                                                        foreach (var item in Model.getdetailistDocumentData(Convert.ToInt32(Model.EmployeeID)))
+                                                                        {
+                                                                            <tr id="@a">
+                                                                                <td class="input"> <input id="Docdescription_@a" type="text" value="@item.DescriptionDoc" class="form-control" name="Docdescription" /> </td>
+                                                                                <td>  <a href="@host@item.DocImagePath.TrimStart('~')" download="CustomerDoc-@DateTime.Now">View</a> <input type="hidden" value="@item.DocImagePath" id="DocFile_@a" name="DocpathFile" /> </td>
+                                                                                <td> <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-xs btn-circle"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button></td>
+                                                                            </tr>
+                                                                            a++;
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    <div id="BiomatricDetail" class="tab-pane">
+                                        <div class="row">
+
+                                            <div class="col-md-3">
+                                                <label class="control-label">Machine Code<span class="required">*</span></label>
+                                                @Html.TextBoxFor(model => model.Machineid, new { @class = "form-control number", @required = "required" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" id="saveid" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+<script src="~/Scripts/webcam.min.js"></script>
+<!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+
+    function Setupcam() {
+
+
+        Webcam.set({
+            // live preview size
+            width: 320,
+            height: 240,
+
+            // device capture size
+            dest_width: 640,
+            dest_height: 480,
+
+            // final cropped size
+            crop_width: 480,
+            crop_height: 480,
+
+            // format and quality
+            image_format: 'jpeg',
+            jpeg_quality: 90,
+
+            force_flash: false,
+            // flip horizontal (mirror mode)
+            flip_horiz: true
+        });
+        Webcam.attach('#my_camera');
+
+    }
+</script>
+
+
+<!-- Code to handle taking the snapshot and displaying it locally -->
+<script language="JavaScript">
+    // preload shutter audio clip
+    var shutter = new Audio();
+    shutter.autoplay = false;
+    // shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : 'shutter.mp3';
+
+    function preview_snapshot() {
+        // play sound effect
+        try { shutter.currentTime = 0; } catch (e) {; } // fails in IE
+        shutter.play();
+
+        // freeze camera so user can preview current frame
+        Webcam.freeze();
+        //$("#imagePreview").attr("src", data_uri);
+
+        // swap button sets
+        document.getElementById('pre_take_buttons').style.display = 'none';
+        document.getElementById('post_take_buttons').style.display = '';
+    }
+
+    function cancel_preview() {
+        // cancel preview freeze and return to live camera view
+        Webcam.unfreeze();
+
+        // swap buttons back to first set
+        document.getElementById('pre_take_buttons').style.display = '';
+        document.getElementById('post_take_buttons').style.display = 'none';
+    }
+
+    function save_photo() {
+        // actually snap photo (from preview freeze) and display it
+        Webcam.snap(function (data_uri) {
+            // display results in page
+
+            $("#base64image").val(data_uri);
+            $("#imagePreview").attr("src", data_uri);
+            document.getElementById('imagePreview').innerHTML =
+
+                '<img src="' + data_uri + '"/><br/></br>' +
+                '<a href="' + data_uri + '" target="_blank">Open image in new window...</a>';
+
+
+            Webcam.reset();
+
+
+        });
+    }
+</script>
+
+
+
+<script>
+
+
+    function ShowImagePreview(imageUploader, previewImage) {
+        if (imageUploader.files && imageUploader.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(previewImage).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(imageUploader.files[0]);
+        }
+    }
+
+    function postform() {
+
+
+
+        var ReturnValue = true
+
+
+
+     
+
+        if ($("#DepartmentID").val() == "0") {
+          $('#DepartmentID').selectpicker('setStyle', 'btn-danger');
+            $('#DepartmentID').selectpicker('refresh');
+
+         ///   bootbox.alert("Please Select Department")
+
+            ReturnValue = false;
+        }
+
+        if ($("#DesignationID").val() == "0") {
+            $('#DesignationID').selectpicker('setStyle', 'btn-danger');
+            $('#DesignationID').selectpicker('refresh');
+
+          //  bootbox.alert("Please Select Designation")
+
+            ReturnValue = false;
+        }
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+        debugger
+        var Data = { MachineCode: $("#Machineid").val(), Name: $('#EmployeeCNIC').val(), ID: $("#EmployeeID").val() }
+        $.ajax({
+            async: false,
+            url: "/Employee/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c = JSON.parse(data);
+                if (c != "") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+        if (ReturnValue) {
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+                }
+
+            });
+        }
+        //if (ReturnValue) {
+        //    $("#myform").submit();
+
+        //}
+
+    }
+
+
+
+
+    $(document).ready(function () {
+
+
+        $("#DateofJoining").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+        $("#DateOfBirth").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+        $("#ProbationEnd").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+        $("#LeftDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+
+        var DateOfB = '@Model.DateOfBirth.Value.Day' + '/' + '@Model.DateOfBirth.Value.Month' + '/' + '@Model.DateOfBirth.Value.Year';
+        var DateofJ = '@Model.DateofJoining.Value.Day' + '/' + '@Model.DateofJoining.Value.Month' + '/' + '@Model.DateofJoining.Value.Year';
+
+
+
+        $('#DateOfBirth').datepicker('setDate', DateOfB);
+        $('#DateofJoining').datepicker('setDate', DateofJ);
+
+
+
+
+        $('.selectpicker').selectpicker('selectAll');
+        $("#MobileNo").mask("999999999999", { "clearIncomplete": true });
+        $("#EmergencyContact").mask("999999999999", { "clearIncomplete": true });
+        $("#EmployeeCNIC").mask("99999-9999999-9", { "clearIncomplete": true });
+
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+            $(".datepickerAssign").datepicker({
+                format: "dd-M-yyyy",
+                autoclose: true,
+
+                orientation: 'top'
+
+
+            });
+        }
+
+        $(".FormatNomieCnic").mask("99999-9999999-9", { "clearIncomplete": true });
+        $(".FormatNomieMobile").mask("999999999999", { "clearIncomplete": true });
+
+
+
+        if ('@Model.detailistnomine.Count()' < 1) {
+            AddTOTdetailData(0, true)
+        }
+
+        if ('@Model.detailistDoc.Count()' < 1) {
+            AddDocumentData(0, true)
+        }
+        if ('@Model.detailistExpernce.Count()' < 1) {
+            AddExperincedetailData(0, true)
+        }
+
+        if ('@Model.detailistEduction.Count()' < 1) {
+            AddEductiondetailData(0, true)
+        }
+
+        if ('@Model.IsView' == 'True') {
+
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+            $('#saveid').hide();
+
+        }
+
+    });
+
+
+
+    function AddTOTdetailData(ThisRowID, FromDocumentDotReady) {
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("NomineeName_" + ThisRowID).value == 0) {
+
+                $('#NomineeName_' + ThisRowID).selectpicker({ style: 'btn-danger' });
+                $('#NomineeName_' + ThisRowID).selectpicker('refresh');
+                $('#btnTriggerMessage1').click();
+                return false;
+            }
+        }
+
+        ////TotDetailRowNo
+        $("#DocmentBodyID tr").each(function () {
+
+            if (document.getElementById("NomineeName_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("TotDetailRowNo").value = $('#DocmentBodyID tr:last').attr('id');
+                document.getElementById("TotDetailRowNo").value++;
+            }
+            else {
+                document.getElementById("TotDetailRowNo").value = 0
+            }
+
+
+            var q = document.getElementById("TotDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+
+            //  <input   id="File_' + document.getElementById("TotDetailRowNo").value + '"  multiple = "true"   type="file"  name="Chdate_Name[]"  />
+            //
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + q + '">';
+            dtProductDetailInfoHtml += '<td   class="input"> <span class="form-control"  readonly="readonly"   id="SerialNo_' + q + '">' + i + '</span></td>';
+
+
+
+
+            dtProductDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="NomineeName_' + q + '" name="NomineeName" /> </td>';
+            dtProductDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="FatherName_' + q + '" name="FatherName" /> </td>';
+            dtProductDetailInfoHtml += '<td  >  <input  type="text"  class="form-control" id="CNIC_' + q + '" name="CNIC" /> </td>';
+            dtProductDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="Mobile_' + q + '" name="Mobile" /> </td>';
+
+            dtProductDetailInfoHtml += '<td  >  <input  type="text"  class="form-control" id="Relation_' + q + '" name="Relation" /> </td>';
+            dtProductDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="Address_' + q + '" name="Address" /> </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="VoucherdetailDataAdd_' + document.getElementById("TotDetailRowNo").value +
+            '" value="+" onclick="AddTOTdetailData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="ProductdetailDataDelete'
+            + document.getElementById("TotDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocmentBodyID").append(dtProductDetailInfoHtml);
+
+
+            $("#Mobile_"+q).mask("999999999999", { "clearIncomplete": true });
+
+            $("#CNIC_"+q).mask("99999-9999999-9", { "clearIncomplete": true });
+
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10,
+
+                // width: 'auto',
+                container: "body"
+            });
+
+            //  document.getElementById("Description_" + document.getElementById("TotDetailRowNo").value);
+
+
+        }
+    }
+
+
+    function DeleteDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocmentBodyID tr").remove();
+            AddTOTdetailData(0, true);
+        }
+    }
+
+
+
+    function AddDocumentData(ThisRowID, FromDocumentDotReady) {
+
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("DocFile_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Please Choose Image");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#DocBodyID tr").each(function () {
+
+            if (document.getElementById("DocFile_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("DocDetailRowNo").value = $('#DocBodyID tr:last').attr('id');
+                document.getElementById("DocDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("DocDetailRowNo").value = 0
+            }
+
+
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + document.getElementById("DocDetailRowNo").value + '">';
+            dtProductDetailInfoHtml += '<td class="input"> <input   class="form-control"  id="Docdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="Docdescription"    /> </td>';
+            dtProductDetailInfoHtml += '<td > @*@Html.TextBoxFor(x => x.File, new { type = "file", multiple = "true" })*@      <input type="file" class="form-control" id="DocFile_' + document.getElementById("DocDetailRowNo").value + '" name="DocFile" />   </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+            '" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_'
+            + document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocBodyID").append(dtProductDetailInfoHtml);
+
+            document.getElementById("DocImagePath_" + document.getElementById("DocDetailRowNo").value);
+
+        }
+    }
+    function DeleteDocDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocBodyID tr").remove();
+            AddDocumentData(0, true);
+        }
+    }
+
+
+
+
+
+
+
+
+    function loadDesignation() {
+        GetEmployeeNo();
+        if ($('#DepartmentID').val() == "0") {
+
+            var Designation = $('#DesignationID');
+            Designation.empty();
+            Designation.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Employee/loadDesigantionBydepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Designation = $('#DesignationID');
+                    Designation.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Designation.append(datafil);
+                        });
+
+                    Designation.selectpicker('refresh');
+
+                    Designation.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+    function GetEmployeeNo() {
+
+        var Data = {DepartmentID: $('#DepartmentID').val() }
+        if ( $('#DepartmentID').val() != "0") {
+
+
+            $.ajax({
+                async: false,
+                url: "/Employee/getEmployeeNo",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+
+
+                        $('#EmployeeNo').val(data);
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+        }
+
+    }
+
+
+    /////////detail experinace
+
+
+    function AddExperincedetailData(ThisRowID, FromDocumentDotReady) {
+        var dtExperinceDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("FirmName_" + ThisRowID).value == 0) {
+
+                $('#FirmName_' + ThisRowID).selectpicker({ style: 'btn-danger' });
+                $('#FirmName_' + ThisRowID).selectpicker('refresh');
+                $('#btnTriggerMessage1').click();
+                return false;
+            }
+        }
+
+        ////experinceDetailRowNo
+        $("#ExperinceBodyID tr").each(function () {
+
+            if (document.getElementById("FirmName_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("ExperinceDetailRowNo").value = $('#ExperinceBodyID tr:last').attr('id');
+                document.getElementById("ExperinceDetailRowNo").value++;
+            }
+            else {
+                document.getElementById("ExperinceDetailRowNo").value = 0
+            }
+
+
+            var q = document.getElementById("ExperinceDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+
+            //  <input   id="File_' + document.getElementById("TotDetailRowNo").value + '"  multiple = "true"   type="file"  name="Chdate_Name[]"  />
+            //
+            dtExperinceDetailInfoHtml = '';
+            dtExperinceDetailInfoHtml = '<tr id="' + q + '">';
+            dtExperinceDetailInfoHtml += '<td   class="input"> <span class="form-control"  readonly="readonly"   id="SerialNo_' + q + '">' + i + '</span></td>';
+
+
+
+
+            dtExperinceDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="FirmName_' + q + '" name="FirmName" /> </td>';
+            dtExperinceDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="Firmaddress_' + q + '" name="Firmaddress" /> </td>';
+            dtExperinceDetailInfoHtml += '<td  >  <input  type="text"  class="form-control datepickerAssign" id="StartingDate_' + q + '" name="StartingDate" /> </td>';
+            dtExperinceDetailInfoHtml += '<td   >  <input  type="text"  class="form-control datepickerAssign" id="EndingDate_' + q + '" name="EndingDate" /> </td>';
+            dtExperinceDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="Remarks_' + q + '" name="Remarks" /> </td>';
+            dtExperinceDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="VoucherdetailDataAdd_' + document.getElementById("ExperinceDetailRowNo").value +
+            '" value="+" onclick="AddExperincedetailData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="ProductdetailDataDelete'
+            + document.getElementById("ExperinceDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteExperinceDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtExperinceDetailInfoHtml += '</tr>';
+            $("#ExperinceBodyID").append(dtExperinceDetailInfoHtml);
+
+
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10,
+
+                // width: 'auto',
+                container: "body"
+            });
+
+
+            $(".datepickerAssign").datepicker({
+                format: "dd-M-yyyy",
+                autoclose: true,
+
+                orientation: 'top'
+
+
+            });
+            // loadShopFlatDetail();
+            $('.datepickerAssign').datepicker('setDate', new Date());
+
+            //  document.getElementById("Description_" + document.getElementById("TotDetailRowNo").value);
+
+
+        }
+    }
+
+
+    function DeleteExperinceDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#ExperinceBodyID tr").remove();
+            AddExperincedetailData(0, true);
+        }
+    }
+
+
+
+
+
+
+    // eduction
+
+    function AddEductiondetailData(ThisRowID, FromDocumentDotReady) {
+        var dteductionDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("Degree_" + ThisRowID).value == 0) {
+
+                $('#Degree_' + ThisRowID).selectpicker({ style: 'btn-danger' });
+                $('#Degree_' + ThisRowID).selectpicker('refresh');
+                $('#btnTriggerMessage1').click();
+                return false;
+            }
+        }
+
+        ////experinceDetailRowNo
+        $("#eductionBodyID tr").each(function () {
+
+            if (document.getElementById("Degree_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("EductionDetailRowNo").value = $('#eductionBodyID tr:last').attr('id');
+                document.getElementById("EductionDetailRowNo").value++;
+            }
+            else {
+                document.getElementById("EductionDetailRowNo").value = 0
+            }
+
+
+            var q = document.getElementById("EductionDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+
+            //  <input   id="File_' + document.getElementById("TotDetailRowNo").value + '"  multiple = "true"   type="file"  name="Chdate_Name[]"  />
+            //
+            dteductionDetailInfoHtml = '';
+            dteductionDetailInfoHtml = '<tr id="' + q + '">';
+            dteductionDetailInfoHtml += '<td   class="input"> <span class="form-control"  readonly="readonly"   id="SerialNo_' + q + '">' + i + '</span></td>';
+
+
+
+
+            dteductionDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="Degree_' + q + '" name="Degree" /> </td>';
+            dteductionDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="Institute_' + q + '" name="Institute" /> </td>';
+            dteductionDetailInfoHtml += '<td  >  <input  type="text"  class="form-control " id="Boarduniversity_' + q + '" name="Boarduniversity" /> </td>';
+            dteductionDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="ObtainMarks_' + q + '" name="ObtainMarks" /> </td>';
+            dteductionDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="TotalMarks_' + q + '" name="TotalMarks" /> </td>';
+            dteductionDetailInfoHtml += '<td   >  <input  type="text"  class="form-control" id="PassingYear_' + q + '" name="PassingYear" /> </td>';
+
+            dteductionDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="VoucherdetailDataAdd_' + document.getElementById("EductionDetailRowNo").value +
+            '" value="+" onclick="AddEductiondetailData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="ProductdetailDataDelete'
+            + document.getElementById("EductionDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteEductionDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dteductionDetailInfoHtml += '</tr>';
+            $("#eductionBodyID").append(dteductionDetailInfoHtml);
+
+
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10,
+
+                // width: 'auto',
+                container: "body"
+            });
+
+
+            $(".datepickerAssign").datepicker({
+                format: "dd-M-yyyy",
+                autoclose: true,
+
+                orientation: 'top'
+
+
+            });
+            // loadShopFlatDetail();
+            $('.datepickerAssign').datepicker('setDate', new Date());
+
+            //  document.getElementById("Description_" + document.getElementById("TotDetailRowNo").value);
+
+
+        }
+    }
+
+
+    function DeleteEductionDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#eductionBodyID tr").remove();
+            AddEductiondetailData(0, true);
+        }
+    }
+
+
+
+</script>

@@ -1,0 +1,328 @@
+﻿@model HRandPayrollSystemModel.DBModel.tbl_kplinfo
+
+@{
+    ViewBag.Title = "ViewList";
+}
+
+
+<style>
+    .redz {
+        background-color: #adf0f0;
+    }
+</style>
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute//create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                @*<a style="color: chartreuse;" href="/Eminute/CreateION">
+                        Create ION      @*<i class="fa fa-home"></i>
+                    </a>*@
+                <a style="color: chartreuse;" href="/ION/Create1">
+                    Create ION      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+
+            @*<li>
+                    <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                       Report      <i class="fa fa-home"></i>
+                    </a>
+                </li>*@
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+            @*<li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>*@
+        </ol>
+
+        @*<a class="sidebar-right-toggle" data-open="sidebar-right" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>*@
+        <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+ 
+        @if (TempData["St"].ToString() == "5")
+        {
+            <h3><strong style="color:#137324;">For-Info </strong>  </h3>
+        }
+       
+
+
+
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-8 col-md-9 col-md-offset-0" style="top:10px">
+                    <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row.  </strong> </p></h5>
+                </div>
+            </div>
+        
+
+
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        @*addTable Here*@
+        @*<table class="table table-bordered table-striped modal-block-primary table-hover" id="UserTable">*@
+
+        <div id="logidof"></div>
+        <table class="table table-bordered  mb-none  table-hover " id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">KPI-Code</span></th>
+                    <th> Year - Month </th>
+                    <th style="width:230px">Initiated Department  </th>
+                    <th style="width:230px">Initiated By  </th>
+                    <th>View </th>
+                    @*<th width="70px">Status</th>*@
+
+
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+        $("#ProductTableID").on('click', 'tr', function (e) {
+
+            ViewION($(this).children().first().next().text());
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+        var a = '@TempData["St"]'
+
+   
+        if (a == "5") {
+            $('#headtitle').text("List of Readed ION")
+            sp_getAllReadedION();
+        }
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+            {
+                "aoColumns": [{ "bSearchable": false },{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+                     { "bSearchable": true }],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [],
+                 "pageLength": 50,
+                 "paging": true,
+
+                 "createdRow": function (row, data, dataIndex) {
+
+                     if (data[5] == 1) {
+                         $(row).addClass('redz');
+
+                     }
+
+
+                 }
+                
+               //, columnDefs: [{ targets: 5, visible: false }],
+                 //columnDefs: [{ targets: -1, visible: true }],
+
+
+             })
+
+
+    })
+
+
+
+
+
+    function sp_getAllReadedION() {
+
+        $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/kpl/sp_getAllKpi",
+            data: Data,
+
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                     
+                           
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                    data[i].KPI_Code,
+                                    '<strong>' + data[i].KPIMMYY + '</strong>',
+                                    data[i].InitiatedDepartment,
+                                 data[i].Initiatedby
+
+
+                               //    data[i].Displayfornew,
+                               
+
+                                    
+                               , '<button  class="btn btn-success btn-sm" title="View" onclick="ViewMinute( \'' + data[i].KPI_Code + '\')">  View  </button>'
+
+
+                                ]).draw();
+
+                     
+
+
+                        }
+
+
+                    }
+
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+
+            },
+
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+    //function ViewION(elment0) {
+
+
+    //    window.location.href = "/kpl/Edit/" + elment0
+
+    //}
+
+
+    function ViewMinute(elment0) {
+
+
+        window.location.href = "/kpl/Edit/" + elment0
+
+    }
+
+</script>
+
+
+
+
+
+
+
+

@@ -1,0 +1,189 @@
+﻿@model InventorySystemModel.InventoryModel.StudentPackageInfo
+
+@{
+    ViewBag.Title = "Fee Package";
+}
+
+
+@using (@Html.BeginForm("Save", "PackageInfo", FormMethod.Post, new { @id = "myform" }))
+{
+
+
+
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(m => m.PackageID)
+    if (Model.PackageID > 0)
+    {
+        ViewBag.Title = "Fee Package - Edit";
+
+    }
+    else
+    {
+
+        ViewBag.Title = "Fee Package - Add";
+
+
+    }
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Registration</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Fee Package</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Fee Package data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Part <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.DropDownListFor(model => model.PartID, Model.getPartValue(), new {  @class = "form-control selectpicker uneditable-input " })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Package Title <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.PackageTitle, new { @placeholder = "Enter title", @class = "form-control uneditable-input ", @required = "required" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Admission Fee <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.AdmissionFee, new { @placeholder = "Enter Admission fee", @class = "form-control number uneditable-input ", @required = "required" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Tuition fee <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.TiutionFee, new { @placeholder = "Enter Tuition", @class = "form-control number uneditable-input ", @required = "required" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Other fee <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.OtherFee, new { @placeholder = "Enter Other", @class = "form-control number uneditable-input ", @required = "required" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Description </label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.description, new { @placeholder = "Enter Description", @class = "form-control  uneditable-input " })
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="reset" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+<script>
+
+
+
+    function postform() {
+        $("#myform").validate();
+
+        var ReturnValue = true
+
+        //if ($("#WHDesc").val() == "") {
+        //    $('#WHDesc').css('border-color', 'red');
+        //    ReturnValue = false;
+        //    $("#WHDesc").focus();
+        //}
+
+
+        var Data = { Name: $('#PackageTitle').val(), ID: $("#PackageID").val() }
+                $.ajax({
+                    async: false,
+                    url: "/StudentSubect/Duplicate",
+                    data: Data,
+                    success: function (data) {
+
+                        var c = JSON.parse(data);
+                        if (c != "") {
+                            alert(c)
+                            ReturnValue = false;
+                        }
+                    },
+                    error: function () {
+                        ReturnValue = false;
+                        alert("Error")
+                    }
+                })
+
+
+               if (ReturnValue) {
+
+                   $("#myform").submit();
+                }
+
+            }
+
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+</script>
+
+
+

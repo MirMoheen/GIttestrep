@@ -1,0 +1,1031 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+
+@{
+    ViewBag.Title = "E-Complaint List";
+}
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/Home/index">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Document management </span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+
+        <h5><p><strong style="color:red">Note :</strong> <strong>For preview to click your desire row.</strong> </p></h5> 
+        
+        <table class="table table-bordered table-striped mb-none table-hover" id="UserTable">
+            <thead>
+                <tr>
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">Ticket-No</span></th>
+                    <th style="width:80px">Date </th>
+                    <th style="width:80px">Department </th>
+                    <th>Subject </th>
+                    <th>Forwarded Info </th>
+                    <th style="width:80px">Priority </th>
+                    <th width="40px">Status</th>
+                  @*  <th width="40px">View</th>*@
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+    $(document).ready(function () {
+        //$("#UserTable").on("click", "tr", function (e) {
+        //    console.log($('td:second', $(this).parents('tr')).text());
+        //});
+        $("#ProductTableID").on('click', 'tr', function (e) {
+            //console.log($(this).children().first().next().text());
+            ViewMinute($(this).children().first().next().text());
+        });
+
+        //$("UserTables").delegate("tr.rows", "click", function () {
+        //    alert("Click!");
+        //});
+
+
+        var a = '@TempData["St"]'
+        if (a == "0") {
+            $('#headtitle').text("List of Minutes")
+            loadnewminutes();
+        }
+        if (a == "1") {
+            $('#headtitle').text("List of Minutes")
+            loadPendigminutes();
+        }
+        if (a == "2") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllApprovedMinute();
+        }
+        if (a == "3") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllCompletedMinute();
+        }
+        if (a == "4") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllCancelMinute();
+        }
+        if (a == "5") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllForInfoMinute();
+        }
+        if (a == "6") {
+            $('#headtitle').text("List of ION")
+            sp_getAllIONMinute();
+        }
+
+        if (a == "10") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            loadnewminutes3();
+        }
+        if (a == "11") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            loadPendigminutes3();
+        }
+        if (a == "12") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            sp_getAllApprovedMinute3();
+        }
+        if (a == "13") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            sp_getAllCompletedMinute3();
+        }
+        if (a == "14") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            sp_getAllCancelMinute3();
+        }
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }
+                     ],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [],
+                 columnDefs: [{ targets: -1, visible: true }]
+
+             })
+
+
+        @*var a = '@TempData["Dependancy"]'
+        if (a != "") {
+            $("#basicDendent").modal('show');
+        }*@
+    })
+
+    function loadPendigminutes() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/loadPendingMinutes",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            //    \''+post['itm_code']+'\'
+
+                            var splitedata = data[i].MinuteCode.split('-')
+                            ///        + splitedata[0] + ',' + splitedata[1] + ',' + splitedata[2]+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                 data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                      data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html,
+                                 htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+                                ]).draw();
+
+                        }
+                    }
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function loadnewminutes() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/LoadNewMinutes",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                        var html = '';
+                        if (data[i].Priority == 'Normal') {
+                            html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                        }
+
+                        if (data[i].Priority == 'High') {
+                            html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                        }
+                        if (data[i].Priority == 'Very High') {
+                            html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                        }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                         data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                               data[i]. Initiatedby +'  ' + fwd,
+                                html, htmlStatus
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllApprovedMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllApprovedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                              data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' +fwd,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCompletedMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCompletedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                                data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i].Initiatedby + '  ' + fwd,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCancelMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCancelMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                              data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + fwd,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllForInfoMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllForInfoMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                          data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i].Initiatedby + '  ' + fwd,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllIONMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllIONMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                             data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function ViewMinute(elment0) {
+
+
+        window.location.href = "/Comptaint/Edit/" + elment0
+
+    }
+
+
+
+
+
+
+
+    function loadPendigminutes3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/loadPendingComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            //    \''+post['itm_code']+'\'
+
+                            var splitedata = data[i].MinuteCode.split('-')
+                            ///        + splitedata[0] + ',' + splitedata[1] + ',' + splitedata[2]+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                               data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                html, htmlStatus
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+                                ]).draw();
+
+                        }
+                    }
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function loadnewminutes3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/LoadNewComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                                data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                html, htmlStatus
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllApprovedMinute3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllApprovedComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                                  data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCompletedMinute3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCompletedComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                                 data[i].Subject.split('-')[0],'<strong>'+  data[i].Subject.split('-')[1] +'</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCancelMinute3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCancelComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            }
+                            if (data[i].Priority == 'Very High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 data[i].MinuteDate,
+                           data[i].Subject.split('-')[0], '<strong>' + data[i].Subject.split('-')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+</script>
+
+
+
+
+
+

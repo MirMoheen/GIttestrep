@@ -1,0 +1,529 @@
+﻿@model IEnumerable<HRandPayrollSystemModel.DBModel.sp_GetUserRightByUser_Result>
+  
+<div id="UserPassChange" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Are you want to change password?</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+                    <i class="fa fa-exclamation-circle"></i>
+                </div>
+                <div class="modal-text">
+                
+
+                    <div class="row">
+                       
+                        <div class="col-md-8">
+                            @Html.Label("Current Password ", new { @class = "control-label" })
+                            <input type="password" id="txtcurrentpass" class="form-control" name="txtcurrentpass" />
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            @Html.Label("New Password ", new { @class = "control-label" })
+
+
+                            <input type="password" id="txtpass" class="form-control" name="txtpass" />
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            @Html.Label("Confirm Password ", new { @class = "control-label" })
+
+                            
+                            <input type="password" id="txtconpass" class="form-control" onkeyup="checkpassword()" name="txtconpass" />
+                            <span class="error" style="color:red"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" id="btncncel" class="btn btn-default modal-dismiss">Cancel</button>
+                    <button type="button" class="btn btn-primary " onclick="Savepassword()">Confirm</button>
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+  <header class="header">
+
+
+
+
+
+
+
+
+        @{
+
+            var logolink = new SAGERPNEW2018.Models.SystemLogin().Getcompany().CompanyLogo.ToString();
+            var CompanyName = new SAGERPNEW2018.Models.SystemLogin().Getcompany().CompanyName.ToString();
+            var ProjectName = new SAGERPNEW2018.Models.SystemLogin().GetProject().ProjectName.ToString();
+
+
+
+                   <div class="logo-container">
+                <a href="~/Home/Index" class="logo">
+                 @*   <img src="/AppFiles/soft-logo-300-1326.png"  style="margin-top:-12px;" width="250"  alt="SAG ERP" />*@
+                     @*<img src ="@Url.Content(logolink)"   width="300" alt="SAG ERP" />*@
+
+                     @*<span class="navbar-brand" style="float: right;color:initial"> 
+                     <strong style="font-size: xx-large;">@CompanyName</strong></span>*@
+
+
+                    <img src="@logolink.Trim('~')" height="50" width="50" @*class="img-rounded"*@ alt="SAG ERP"  style="margin-top:-7px;"  />  
+                    <span class="navbar-brand" style="float: right;color:initial;margin-top: -5px;">  
+                    <strong style="color: #137324;font-size: x-large;">@CompanyName - @ProjectName</strong></span>
+                </a>
+                <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                    <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                </div>
+            </div>
+
+
+        }
+
+
+        @*<div class="logo-container">
+            <a href="#" class="logo">
+                <img src="/assets/images/ERPlogo.png" height="45" width="45" alt="SAG ERP" /> <span class="navbar-brand" style="float: right;">SAG ERP</span>
+            </a>
+            <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+            </div>
+        </div>*@
+
+        <!-- start: search & user box -->
+        <div class="header-right">
+
+            @*<form action="pages-search-results.html" class="search nav-form">
+                <div class="input-group input-search">
+                    <input type="text" class="form-control" name="q" id="myInput" onkeyup="myFunction();" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </form>*@
+
+            <span class="separator"></span>
+
+            @*<ul class="notifications">
+                <li>
+                    <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                        <i class="fa fa-tasks"></i>
+                        <span class="badge">3</span>
+                    </a>
+
+                    <div class="dropdown-menu notification-menu large">
+                        <div class="notification-title">
+                            <span class="pull-right label label-default">3</span>
+                            Tasks
+                        </div>
+
+                        <div class="content">
+                            <ul>
+                                <li>
+                                    <p class="clearfix mb-xs">
+                                        <span class="message pull-left">Generating Sales Report</span>
+                                        <span class="message pull-right text-dark">60%</span>
+                                    </p>
+                                    <div class="progress progress-xs light">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <p class="clearfix mb-xs">
+                                        <span class="message pull-left">Importing Contacts</span>
+                                        <span class="message pull-right text-dark">98%</span>
+                                    </p>
+                                    <div class="progress progress-xs light">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100" style="width: 98%;"></div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <p class="clearfix mb-xs">
+                                        <span class="message pull-left">Uploading something big</span>
+                                        <span class="message pull-right text-dark">33%</span>
+                                    </p>
+                                    <div class="progress progress-xs light mb-xs">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%;"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                        <i class="fa fa-envelope"></i>
+                        <span class="badge">4</span>
+                    </a>
+
+                    <div class="dropdown-menu notification-menu">
+                        <div class="notification-title">
+                            <span class="pull-right label label-default">230</span>
+                            Messages
+                        </div>
+
+                        <div class="content">
+                            <ul>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <figure class="image">
+                                            <img src="/assets/images/!sample-user.jpg" alt="Joseph Doe Junior" class="img-circle" />
+                                        </figure>
+                                        <span class="title">Joseph Doe</span>
+                                        <span class="message">Lorem ipsum dolor sit.</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <figure class="image">
+                                            <img src="/assets/images/!sample-user.jpg" alt="Joseph Junior" class="img-circle" />
+                                        </figure>
+                                        <span class="title">Joseph Junior</span>
+                                        <span class="message truncate">Truncated message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lacinia orci. Proin vestibulum eget risus non luctus. Nunc cursus lacinia lacinia. Nulla molestie malesuada est ac tincidunt. Quisque eget convallis diam, nec venenatis risus. Vestibulum blandit faucibus est et malesuada. Sed interdum cursus dui nec venenatis. Pellentesque non nisi lobortis, rutrum eros ut, convallis nisi. Sed tellus turpis, dignissim sit amet tristique quis, pretium id est. Sed aliquam diam diam, sit amet faucibus tellus ultricies eu. Aliquam lacinia nibh a metus bibendum, eu commodo eros commodo. Sed commodo molestie elit, a molestie lacus porttitor id. Donec facilisis varius sapien, ac fringilla velit porttitor et. Nam tincidunt gravida dui, sed pharetra odio pharetra nec. Duis consectetur venenatis pharetra. Vestibulum egestas nisi quis elementum elementum.</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <figure class="image">
+                                            <img src="/assets/images/!sample-user.jpg" alt="Joe Junior" class="img-circle" />
+                                        </figure>
+                                        <span class="title">Joe Junior</span>
+                                        <span class="message">Lorem ipsum dolor sit.</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <figure class="image">
+                                            <img src="/assets/images/!sample-user.jpg" alt="Joseph Junior" class="img-circle" />
+                                        </figure>
+                                        <span class="title">Joseph Junior</span>
+                                        <span class="message">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lacinia orci. Proin vestibulum eget risus non luctus. Nunc cursus lacinia lacinia. Nulla molestie malesuada est ac tincidunt. Quisque eget convallis diam.</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <hr />
+
+                            <div class="text-right">
+                                <a href="#" class="view-more">View All</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                        <i class="fa fa-bell"></i>
+                        <span class="badge">3</span>
+                    </a>
+
+                    <div class="dropdown-menu notification-menu">
+                        <div class="notification-title">
+                            <span class="pull-right label label-default">3</span>
+                            Alerts
+                        </div>
+
+                        <div class="content">
+                            <ul>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <div class="image">
+                                            <i class="fa fa-thumbs-down bg-danger"></i>
+                                        </div>
+                                        <span class="title">Server is Down!</span>
+                                        <span class="message">Just now</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <div class="image">
+                                            <i class="fa fa-lock bg-warning"></i>
+                                        </div>
+                                        <span class="title">User Locked</span>
+                                        <span class="message">15 minutes ago</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="clearfix">
+                                        <div class="image">
+                                            <i class="fa fa-signal bg-success"></i>
+                                        </div>
+                                        <span class="title">Connection Restaured</span>
+                                        <span class="message">10/10/2014</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <hr />
+
+                            <div class="text-right">
+                                <a href="#" class="view-more">View All</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>*@
+
+         @*   <span class="separator"></span>*@
+
+            <div id="userbox" class="userbox">
+                <a href="home/Login" data-toggle="dropdown">
+                    <figure class="profile-picture">
+                        <img src="@Model.Select(x => x.PhotoPath).FirstOrDefault().Replace("~", "")" alt="Joseph Doe" width="40" height="35"  class="img-circle" data-lock-picture="/assets/images/!logged-user.jpg" />
+                    </figure>
+                    <div class="profile-info" data-lock-name="@Model.Select(x => x.UserName).FirstOrDefault()" data-lock-email="@Model.Select(x => x.GroupTitle).FirstOrDefault()" >
+                       @{var UserInfo = new SAGERPNEW2018.Models.SystemLogin().GetUser().UserInfo.ToString();} 
+                        <span style="color:initial">@{
+                            var aname = "";
+                            if (!string.IsNullOrWhiteSpace(UserInfo))
+                            {
+                                //System.Globalization.TextInfo myTI = new System.Globalization.CultureInfo("en-US", false).TextInfo;
+                                //aname= myTI.ToTitleCase(UserInfo.ToLower());
+                                aname = UserInfo.ToUpper();
+                            }
+                            else
+                            {
+                                aname="";
+                            }
+
+
+                        }  @aname</span>
+                        <span class="role">   </span>
+                    </div>
+
+                    <i class="fa custom-caret"></i>
+                </a>
+
+                <div class="dropdown-menu">
+                    <ul class="list-unstyled">
+                        <li class="divider"></li>
+                        @*<li>
+                            <a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> My Profile</a>
+                        </li>
+                        <li>
+                            <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen</a>
+                        </li>*@
+                        <li>
+                            <a role="menuitem" tabindex="-1"   href="#UserPassChange" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim"> Change Password</a>
+                        </li>
+                        <li>
+                            <a role="menuitem" tabindex="-1" href="/Home/Login"><i class="fa fa-power-off"></i> Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- end: search & user box -->
+    </header>
+
+    <aside id="sidebar-left" class="sidebar-left">
+
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                Navigation
+            </div>
+       
+            <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+                <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+            </div>
+        </div>
+    
+        <div class="nano">
+            <div class="nano-content">
+                <nav id="menu" class="nav-main" role="navigation">
+
+                    <ul id="myUL" class="nav nav-main">
+                        @foreach (var item in Model)
+            {
+                if (item.isParent == false && item.parentId == 0)
+                {
+                                <li class="nav-active"><a href="@Url.Action(item.action, item.controller)"><i class="@item.imageClass" aria-hidden="true"></i> <span>@item.FormTitle</span> </a></li>
+                            }
+                            else
+                            {
+                                if (item.isParent == true)
+                                {
+                                    <li class="nav-parent nav-active" aria-hidden="true">
+                                        <a class="" href="#"><i class="@item.imageClass " aria-hidden="true"></i><span>@item.FormTitle</span></a>
+                                        <ul class="nav nav-children ">
+                                            @foreach (var child in Model.Where(p => p.parentId == item.Formid))
+                                            {
+                                                if (child.controller == null)
+                                                {
+                                                    <li class="nav-parent" aria-hidden="true">
+                                                        <a href="#"><i class="fa fa-copy" aria-hidden="true"></i> @child.FormTitle </a>
+
+
+                                                        <ul class="nav nav-children">
+                                                            @foreach (var subchild in Model.Where(p => p.parentId == child.Formid))
+                                                            {
+                                                                <li><a href="@Url.Action(subchild.action, subchild.controller)">@subchild.FormTitle </a></li>
+
+                                                            }
+                                                        </ul>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li><a href="@Url.Action(child.action, child.controller)">@child.FormTitle</a></li>
+
+
+                                                }
+
+                                            }
+                                        </ul>
+
+                                    </li>
+                                }
+                            }
+                        }
+
+                    </ul>
+                </nav>
+
+         
+            </div>
+
+        </div>
+
+    </aside>
+
+<script>
+
+
+    function myFunction() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("a")[0];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+
+    var allowsubmit=false;
+    function checkpassword() {
+
+        var pass = $('#txtpass').val();
+        var confpass = $('#txtconpass').val();
+
+        //check the strings
+        if (pass == confpass) {
+            //if both are same remove the error and allow to submit
+            $('.error').text('');
+            allowsubmit = true;
+        } else {
+            //if not matching show error and not allow to submit
+            $('.error').text('Password not matching');
+            allowsubmit = false;
+        }
+ 
+      
+
+    }
+
+    function Savepassword() {
+        debugger;
+        allowsubmit = true;
+        var current = $('#txtcurrentpass').val();
+        var pass = $('#txtpass').val();
+        var confpass = $('#txtconpass').val();
+        if (current == '' || pass == '' || confpass == '') {
+            allowsubmit = false;
+            $('.error').text('Password not be empty');
+            return false;
+        }
+
+
+        if (pass != confpass) {
+            allowsubmit = false;
+            $('.error').text('Password not Match');
+            return false;
+        }
+
+
+        var Data = { currentpas:current, paswrd: confpass }
+        if (allowsubmit ==true) {
+
+
+            $.ajax({
+                async: false,
+                url: "/Home/ChangePassword",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+                        if (data) {
+                            $("#btncncel").click()
+
+                            bootbox.alert({
+                                size: "small",
+                                title: "Information Message",
+                                class: "success",
+                                message: "Your password is updated now you will login with new password.",
+                                callback: function () { /* your callback code */ }
+                            })
+                         
+                      
+                        }
+                        else {
+                            $('.error').text('Current Password Wrong');
+                        }
+                      
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+
+        }
+    }
+
+    //var labels = $('.nav');  // cache this for better performance
+
+    //$('#myInput').keyup(function () {
+    //    debugger;
+    //    var valThis = $(this).val().toLowerCase();
+
+    //    if (valThis == "") {
+    //        labels.parent().show();          // show all lis
+    //    } else {
+    //        labels.each(function () {
+    //            var label = $(this);                    // cache this
+    //            var text = label.text().toLowerCase();
+    //            if (text.indexOf(valThis) > -1) {
+    //                label.parents('li').show()           // show all li parents up the ancestor tree
+                  
+    //            } else {
+    //                label.parent().hide();                // hide current li as it doesn't match
+    //            }
+    //        });
+    //    };
+    //});
+
+</script>

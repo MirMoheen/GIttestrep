@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="24e10063b3414f518102c8a335c12fd9" Name="Diagram1">
+        <EntityTypeShape EntityType="HRandPayrollDBModel.AllowancesDeduction" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.BankInformation" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.CityInformtion" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.Employeearrier" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeearrierDetail" Width="1.5" PointX="8.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeeDocumentDetail" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeeEducationDetail" Width="1.5" PointX="10.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeeExprienceDetail" Width="1.5" PointX="5.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeeNomineeDetail" Width="1.5" PointX="10.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeePlacement" Width="1.5" PointX="7.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeePlacementAllowancesDetail" Width="1.5" PointX="9.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeePlacementDeductionDetail" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.EmployeeType" Width="1.5" PointX="11.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.GLUserGroup" Width="1.5" PointX="0.75" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.GLUserGroupDetail" Width="1.5" PointX="6" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.GradeEmployee" Width="1.5" PointX="12.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.LogEmployeePlacementAllowancesDetail" Width="1.5" PointX="12.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.LogEmployeePlacementDeductionDetail" Width="1.5" PointX="13.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.MonthlyDeduction" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.MonthlyDeductionDetail" Width="1.5" PointX="14.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.ProjectActivityLog" Width="1.5" PointX="15.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.sysdiagram" Width="1.5" PointX="9.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.TaxConfiguration" Width="1.5" PointX="11.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.TaxConfigurationDetail" Width="1.5" PointX="15.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tbl_PettyCashInfo" Width="1.5" PointX="13.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblCompany" Width="1.5" PointX="15.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblDepartment" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblDesignation" Width="1.5" PointX="0.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteBudgetDetail" Width="2.875" PointX="2.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteBudgetDetail_old" Width="3.625" PointX="4.125" PointY="16.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteDocDetail" Width="1.5" PointX="17.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteInfo" Width="1.5" PointX="6.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminutePettyCashDetail" Width="1.5" PointX="17.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteSubType" Width="1.5" PointX="17.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteType" Width="1.5" PointX="17.75" PointY="17.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEmployee" Width="1.5" PointX="8.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEmployeeLoan" Width="1.5" PointX="19.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEmployeeLoanCashDetail" Width="1.5" PointX="19.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEmployeeSalary" Width="1.5" PointX="19.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEmployeeTransfer" Width="1.5" PointX="10.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblFavorite" Width="1.5" PointX="12.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblIONDocDetail" Width="1.5" PointX="19.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblIonInfo" Width="1.5" PointX="19.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblProject" Width="1.5" PointX="14.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblProjectService" Width="1.5" PointX="21.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblSalaryGeneration" Width="1.5" PointX="21.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblSalaryGenerationDetail" Width="1.5" PointX="21.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tempEminuteInfo" Width="1.5" PointX="21.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tempIonInfo" Width="1.5" PointX="21.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.UserForm" Width="1.5" PointX="3.75" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblTypeLoan" Width="1.5" PointX="16.75" PointY="21.75" IsExpanded="true" />
+        <AssociationConnector Association="HRandPayrollDBModel.FK_GLUserGroupDetail_GLUserGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="HRandPayrollDBModel.FK_GLUserGroupDetail_UserForms" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tbl_BoardProceeding" Width="1.5" PointX="3.375" PointY="22.75" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tbl_BoardProceedingDOC" Width="1.5" PointX="22.375" PointY="18.75" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tempBoardSheetInfo" Width="1.5" PointX="22.375" PointY="22.75" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.GLUser" Width="1.5" PointX="3" PointY="6.375" />
+        <AssociationConnector Association="HRandPayrollDBModel.FK_GLUser_GLUserGroup" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tblEminuteEditlog" Width="1.5" PointX="0.75" PointY="23.75" />
+        <EntityTypeShape EntityType="HRandPayrollDBModel.tbl_kplinfo" Width="1.5" PointX="24.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

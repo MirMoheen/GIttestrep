@@ -1,0 +1,481 @@
+﻿@model HRandPayrollSystemModel.DBModel.ProjectActivityLog
+
+@{
+    ViewBag.Title = "Support and Services Monitoring ";
+}
+
+
+@using (@Html.BeginForm("Save", "ActivityLog", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.Idlog > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = "Support and Services Monitoring View";
+        }
+        else
+        {
+            ViewBag.Title = "Support and Services Monitoring Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = " Support and Services Monitoring Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+
+        <div class="right-wrapper pull-right">
+
+            <ol class="breadcrumbs">
+
+
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+
+
+
+            </ol>
+
+            @*<ol class="breadcrumbs">
+                    <li>
+                        <a href="~/home/index">
+
+                            <i class="fa fa-home"></i>
+                        </a>
+                    </li>
+                    <li><span>Setup</span></li>
+                    <li><span>Service Log Info</span></li>
+                </ol>*@
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+
+
+        <br />
+        <br />
+        <br />
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.HiddenFor(model => model.Idlog)
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title"> @ViewBag.Title</h2>
+                        <p class="panel-subtitle">
+                            Form control for input @ViewBag.Title .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+                        <br />
+                        <div class="form-group">
+
+
+
+
+
+
+                            <div class="row">
+
+
+
+                                <label class="col-sm-1 control-label"><strong> Project:</strong> </label>
+                                <div class="col-md-3 ">
+
+                                    @Html.DropDownListFor(model => model.ProjectIDs, new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject(), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadDepartment()" })
+
+
+
+
+
+                                </div>
+
+                                <label class="col-sm-1 control-label"><strong> Depatment:</strong> </label>
+
+
+@if (Convert.ToBoolean(ViewData["Editmode"]))
+{
+                                <div class="col-md-3 ">
+
+                                    @Html.DropDownListFor(model => model.DepartmentID, Model.loadDepartmentAll(Convert.ToInt32(Model.ProjectIDs)).OrderBy(x => x.Text), new { @class = "form-control selectpicker " })
+
+                                </div>
+        }
+
+        else
+        {
+                                <div class="col-md-3 ">
+
+                                    <select class="form-control selectpicker" id="DepartmentID" required="required" name="DepartmentID" style="font-size: small;padding: 1px;">
+
+                                        <option value="0" name="">-- None --</option>
+
+                                    </select>
+                                </div>
+                                }
+
+
+
+                                <label class="col-sm-1 control-label"><strong>Type:</strong> </label>
+                                <div class="col-md-3 ">
+
+
+                                    @Html.DropDownListFor(model => model.RelatedTo, Model.GetRelatedTo(), new { @class = "form-control selectpicker ", @required = "required", onchange = "loadSubtype()" })
+
+
+
+
+                                </div>
+
+
+                            </div>
+                            <br />
+                            <div class="row">
+
+                                <label class="col-sm-1 control-label"><strong>Service Type:</strong> </label>
+
+
+                                @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                {
+                                    
+                                    <div class="col-md-3 ">
+
+
+                                        @Html.DropDownListFor(model => model.ServiceTypeID, Model.LoadSericeTypes(Model.RelatedTo), new { @class = "form-control selectpicker ", @required = "required", })
+                                        @* @Html.DropDownListFor(model => model.ServiceTypeID, new { @class = "form-control selectpicker ", @required = "required" })*@
+
+                                    </div>
+                                }
+
+                                else
+                                {  
+                                    <div class="col-md-3 ">
+
+                                    <select class="form-control selectpicker" id="ServiceTypeID" required="required" name="ServiceTypeID" style="font-size: small;padding: 1px;" onchange="LoadTag()">
+
+                                        <option value="0" name="">-- None --</option>
+
+                                    </select>
+                                </div>
+                                    }
+
+                                    @if (Model.Idlog > 0)
+                                    {
+
+                                        <label class="col-sm-1 control-label"><strong>Resolved Employee:</strong> </label>
+
+
+                                        <div class="col-md-3">
+
+
+                                            @Html.DropDownListFor(model => model.Employeeid, Model.loadAllActiveEmployee(), new { @class = "form-control selectpicker ", @required = "required", })
+
+
+
+
+
+
+                                        </div>
+                                    }
+
+                                    <label class="col-sm-1 control-label"><strong>Status:</strong> </label>
+
+
+                                    <div class="col-md-3">
+
+                                        @Html.DropDownListFor(model => model.ServiceActive, Model.loadAllActive(), new { @class = "form-control selectpicker ", @required = "required", })
+
+
+
+
+
+
+
+                                    </div>
+
+                                </div>
+
+                            <div class="row">
+
+
+                            </div>
+                            <br />
+                            <br />
+
+
+
+                        </div>
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+    function loadSubtype() {
+        debugger
+
+        if ($('#RelatedTo').val() == "0") {
+
+            var TypeSub = $('#ServiceTypeID');
+            TypeSub.empty();
+
+
+            TypeSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { type: $('#RelatedTo').val() }
+
+        $.ajax({
+            async: false,
+            url: "/ActivityLog/getSubtype",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var TypeSub = $('#ServiceTypeID');
+                    TypeSub.empty();
+
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            TypeSub.append(datafil);
+                        });
+
+                    TypeSub.selectpicker('refresh');
+
+                    TypeSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+    function loadDepartment() {
+        debugger
+
+        if ($('#ProjectIDs').val() == "0") {
+
+            var TypeSub = $('#DepartmentID');
+            TypeSub.empty();
+
+
+            TypeSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { type: $('#ProjectIDs').val() }
+
+        $.ajax({
+            async: false,
+            url: "/ActivityLog/getDepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var TypeSub = $('#DepartmentID');
+                    TypeSub.empty();
+
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            TypeSub.append(datafil);
+                        });
+
+                    TypeSub.selectpicker('refresh');
+
+                    TypeSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    $(document).ready(function () {
+        var DateofP = '01' + '/' + new Date().getMonth() + '/' + new Date().getFullYear();
+
+        $('#FromDate').datepicker('setDate', DateofP);
+        $("#ToDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+        $('#FromDate').datepicker('setDate', new Date());
+        $('#ToDate').datepicker('setDate', new Date());
+
+
+    })
+
+
+
+
+
+
+    function postform() {
+        debugger;
+        var ReturnValue = true
+
+
+
+        var ReturnValue = true
+
+        if ($("#ProjectIDs").val() == "0") {
+            $('#ProjectIDs').selectpicker('setStyle', 'btn-danger');
+            $('#ProjectIDs').selectpicker('refresh');
+
+            ReturnValue = false;
+        }
+
+
+        if ($("#ServiceTypeID").val() == "0") {
+            $('#ServiceTypeID').selectpicker('setStyle', 'btn-danger');
+            $('#ServiceTypeID').selectpicker('refresh');
+
+            ReturnValue = false;
+        }
+
+
+
+        $("#myform").validate();
+
+
+        bootbox.confirm("Are sure to save data!", function (result) {
+            if (result) {
+                if (ReturnValue) {
+                    $("#myform").submit();
+
+                }
+
+            }
+        });
+
+
+        //if (ReturnValue) {
+        //    $("#myform").submit();
+
+        //}
+
+    }
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+
+
+
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+
+    });
+
+   
+
+
+
+</script>
+
+
+

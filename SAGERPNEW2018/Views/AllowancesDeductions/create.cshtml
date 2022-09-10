@@ -1,0 +1,210 @@
+﻿@model HRandPayrollSystemModel.DBModel.AllowancesDeduction
+
+@{
+    ViewBag.Title = "Employee Deductions ";
+}
+
+
+@using (@Html.BeginForm("Save", "AllowancesDeductions", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+    if (Model.AllowanceDeductionID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Allowances and Deductions</h2>
+                        <p class="panel-subtitle">
+                            Form control for input AllowancesDeductions data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+
+
+                        @Html.HiddenFor(model => model.AllowanceDeductionID)
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Title <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.AllowanceDeductionTitle, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Title" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Order No<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.OrderNo, new { @class = "form-control uneditable-input ", type = "Number", required = "required", @placeholder = "Enter Order NO" })
+
+                            </div>
+                             <div class="col-sm-6 ">
+                                @Html.CheckBoxFor(model => model.Inactive,new { @style= "margin-left: 30px;" })<label class="control-label">InActive<span class="required"></span></label>
+                                 @Html.CheckBoxFor(model => model.IsDeduction, new { @style = "margin-left: 30px;" })<label class="control-label">IsDeduction<span class="required"></span></label>
+                             @*    @Html.CheckBoxFor(model => model.IsBasicSalary, new { @style = "margin-left: 30px;" })<label class="control-label">IsBasicSalary<span class="required"></span></label>*@
+                                @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Rate<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.Rate, new { @class = "form-control uneditable-input ", type = "Number", required = "required", @placeholder = "Enter Rate" })
+
+                            </div>
+                            <label class="col-sm-2 control-label">Short Name<span class="required">*</span></label>
+                            <div class="col-sm-4 ">
+                                @Html.TextBoxFor(model => model.ShortName, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Short Name" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Remarks <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control uneditable-input ", @placeholder = "Enter Remarks" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                           
+                        </div>
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+
+
+
+    function postform() {
+        debugger;
+        var ReturnValue = true
+
+        $("#myform").validate();
+
+
+
+
+        var Data = { Name: $('#AllowanceDeductionTitle').val(), ID: $("#AllowanceDeductionID").val() }
+        $.ajax({
+            async: false,
+            url: "/AllowancesDeductions/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+
+
+
+                }
+            });
+
+
+        }
+
+    }
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+</script>
+
+
+

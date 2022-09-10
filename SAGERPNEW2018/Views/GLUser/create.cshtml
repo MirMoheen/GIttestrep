@@ -1,0 +1,505 @@
+﻿@model HRandPayrollSystemModel.DBModel.GLUser
+
+@{
+    ViewBag.Title = "User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (@Html.BeginForm("Save", "GLUser", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.Userid > 0)
+    {
+        ViewBag.Title = "User Edit";
+
+    }
+    else
+    {
+
+        ViewBag.Title = "User Create";
+
+    }
+    @Html.HiddenFor(m => m.Userid)
+    <header class="page-header">
+        <h2>GL User</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>GL User</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">GL User</h2>
+                        <p class="panel-subtitle">
+                            Form control for input GL User data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">User Name <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control uneditable-input ", @required = "required", @placeholder = "Enter User Name" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">User Password<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.UserPassword, new { @class = "form-control uneditable-input ", @required = "required", @placeholder = "Enter Password" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">User Roles / Groups <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.DropDownListFor(model => model.GroupID, Model.loadUsergroup(), new { @placeholder = "Enter Type", @class = "form-control selectpicker " })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Department <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.DropDownListFor(model => model.DepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @placeholder = "Enter Type", @class = "form-control selectpicker ", @onchange = "loadEmployee()" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Employee <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+
+                                @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                {
+
+                                    @Html.DropDownListFor(model => model.EmployeeID, Model.loadEmployee(Model.DepartmentID), new { @class = "form-control selectpicker ", @required = "required", })
+
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.EmployeeID, Model.loadEmployee(0), new { @class = "form-control selectpicker ", @required = "required", })
+
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"> Project  <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @*@Html.DropDownListFor(model => model.ProjectIDs, new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject(), new { @placeholder = "Enter Type", @class = "form-control selectpicker " })*@
+
+
+
+
+                                <select class="selectpicker form-control" id="SelectProjectIDs" name="SelectProjectIDs" multiple>
+                                    @{
+                                        var Datalisproject = new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject();
+                                        foreach (var item in Datalisproject)
+                                        {
+                                            <option value="@item.Value"> @item.Text </option>
+                                        }
+
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"> Allow Forward  <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @*@Html.DropDownListFor(model => model.ProjectIDs, new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject(), new { @placeholder = "Enter Type", @class = "form-control selectpicker " })*@
+
+
+                                <select class="selectpicker form-control" id="SelectEmployees" name="SelectEmployees" multiple>
+                                    @{
+                                        var Employee = new HRandPayrollSystemModel.DBModel.GLUser().loadAllActiveEmployee();
+                                        foreach (var item in Employee)
+                                        {
+                                            <option value="@item.Value"> @item.Text </option>
+                                        }
+
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Mobile No i.e 923000000000 <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.mobileNo, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Mobile" })
+
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Color <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.UserColor, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Color" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Checked IP <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.ipCheck, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter IP" })
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Payment Range </label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.PaymentRange, new { @class = "form-control uneditable-input number", @placeholder = "Enter Range" })
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Petty Cash Range </label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.pettycashlimit, new { @class = "form-control uneditable-input number", @placeholder = "Enter Range" })
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Transfer Employee <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @*@Html.DropDownListFor(model => model.TransferEmpID, new HRandPayrollSystemModel.DBModel.GLUser().loadAllActiveEmployee(), new { @placeholder = "Enter Type", @class = "form-control selectpicker "})*@
+
+                                <select class="selectpicker form-control" id="SelectEmployeesTransfer" name="SelectEmployeesTransfer" multiple>
+                                    @{
+                                        var TransferEmployee = new HRandPayrollSystemModel.DBModel.GLUser().loadAllActiveEmployee();
+                                        foreach (var item in TransferEmployee)
+                                        {
+                                            <option value="@item.Value"> @item.Text </option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">InActive <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+
+                                @Html.CheckBoxFor(model => model.Active, new { })
+                                <label class="" for="Active">In Active </label>
+
+
+
+                                @Html.CheckBoxFor(model => model.Type, new { })
+                                <label class="" for="Type">IsMinute </label>
+
+
+                                @Html.CheckBoxFor(model => model.IsHRSystem, new { })
+                                <label class="" for="IsHRSystem">IsHR </label>
+
+                                @*@Html.CheckBoxFor(model => model.AllowFwdPresedent, new { })
+        <label class="" for="AllowFwdPresedent">Allow to Forward to Presedent </label>*@
+
+                                @Html.CheckBoxFor(model => model.AllowMarkPO, new { })
+                                <label class="" for="AllowMarkPO">Allow to Mark as PO </label>
+
+                                @Html.CheckBoxFor(model => model.AllowSendSMS, new { })
+                                <label class="" for="AllowSendSMS">Send Minute SMS</label>
+
+
+                                @Html.CheckBoxFor(model => model.ForPayment, new { })
+                                <label class="" for="ForPayment">ForPayment</label>
+
+
+                                @Html.CheckBoxFor(model => model.IspettyCash, new { })
+                                <label class="" for="IspettyCash">Petty Cash</label>
+
+
+
+                                @Html.CheckBoxFor(model => model.IsReminder, new { })
+                                <label class="" for="IsReminder">Is Reminder</label>
+
+                                @Html.CheckBoxFor(model => model.IsDeleteAT, new { })
+                                <label class="" for="IsDeleteAT">Is Delete</label>
+
+
+                                @Html.CheckBoxFor(model => model.IsOpen, new { })
+                                <label class="" for="IsOpen">Is Open</label>
+
+                                @Html.CheckBoxFor(model => model.IsTechicalPerson, new { })
+                                <label class="" for="IsTechicalPerson">Is Tech</label>
+
+
+                                @Html.CheckBoxFor(model => model.IsHold, new { })
+                                <label class="" for="IsHold">IsHold</label>
+
+
+                                @Html.CheckBoxFor(model => model.IsDiscuss, new { })
+                                <label class="" for="IsDiscuss">IsDiscuss</label>
+
+
+
+                                @Html.CheckBoxFor(model => model.IsPaymentBeforeApprovel, new { })
+                                <label class="" for="IsPaymentBeforeApprovel">Is BeforeApprovel</label>
+
+
+
+                                @Html.CheckBoxFor(model => model.IsDirectApproval, new { })
+                                <label class="" for="IsDirectApproval"> Is DirectApproval</label>
+
+
+                                @Html.CheckBoxFor(model => model.IsIP, new { })
+                                <label class="" for="IsIP"> Is IP</label>
+
+
+                                @Html.CheckBoxFor(model => model.IsIT, new { })
+                            <label class="" for="IsIT"> Is IT</label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="pic">Picture <span class="required">*</span></label>
+                            <div class="col-sm-9">
+
+                                <input type="hidden" id="pathphoto" name="PhotoPath" value="@Model.PhotoPath" />
+                                <input style="margin-top: 5px;" type="file" value="" name="ImageUpload" size="40" accept="image/jpeg, image/png" class="form-control" onchange="ShowImagePreview(this,document.getElementById('imagePreview'))" />
+
+                                <br><br>
+
+                                <div class="col-sm-3">
+                                    <img src="@Url.Content(Model.PhotoPath)" @*height="500" width="500"*@ class="img-circle img-responsive img-fluid img-thumbnail " id="imagePreview" />
+
+                                </div>
+                                <div class="col-sm-9">
+                                    <p>
+                                        <strong>Instructions for Upload Picture:</strong><br>
+                                        Scan your recent passport size colour photograph taken at a photo studio   at 300 dpi. Your application will be rejected if the uploaded   photograph does not meet the following requirements: <br>
+                                        <a href="@Url.Content(Model.PhotoPath)" target="_blank">Click Here to View Sample</a>
+                                    </p>
+                                    <ul>
+                                        <li>Your full face must be clearly visible.</li>
+                                        <li>Background must be plain white, off-white or clear. (plain blue is acceptable)</li>
+                                        <li>The photograph must be scanned clearly and must not be blurry or pixelated.</li>
+                                        <li>Uploaded photograph must be in JPEG (.jpg) file format.</li>
+                                    </ul>
+                                    <p>
+                                    </p>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+
+    function ShowImagePreview(imageUploader, previewImage) {
+        if (imageUploader.files && imageUploader.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(previewImage).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(imageUploader.files[0]);
+        }
+    }
+
+    function postform() {
+
+        var ReturnValue = true
+
+        if ($("#GroupID").val() == "0") {
+            $('#GroupID').selectpicker('setStyle', 'btn-danger');
+            $('#GroupID').selectpicker('refresh');
+
+            ReturnValue = false;
+        }
+        //    ReturnValue = false;
+        //    $("#TypeID").focus();
+        //}
+        //if ($("#UserName").val() == "") {
+        //    $('#UserName').css('border-color', 'red');
+        //    $("#UserName").focus();
+
+        //    ReturnValue = false;
+
+        //}
+        $("#myform").validate();
+        //if ($("#UserPassword").val() == "") {
+        //    $('#UserPassword').css('border-color', 'red');
+        //    $("#UserPassword").focus();
+
+        //    ReturnValue = false;
+
+        //}
+
+
+
+        var Data = { Name: $('#UserName').val(), ID: $("#Userid").val() }
+        $.ajax({
+            async: false,
+            url: "/GLUser/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                    alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                alert("Error")
+            }
+        })
+        if (ReturnValue) {
+            $("#myform").submit();
+
+        }
+
+    }
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+        $("#mobileNo").mask("999999999999", { "clearIncomplete": true });
+
+        $('.selectpicker').selectpicker();
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+
+
+            $('#SelectProjectIDs').selectpicker('val', [@Model.ProjectIDs]);
+            $('#SelectEmployeesTransfer').selectpicker('val', [@Model.TransferEmplyeeIDs]);
+            $('#SelectEmployees').selectpicker('val', [@Model.AllowFwdEmployee]);
+            
+
+        }
+
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+
+
+
+    function loadEmployee() {
+
+        if ($('#DepartmentID').val() == "0") {
+
+            var employee = $('#EmployeeID');
+            employee.empty();
+            employee.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/GLUser/loadEmployeeBydepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger;
+                    var employee = $('#EmployeeID');
+                    employee.empty();
+                    console.log(data)
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            employee.append(datafil);
+                        });
+
+                    employee.selectpicker('refresh');
+
+                    employee.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+</script>
+
+

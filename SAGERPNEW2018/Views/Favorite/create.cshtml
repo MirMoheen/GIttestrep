@@ -1,0 +1,160 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblFavorite
+
+@{
+    ViewBag.Title = "create";
+}
+
+@using (@Html.BeginForm("Save", "Favorite", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.FavoriteID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">EmployeeType Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input EmployeeType data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @Html.HiddenFor(model => model.FavoriteID)
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Favourite Text <span class="required">*</span></label>
+                            <div class="col-sm-6 ">
+                                @Html.TextBoxFor(model => model.FavText, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Title" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Remarks <span class="required">*</span></label>
+                            <div class="col-sm-6 ">
+                                @Html.TextBoxFor(model => model.FavRemarks, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Remarks" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">InActive</label>
+                            <div class="col-sm-9 ">
+                                @Html.CheckBoxFor(model => model.inactive)
+                                @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+                            </div>
+                        </div>
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+
+
+
+        $("#myform").validate();
+
+
+
+        var Data = { Name: $('#FavText').val(), ID: $("#FavoriteID").val() }
+        $.ajax({
+            async: false,
+            url: "/Favorite/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+
+        bootbox.confirm("Are sure to save data!", function (result) {
+            if (result) {
+                if (ReturnValue) {
+                    $("#myform").submit();
+
+                }
+
+            }
+        });
+
+
+    }
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+</script>
+

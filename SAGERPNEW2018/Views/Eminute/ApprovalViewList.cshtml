@@ -1,0 +1,415 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+
+@{
+    ViewBag.Title = "E-Minute List";
+}
+@using (@Html.BeginForm("printPdfforPresidentApporvel", "Eminute", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+    <input type="hidden" id="checkedMinuteIds"  name="checkedMinuteIds" />
+
+<style>
+    .redz {
+        background-color: #f1d0d0;
+    }
+</style>
+
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<br />
+<br />
+
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      Minute Guideline
+                </a>
+            </li>
+
+            @*<li><span>@ViewBag.Title</span></li>*@
+        </ol>
+
+        <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+        @if (TempData["St"].ToString() == "0")
+        {
+            <h3><strong style="color:#137324;">President Approval Required Form</strong>  </h3>
+        }
+      
+
+        <h5><p><strong style="color:red">Note :</strong> <strong>To print, check on your desired E-minute </strong>  </p></h5>
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        @*<div id="loadingid"   style="display:none"   class="row">
+                <div   class="col-md-5"></div>  <div class="col-md-4 loader"></div>
+            </div>*@
+        <table class="table table-bordered  mb-none  " id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:50px"><input type="checkbox" class="checkbox" id="checkall" /> S/N</th>
+                    <th style="width:80px"> <span id="na">EM-No</span></th>
+                
+                    <th style="width:80px">Department</th>
+                    <th >Subject </th>
+                    
+                    <th style="width:150px">Remarks</th>
+                   
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+
+</section>
+    
+
+<footer class="panel-footer">
+    <div class="row">
+        <div class="col-sm-9">
+
+            <button type="button" id="Printid" class="btn btn-success" >Print <i class="fa fa-print" aria-hidden="true"></i></button>
+            <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+
+        </div>
+    </div>
+</footer>
+
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+        //$("#UserTable").on("click", "tr", function (e) {
+        //    console.log($('td:second', $(this).parents('tr')).text());
+        //});
+        //$("#ProductTableID").on('click', 'tr', function (e) {
+        //    //console.log($(this).children().first().next().text());
+        //    if ($(this).children().first().next().text()!="") {
+        //        ViewMinute($(this).children().first().next().text());
+
+        //    }
+
+
+        //});
+
+
+        //$("#ProductTableID").on('click', 'tr', function (e) {
+        //    //console.log($(this).children().first().next().text());
+        //    if ($(this).children().first().next().text() != "") {
+        //        ViewMinute($(this).children().first().next().text());
+
+        //    }
+
+
+        //});
+
+
+
+        //$("UserTables").delegate("tr.rows", "click", function () {
+        //    alert("Click!");
+        //});
+
+
+        var a = '@TempData["St"]'
+        if (a == "0") {
+            $('#headtitle').text("List of Minutes")
+            loadnewminutes();
+        }
+
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true },
+
+
+                     { "bSearchable": true }
+
+
+
+                     , { "bSearchable": true }, { "bSearchable": true }
+                    ],
+                 "bSort": false,
+
+                 dom: 'Bfrtip',
+                 pageLength: 50,
+                 buttons: []
+
+
+
+
+
+             })
+
+
+
+        @*var a = '@TempData["Dependancy"]'
+        if (a != "") {
+            $("#basicDendent").modal('show');
+        }*@
+    })
+
+    function loadnewminutes() {
+
+
+
+        try {
+            $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Eminute/LoadPresentAprovalNewMinutes",
+            data: Data,
+            type: "POST",
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            //var html = '';
+                          
+                            
+
+                            //if (data[i].BudgetAmount != '0') {
+                            //    html = '<strong> Rs.' + data[i].BudgetAmount.toLocaleString() + '/- </strong>'
+                            //}
+                            //else {
+
+                            //    html = '<strong> Budget not Applied  </strong>'
+
+                            //}
+
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+
+
+                                   '<input type="hidden"  value=' + data[i].MinuteCode + ' id="minuteid_' + i + '"  id="minuteid_' + i + '" />  <strong> <input type="checkbox" class="checkbox" id="chkbx_' + i + '" />  <strong>' + data[i].Row + ' </strong>', data[i].MinuteCode, data[i].InitiatedDepartment,
+                                data[i].Subject, '<a> <strong  onclick=" ViewMinute( \'' + data[i].MinuteCode + '\')">' + data[i].BudgetAmount + ' </strong></a> '
+                              
+                                ]).draw();
+
+                        }
+
+
+                    }
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+        }
+        catch (err) {
+         console.log( err.message);
+        }
+
+
+
+
+
+    }
+
+
+    function ViewMinute(elment0) {
+
+
+        window.location.href = "/Eminute/Edit/" + elment0
+
+    }
+
+
+
+
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+
+    $("#checkall").click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+
+
+
+
+    $("#Printid").click(function () {
+     
+
+
+        var minuteiD = '';
+
+        for (var i = 0; i < $('#ProductTableID tr').length ; i++) {
+
+
+            if ($('#chkbx_' + i).is(":checked")) {
+                minuteiD += $('#minuteid_' + i).val() + ','
+
+            }
+
+        }
+
+
+        $('#checkedMinuteIds').val(minuteiD)
+
+        $("#myform").submit();
+
+        //try {
+        //    $('#loadingid').show();
+
+        //    var Data = { Eminutes: minuteiD }
+        //    $.ajax({
+        //        async: true,
+        //        url: "/Eminute/printPdfforPresidentApporvel",
+        //        data: Data,
+        //        success: function (Response) {
+
+        //            if (Response != null) {
+        //                console.log(Response)
+        //                var data = Response;
+        //                if (data != '') {
+                        
+                          
+
+
+        //                }
+        //            }
+        //        },
+        //        complete: function () {
+        //            $('#loadingid').hide();
+        //        },
+        //        error: function () {
+        //            ReturnValue = false;
+
+        //        }
+        //    })
+
+        //}
+        //catch (err) {
+        //    console.log(err.message);
+        //}
+
+
+    });
+
+</script>
+
+
+
+
+
+

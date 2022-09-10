@@ -1,0 +1,145 @@
+﻿@model SAGERPNEW2018.Models.ReportModel
+
+@{
+    ViewBag.Title = "Cash Collection Report";
+}
+
+
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="index.html">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Reports</span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+
+<div class="panel">
+    <!-- start: page -->
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                        <a href="#" class="fa fa-times"></a>
+                    </div>
+
+                    <h2 class="panel-title">@ViewBag.Title</h2>
+                    <p class="panel-subtitle">
+                        Form control for @ViewBag.Title data .
+                    </p>
+                </header>
+                <div class="panel-body">
+
+
+                 
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">From Date <span class="required">*</span></label>
+                        <div class="col-sm-5 ">
+                            @Html.TextBoxFor(model => model.DateFrom, new { @class = "form-control ", @required = "required" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">To Date <span class="required">*</span></label>
+                        <div class="col-sm-5 ">
+                            @Html.TextBoxFor(model => model.DateTo, new { @class = "form-control ", @required = "required" })
+                        </div>
+                    </div>
+               
+
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+                        <div class="col-sm-8 ">
+
+                            @if (Model.IsPrint)
+                            {
+                                <button style="margin-top: 24px;" type="submit" id="Add" onclick="viewpdf()" class="btn  btn-success"> <span class="glyphicon glyphicon-print"></span>   Print</button>
+                            }
+                        </div>
+                    </div>
+                </footer>
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<style>
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+    }
+</style>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        //$("input[type=text]").focus(function () {
+        //    $(this).select();
+        //});
+
+
+        $("#DateFrom").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+        $("#DateTo").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+        $('#DateFrom').datepicker('setDate', new Date());
+        $('#DateTo').datepicker('setDate', new Date());
+
+
+    });
+
+
+
+
+
+        function viewpdf() {
+            var id = "" + $('#DateFrom').val() + "|" + $('#DateTo').val() + " "
+        //   window.open('/SystemReport/GetRecoveryReport/?data=' + id + '   ', '_blank');
+            window.open('/SystemReport/GetCashCollectionReport/?data=' + id + '');
+
+
+        }
+
+
+</script>
+

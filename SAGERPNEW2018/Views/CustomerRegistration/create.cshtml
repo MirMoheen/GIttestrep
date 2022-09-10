@@ -1,0 +1,1071 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblCustomer
+@{
+    ViewBag.Title = "Customer Registration";
+}
+
+<!-- Modal Animation -->
+<div id="basicCapture" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+    <section class="panel">
+        <header class="panel-heading">
+            <h2 class="panel-title">Capture Photo</h2>
+        </header>
+        <div class="panel-body">
+            <div class="modal-wrapper">
+                <div class="modal-icon">
+
+                </div>
+                <div class="modal-text">
+                    <h3 class="panel-title">Instructions for Capture Picture </h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="my_photo_booth">
+                                <div id="my_camera"></div>
+
+                                <!-- A button for taking snaps -->
+                                <form>
+
+                                    <div id="pre_take_buttons">
+                                        <!-- This button is shown before the user takes a snapshot -->
+                                    </div>
+
+                                    <div id="post_take_buttons" style="display:none">
+                                        <!-- These buttons are shown after a snapshot is taken -->
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+
+                            <ul>
+                                <li>Your full face must be clearly visible.</li>
+                                <li>Background must be plain </li>
+                                <li>The photograph must be Captured clearly and must not be blurry or pixelated.</li>
+                                <li>Uploaded photograph must be in JPEG (.jpg) file format.</li>
+                            </ul>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-default modal-dismiss" onclick="Webcam.reset();">Cancel</button>
+                    <input class="btn btn-success" type=button value="Take Snapshot" onClick="preview_snapshot()">
+                    <input type=button class="btn btn-primary" value="Take Another" onClick="cancel_preview()">
+
+                    <input type=button class="btn btn-primary  modal-dismiss" value="Save Photo " onClick="save_photo()" style="font-weight:bold;">
+
+
+                </div>
+            </div>
+        </footer>
+    </section>
+</div>
+
+@using (@Html.BeginForm("Save", "CustomerRegistration", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+
+
+
+
+    @*<button type="button" class="btn btn-primary " onclick="confirmPopupEdit()">Confirm</button>*@
+
+
+    <input type="hidden" id="TotDetailRowNo" />
+    <input type="hidden" id="DocDetailRowNo" />
+
+    @*@Html.HiddenFor(m => m.Id)*@
+    <input id="Id" name="Id" type="hidden" value="@Model.Id">
+
+    if (Model.Id > 0)
+    {
+        ViewBag.Title = "Customer Edit";
+
+    }
+    else
+    {
+
+        ViewBag.Title = "Customer Create";
+
+    }
+    <header class="page-header">
+        <h2>Customer Registration</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>Customer Registration</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">Customer Registration</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Customer Registration data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @if (ViewData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(ViewData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> Record Save Successfully .
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        }
+                        <div class="col-md-12">
+                            <div class="tabs tabs-primary">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-star"></i> Customer Information</a>
+                                    </li>
+                                    <li>
+                                        <a href="#ItemsDetail" data-toggle="tab"><i class="fa fa-globe"></i> Nominee Details</a>
+                                    </li>
+                                    <li>
+                                        <a href="#CommunicatonDetail" data-toggle="tab"><i class="fa fa-globe"></i> Communication Details</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#DocDetail" data-toggle="tab"><i class="fa fa-globe"></i> Document Details</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="ItemsInfo" class="tab-pane active ">
+                                        <div class="form-group ">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <h3>Customer Information</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            @*start tap data customer*@
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.Label("Registration No", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.RegistrationNo, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+
+                                                <div class="col-md-6">
+
+                                                    <label> Customer Account No<span class="required">*</span></label>
+                                                   
+                                                    @Html.DropDownListFor(model => model.AccountID, Model.loadAccountsAccount(), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadCustomerOnaccount()" })
+
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label class="control-label">Customer Name <span class="required">*</span></label>
+                                                    @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control", @required = "required" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Relationship", new { @class = "control-label " })
+                                                    <select id="Relationship" name="Relationship" class="form-control">
+                                                        <option value="S/O">S/O</option>
+                                                        <option value="D/O">D/O</option>
+                                                        <option value="W/O">W/O</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Father /Hunband Name ", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.RelativeName, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="control-label">Customer CNIC  <span class="required">*</span></label>
+                                                    @Html.TextBoxFor(model => model.CustomerCNIC, new { @class = "form-control", @required = "required" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    @Html.Label("Nationality", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("DateOfBirth", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.Label("Email", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    @Html.Label("Present Address", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.PresentAddress1, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Present Address", new { @class = "control-label " })
+                                                    @Html.TextBoxFor(model => model.PresentAddress2, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Presnt Country ", new { @class = "control-label col-md-12" })
+                                                    @Html.TextBoxFor(model => model.PresntCountry, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Present City ", new { @class = "control-label col-md-12" })
+                                                    @Html.TextBoxFor(model => model.PresentCity, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label class="control-label">Permanent Address <span class="required">*</span></label>
+                                                    @Html.TextBoxFor(model => model.PermanentAddress1, new { @class = "form-control", @required = "required" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Permanent Address 2", new { @class = "control-label col-md-12" })
+                                                    @Html.TextBoxFor(model => model.PermanentAddress2, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Permanent Country 2 ", new { @class = "control-label col-md-12" })
+                                                    @Html.TextBoxFor(model => model.PermanentCountry, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Permanent City ", new { @class = "control-label col-md-12" })
+                                                    @Html.TextBoxFor(model => model.PermanentCity, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label class="control-label">Mobile No <span class="required">*</span></label>
+                                                    @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", @required = "required" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Res Phone", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.ResPhone, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Office Phone ", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.OfficePhone, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Fax ", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.Fax, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            @*<div class="form-group">
+                                                    <label class="col-sm-3 control-label">InActive <span class="required">*</span></label>
+                                                    <div class="col-sm-9 ">
+                                                        <label class="" for="Active">In Active </label>
+
+                                                        @Html.CheckBoxFor(model => Convert.ToBoolean(model.IsActive), new { })
+
+                                                    </div>
+                                                </div>*@
+                                            <div class="row">
+
+                                                @*<div class="col-md-12">
+                                                        <div id="my_photo_booth">
+                                                            <div id="my_camera"></div>
+
+
+                                                            <!-- A button for taking snaps -->
+                                                            <form>
+                                                                <div id="pre_take_buttons">
+                                                                    <!-- This button is shown before the user takes a snapshot -->
+                                                                    <input type=button value="Take Snapshot" onClick="preview_snapshot()">
+                                                                </div>
+                                                                <div id="post_take_buttons" style="display:none">
+                                                                    <!-- These buttons are shown after a snapshot is taken -->
+                                                                    <input type=button value="&lt; Take Another" onClick="cancel_preview()">
+                                                                    <input type=button value="Save Photo &gt;" onClick="save_photo()" style="font-weight:bold;">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+
+                                                    </div>*@
+
+
+
+
+                                            </div>
+
+
+
+
+
+
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label class="col-sm-3 control-label" for="pic">Picture <span class="required">*</span></label>
+                                                    <div class="col-sm-9">
+                                                        <input type="hidden" id="CustomerPhoto" name="CustomerPhoto" value="@Model.CustomerPhoto" />
+                                                        <input type="hidden" id="base64image" name="base64image" value="" />
+
+                                                        <input style="margin-top: 5px;" type="file" value="" name="ImageUpload" size="40" accept="image/jpeg, image/png" class="form-control" onchange="ShowImagePreview(this,document.getElementById('imagePreview'))" />
+                                                        <br><br>
+
+                                                        <div id="results" class="img-circle img-responsive img-fluid img-thumbnail " style="display:none">
+
+                                                            <!-- Your captured image will appear here... -->
+                                                        </div>
+                                                        <div class="col-sm-3">
+
+                                                            <img src="@Url.Content(Model.CustomerPhoto)" @*height="500" width="500"*@ class="img-circle img-responsive img-fluid img-thumbnail " id="imagePreview" />
+                                                        </div>
+                                                        <div class="col-sm-9">
+                                                            <p>
+                                                                <strong>Instructions for Upload Picture:</strong><br>
+                                                                Scan your recent passport size colour photograph taken at a photo studio   at 300 dpi. Your application will be rejected if the uploaded   photograph does not meet the following requirements: <br>
+                                                                <a href="@Url.Content(Model.CustomerPhoto)" class="btn btn btn-primary" target="_blank">Click Here to View Sample</a>
+                                                                <a href="#basicCapture" class="btn btn btn-success mb-xs mt-xs mr-xs modal-with-zoom-anim" onclick="Setupcam()">Click Here to Capture </a>
+                                                            </p>
+                                                            <ul>
+                                                                <li>Your full face must be clearly visible.</li>
+                                                                <li>Background must be plain white, off-white or clear. (plain blue is acceptable)</li>
+                                                                <li>The photograph must be scanned clearly and must not be blurry or pixelated.</li>
+                                                                <li>Uploaded photograph must be in JPEG (.jpg) file format.</li>
+                                                            </ul>
+                                                            <p>
+                                                            </p>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div class="row" id="divPayments">
+                                                <div class="col-md-4">
+                                                    @Html.Label("Payment Mode", new { @class = "control-label" })
+                                                    <select id="PaymentMode" name="PaymentMode" class="form-control selectpicker">
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="PO">PO</option>
+                                                        <option value="DD">DD</option>
+                                                        <option value="Checque">Cheque</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Instrument No", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-md-5">
+                                                    @Html.Label("Amount", new { @class = "control-label" })
+                                                    @Html.TextBoxFor(model => model.Amount, new { @class = "form-control number" })
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divPayments1">
+                                                <div class="col-md-4">
+                                                    @Html.Label("Head", new { @class = "control-label" })
+                                                    @Html.DropDownListFor(model => model.TowerFloor, Model.loadCategory(), "Select Head", new { @class = "form-control selectpicker ", @onchange = "loadShopFlat()" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @*@Html.Label("Payment Code", new { @class = "control-label" })*@
+                                                    <label class="control-label">Shop/Flat No.</label>
+                                                    <select id="ShopFlat" name="ShopFlat" class="form-control selectpicker" onchange="loadShopFlatDetail()"></select>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="control-label">Detail</label>
+                                                   @* @Html.Label("Detail", new { @class = "control-label" })*@
+                                                    @Html.TextBoxFor(model => model.detail, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            @*end*@
+                                        </div>
+                                    </div>
+                                    <div id="ItemsDetail" class="tab-pane">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h3>Nominee Detail</h3>
+                                                <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                                    <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                        @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                        <thead>
+                                                            <tr>
+                                                                <th> <strong>No#</strong> </th>
+                                                                <th> <strong>Name</strong></th>
+                                                                <th><strong>Father</strong></th>
+                                                                <th><strong>CINC</strong></th>
+                                                                <th><strong>Mobile</strong></th>
+                                                                <th><strong>Relation</strong></th>
+                                                                <th><strong>Address</strong></th>
+                                                                <th style="width:80px"><strong>Action</strong>  </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="DocmentBodyID">
+                                                            @{
+
+                                                                if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                                {
+
+                                                                    int a = 0;
+                                                                    foreach (var item in Model.detailistnomine)
+                                                                    {
+                                                            <tr id="@a">
+                                                                @{
+                                                                                int countserial = 0;
+                                                                                countserial = 1 + @a;
+                                                                }
+                                                                <td><span id="SerialNo_@a" readonly="readonly" class="form-control">@countserial </span></td>
+                                                                <td> <input type="text" class="form-control" value="@item.NomineeName" id="NomineeName_@a" name="NomineeName" /> </td>
+                                                                <td> <input type="text" class="form-control" value="@item.FatherName" id="FatherName_@a" name="FatherName" /> </td>
+                                                                <td> <input type="text" class="form-control" value="@item.CNIC" readonly="readonly" id="CNIC_@a" name="CNIC" /> </td>
+                                                                <td> <input type="text" class="form-control" value="@item.Mobile" id="Mobile_@a" name="Mobile" /> </td>
+                                                                <td> <input type="text" class="form-control" value="@item.Relation" id="Relation_@a" name="Relation" /> </td>
+                                                                <td> <input type="text" class="form-control" value="@item.Address" id="Address_@a" name="Address" /> </td>
+                                                                <td>
+                                                                    <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDataAdd_@a" value="+" onclick="AddTOTdetailData($(this).parent().parent().attr('id'), false)" title="Add">
+                                                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span>
+                                                                    </button>
+                                                                    <button type="button" style="" id="detailDataDelete_@a" title="Remove" value="-" onclick="DeleteDetailData(this)" class="btn btn-danger  btn-xs btn-circle">
+                                                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                                                        a++;
+                                                                                    }
+                                                                                }
+
+
+
+                                                            }
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+
+                                    </div>
+                                    <div id="CommunicatonDetail" class="tab-pane">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label class="" for="IsLetter">IsLetter </label>
+                                                @Html.CheckBoxFor(model => model.IsLetter, new { })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="" for="IsEmail">IsEmail </label>
+                                                @Html.CheckBoxFor(model => model.IsEmail, new { })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="" for="IsPhone    ">IsPhone </label>
+                                                @Html.CheckBoxFor(model => model.IsPhone, new { })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="" for="IsSms">IsSMS </label>
+                                                @Html.CheckBoxFor(model => model.IsSms, new { })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="DocDetail" class="tab-pane">
+                                        <div class="row">
+
+                                            <div class="col-md-12">
+                                                <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                                    <h3>Customer Document</h3>
+                                                    <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+
+                                                        @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th>Document Description</th>
+                                                                <th>Document File</th>
+                                                                <th> Action </th>
+
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="DocBodyID">
+                                                            @{ if (Convert.ToBoolean(ViewData["Editmode"]) )
+                                                                {
+                                                                    var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                                                    //  string host = Request.Url.Authority;
+                                                                    int a = 0;
+                                                                    foreach (var item in Model.getdetailistDocumentData(Convert.ToInt32( Model.Id))) 
+                                                                    {
+                                                                        <tr id="@a">
+                                                                            <td class="input"> <input id="Docdescription_@a" type="text" value="@item.DescriptionDoc" class="form-control" name="Docdescription" /> </td>
+                                                                            <td>  <a href="@host@item.DocImagePath.TrimStart('~')" download="CustomerDoc-@DateTime.Now">View</a> <input type="hidden" value="@item.DocImagePath" id="DocFile_@a" name="DocpathFile" /> </td>
+                                                                            <td> <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-xs btn-circle"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button></td>
+
+                                                                        </tr>
+                                                                        a++;
+                                                                    }
+                                                                }
+
+                                                            }
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+<script src="~/Scripts/webcam.min.js"></script>
+<!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+
+    function Setupcam() {
+
+
+        Webcam.set({
+            // live preview size
+            width: 320,
+            height: 240,
+
+            // device capture size
+            dest_width: 640,
+            dest_height: 480,
+
+            // final cropped size
+            crop_width: 480,
+            crop_height: 480,
+
+            // format and quality
+            image_format: 'jpeg',
+            jpeg_quality: 90,
+
+            force_flash: false,
+            // flip horizontal (mirror mode)
+            flip_horiz: true
+        });
+        Webcam.attach('#my_camera');
+
+    }
+</script>
+
+
+<!-- Code to handle taking the snapshot and displaying it locally -->
+<script language="JavaScript">
+    // preload shutter audio clip
+    var shutter = new Audio();
+    shutter.autoplay = false;
+    // shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : 'shutter.mp3';
+
+    function preview_snapshot() {
+        // play sound effect
+        try { shutter.currentTime = 0; } catch (e) {; } // fails in IE
+        shutter.play();
+
+        // freeze camera so user can preview current frame
+        Webcam.freeze();
+        //$("#imagePreview").attr("src", data_uri);
+
+        // swap button sets
+        document.getElementById('pre_take_buttons').style.display = 'none';
+        document.getElementById('post_take_buttons').style.display = '';
+    }
+
+    function cancel_preview() {
+        // cancel preview freeze and return to live camera view
+        Webcam.unfreeze();
+
+        // swap buttons back to first set
+        document.getElementById('pre_take_buttons').style.display = '';
+        document.getElementById('post_take_buttons').style.display = 'none';
+    }
+
+    function save_photo() {
+        // actually snap photo (from preview freeze) and display it
+        Webcam.snap(function (data_uri) {
+            // display results in page
+
+            $("#base64image").val(data_uri);
+            $("#imagePreview").attr("src", data_uri);
+            document.getElementById('imagePreview').innerHTML =
+
+                '<img src="' + data_uri + '"/><br/></br>' +
+                '<a href="' + data_uri + '" target="_blank">Open image in new window...</a>';
+
+
+            Webcam.reset();
+
+    
+        });
+    }
+</script>
+
+
+
+<script>
+
+
+    function ShowImagePreview(imageUploader, previewImage) {
+        if (imageUploader.files && imageUploader.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(previewImage).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(imageUploader.files[0]);
+        }
+    }
+
+    function postform() {
+
+
+
+        var ReturnValue = true
+
+
+
+        if ($("#AccountID").val() == "0") {
+            $('#AccountID').selectpicker('setStyle', 'btn-danger');
+            $('#AccountID').selectpicker('refresh');
+
+            bootbox.alert("Please Select Customer Account")
+
+            ReturnValue = false;
+        }
+        //    ReturnValue = false;
+        //    $("#TypeID").focus();
+        //}
+        //if ($("#UserName").val() == "") {
+        //    $('#UserName').css('border-color', 'red');
+        //    $("#UserName").focus();
+
+        //    ReturnValue = false;
+
+        //}
+        $("#myform").validate();
+        //if ($("#UserPassword").val() == "") {
+        //    $('#UserPassword').css('border-color', 'red');
+        //    $("#UserPassword").focus();
+
+        //     var    ReturnValue = false;
+
+        //}
+        debugger 
+        var Data = { paymentcod: $('#ShopFlat').val(), ID: $("#Id").val() }
+        $.ajax({
+            async: false,
+            url: "/CustomerRegistration/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c = JSON.parse(data);
+                if (c != "") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+        if (ReturnValue) {
+            $("#myform").submit();
+
+        }
+
+    }
+    $(document).ready(function () {
+
+        $("#DateOfBirth").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+        // loadShopFlatDetail();
+        $('#DateOfBirth').datepicker('setDate', new Date());
+
+        $('.selectpicker').selectpicker('selectAll');
+
+
+      //  $("#MobileNo").mask("999999999999", { "clearIncomplete": true });
+
+        // $("#MobileNo").mask("9999-9999999", { "clearIncomplete": true });
+        $("#CustomerCNIC").mask("99999-9999999-9", { "clearIncomplete": true });
+
+
+
+
+        if ('@Model.Isedit' == 'True') {
+
+
+            $("#divPayments").hide();
+            $("#divPayments1").hide();
+
+
+
+            loadShopFlat()
+
+        }
+        if ('@Model.detailistnomine.Count()' < 1) {
+            AddTOTdetailData(0, true)
+        }
+
+        if ('@Model.detailistDoc.Count()' < 1) {
+            AddDocumentData(0, true)
+        }
+
+        if ('@Model.IsView' == 'True') {
+
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+
+    function loadShopFlat() {
+
+
+
+        var tower = $('#TowerFloor').val();
+        $('#ShopFlat').empty();
+        $('#detail').val('');
+
+        $('#ShopFlat').selectpicker('refresh');
+
+
+        var Data = { id: tower }
+        $.ajax({
+            async: false,
+            url: "/CustomerRegistration/loadShops",
+            data: Data,
+            success: function (data) {
+
+
+                var TowerFloor = $('#ShopFlat');
+                TowerFloor.empty();
+
+                $.each(data,
+                    function (index, item) {
+                        var datafil = new Option(item.Text, item.Value);
+                        TowerFloor.append(datafil);
+                    });
+
+                TowerFloor.selectpicker('refresh');
+
+                TowerFloor.selectpicker({
+                    liveSearch: true,
+                    size: 10,
+
+                    // width: 'auto',
+                    container: "body"
+                });
+                loadShopFlatDetail();
+
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+
+
+
+
+    function loadShopFlatDetail() {
+
+        var Data = { id: $('#ShopFlat').val() }
+        $.ajax({
+            async: false,
+            url: "/CustomerRegistration/loadShopsDetail",
+            data: Data,
+            success: function (data) {
+
+
+                $('#detail').val(data)
+
+
+
+            },
+            error: function () {
+                ReturnValue = false;
+                alert("Error")
+            }
+        })
+
+    }
+
+
+
+
+
+    function AddTOTdetailData(ThisRowID, FromDocumentDotReady) {
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("NomineeName_" + ThisRowID).value == 0) {
+
+                $('#NomineeName_' + ThisRowID).selectpicker({ style: 'btn-danger' });
+                $('#NomineeName_' + ThisRowID).selectpicker('refresh');
+                $('#btnTriggerMessage1').click();
+                return false;
+            }
+        }
+
+        ////TotDetailRowNo
+        $("#DocmentBodyID tr").each(function () {
+
+            if (document.getElementById("NomineeName_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("TotDetailRowNo").value = $('#DocmentBodyID tr:last').attr('id');
+                document.getElementById("TotDetailRowNo").value++;
+            }
+            else {
+                document.getElementById("TotDetailRowNo").value = 0
+            }
+
+
+            var q = document.getElementById("TotDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+
+            //  <input   id="File_' + document.getElementById("TotDetailRowNo").value + '"  multiple = "true"   type="file"  name="Chdate_Name[]"  />
+            //
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + q + '">';
+            dtProductDetailInfoHtml += '<td style="padding:0px" class="input"> <span class="form-control"  readonly="readonly"   id="SerialNo_' + q + '">' + i + '</span></td>';
+
+
+
+
+            dtProductDetailInfoHtml += '<td style="padding:0px" >  <input  type="text"  class="form-control" id="NomineeName_' + q + '" name="NomineeName" /> </td>';
+            dtProductDetailInfoHtml += '<td style="padding:0px" >  <input  type="text"  class="form-control" id="FatherName_' + q + '" name="FatherName" /> </td>';
+            dtProductDetailInfoHtml += '<td style="padding:0px">  <input  type="text"  class="form-control" id="CNIC_' + q + '" name="CNIC" /> </td>';
+            dtProductDetailInfoHtml += '<td style="padding:0px" >  <input  type="text"  class="form-control" id="Address_' + q + '" name="Address" /> </td>';
+            dtProductDetailInfoHtml += '<td  style="padding:0px">  <input  type="text"  class="form-control" id="Mobile_' + q + '" name="Mobile" /> </td>';
+            dtProductDetailInfoHtml += '<td style="padding:0px">  <input  type="text"  class="form-control" id="Relation_' + q + '" name="Relation" /> </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="VoucherdetailDataAdd_' + document.getElementById("TotDetailRowNo").value +
+            '" value="+" onclick="AddTOTdetailData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="ProductdetailDataDelete'
+            + document.getElementById("TotDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocmentBodyID").append(dtProductDetailInfoHtml);
+
+
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10,
+
+                // width: 'auto',
+                container: "body"
+            });
+
+            //  document.getElementById("Description_" + document.getElementById("TotDetailRowNo").value);
+
+
+        }
+    }
+
+
+    function DeleteDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocmentBodyID tr").remove();
+            AddTOTdetailData(0, true);
+        }
+    }
+
+
+
+    function AddDocumentData(ThisRowID, FromDocumentDotReady) {
+
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("DocFile_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Please Choose Image");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#DocBodyID tr").each(function () {
+
+            if (document.getElementById("DocFile_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("DocDetailRowNo").value = $('#DocBodyID tr:last').attr('id');
+                document.getElementById("DocDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("DocDetailRowNo").value = 0
+            }
+
+
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + document.getElementById("DocDetailRowNo").value + '">';
+            dtProductDetailInfoHtml += '<td class="input"> <input   class="form-control"  id="Docdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="Docdescription"    /> </td>';
+            dtProductDetailInfoHtml += '<td > @*@Html.TextBoxFor(x => x.File, new { type = "file", multiple = "true" })*@      <input type="file" class="form-control" id="DocFile_' + document.getElementById("DocDetailRowNo").value + '" name="DocFile" />   </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+            '" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_'
+            + document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocBodyID").append(dtProductDetailInfoHtml);
+
+            document.getElementById("DocImagePath_" + document.getElementById("DocDetailRowNo").value);
+
+        }
+    }
+    function DeleteDocDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocBodyID tr").remove();
+            AddDocumentData(0, true);
+        }
+    }
+
+
+
+
+
+
+
+
+    function loadCustomerOnaccount() {
+
+        var Data = { id: $('#AccountID').val() }
+        $.ajax({
+            async: false,
+            url: "/CustomerRegistration/loadCustomerOnAccount",
+            data: Data,
+            success: function (data) {
+
+                if (data!=null) {
+                    console.log(data);
+                    $('#CustomerName').val(data.CustomerName)
+                    $('#CustomerCNIC').val(data.CustomerCNIC)
+                    $('#RelativeName').val(data.RelativeName)
+                    $('#Nationality').val(data.Nationality)
+                    $('#Email').val(data.Email)
+                    $('#PresentAddress1').val(data.PresentAddress1)
+                    $('#PresentAddress2').val(data.PresentAddress2)
+                    $('#PermanentCountry').val(data.PermanentCountry)
+                    $('#PresentCity').val(data.PresentCity) 
+                    $('#MobileNo').val(data.MobileNo)
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+                $('#CustomerName').val('')
+                $('#CustomerCNIC').val('')
+                $('#RelativeName').val('')
+                $('#Nationality').val('')
+                $('#Email').val('')
+                $('#PresentAddress1').val('')
+                $('#PresentAddress2').val('')
+                $('#PermanentCountry').val('')
+                $('#PresentCity').val('')
+                $('#MobileNo').val('')
+            }
+        })
+
+    }
+
+
+
+</script>

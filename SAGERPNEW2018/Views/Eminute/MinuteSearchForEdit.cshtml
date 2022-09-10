@@ -1,0 +1,492 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+@{
+    ViewBag.Title = "E-Minute Edit";
+}
+
+
+<style>
+    .redz {
+        background-color: #f1d0d0;
+    }
+</style>
+
+
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+
+
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+        </ol>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Eminute Updated Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="form-group">
+
+            <div class="col-sm-2 " style="padding: 5px;">
+                <strong> Search</strong>
+                <input type="text" id="searchFilter" class="form-control uneditable-input" placeholder="Search.." style="font-size: small;padding: 8px;" />
+            </div>
+            @*<div class="col-sm-1 " style="padding: 5px;">
+                    <strong> To Date</strong>
+                    <input type="text" id="Todate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+                </div>*@
+            @*<div class="col-sm-2 " style="padding: 5px;">
+                <strong>Department</strong>
+                <select class="form-control selectpicker" id="Department" name="Department" style="font-size: small;padding: 1px;">
+                    @{
+                        var department = new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x => x.Text).ToList();
+                        @*<option value="0" name="">--All--</option>*@
+                    @*@*foreach (var item in department)
+                    {
+
+                        <option value="@item.Value" name="">@item.Text</option>
+
+
+
+                    }
+
+
+                    }
+
+                </select>
+            </div>*@@*@
+
+            <div class="col-sm-2 " style="padding: 5px;">
+                <strong>Type</strong>
+                <select class="form-control selectpicker" id="Type" name="Type" style="font-size: small;padding: 1px;" onchange="loadSubtype()">
+                    @{
+                        var typeminute = new HRandPayrollSystemModel.DBModel.tblEminuteType().getAlldata().OrderBy(x => x.MinuteType).OrderBy(x => x.MinuteType).ToList();
+                        <option value="0" name="">--All--</option>
+                        foreach (var item in typeminute)
+                        {
+
+                            <option value="@item.MinuteTypeID" name="">@item.MinuteType</option>
+
+
+
+                        }
+
+
+                    }
+
+                </select>
+            </div>
+
+            <div class="col-sm-2 " style="padding: 5px;">
+                <strong>Sub Type</strong>
+                <select class="form-control selectpicker" id="Subtype" name="Subtype" style="font-size: small;padding: 1px;">
+
+                    <option value="0" name="">--All--</option>
+                </select>
+            </div>
+
+
+
+            @*<div class="col-sm-2" style="padding: 5px;">
+                    <strong>Status</strong>
+                    <select class="form-control selectpicker" data-style="btn-warning" id="statsuid" name="statsuid" style="font-size: large;padding: 1px;">
+
+                        <option value="1" name=""> Recevied</option>
+                        <option value="2" name="">Forwarded</option>
+                        <option value="7" name="">Pending</option>
+                        <option value="8" name="">Approved</option>
+                        <option value="3" name=""> Disapprove</option>
+                        <option value="4" name="">Completed</option>
+                        <option value="5" name="">ION</option>
+                        <option value="6" name="">For Info</option>
+
+                    </select>
+                </div>*@
+            <a type="button" class="btn btn-success btn-sm" style="margin-top:28px" onclick="loadminutes()"> View Minute  <i class="fa fa-search-plus" aria-hidden="true"></i> </a>
+            @* <button type="button" class="btn btn-info btn-sm" style="width: 100%;height: 148px;"></button>*@
+
+        </div>
+
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        <table class="table table-bordered  mb-none " id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">EM-No</span></th>
+                    <th style="width:80px">Date </th>
+                    <th style="width:80px">Department</th>
+                    <th>Subject </th>
+                    <th>Forwarded Info </th>
+                    <th style="width:80px">Priority </th>
+                    <th width="60px">Status</th>
+                    @*<th width="40px">View</th>*@
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+
+    $(document).ready(function () {
+        $("#ProductTableID").on('click', 'tr', function (e) {
+
+            if ($(this).children().first().next().text() != "") {
+                //console.log($(this).children().first().next().text());
+                ViewMinute($(this).children().first().next().text());
+            }
+        });
+
+
+
+        $("#fromdate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+       // var DateofP = '01' + '/' + '09' + '/' + '2020';
+        var DateofP = '01' + '/' + new Date().getMonth() + 1 + '/' + new Date().getFullYear();
+        //$('#fromdate').datepicker('setDate', DateofP);
+        $('#fromdate').datepicker('setDate', DateofP);
+        $("#Todate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+        // var DateofP2 = this.getDate().toString() + '/' + '05' + '/' + '2020';
+        $('#Todate').datepicker('setDate', new Date());
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+            {
+                "aoColumns": [{ "bSearchable": true }, { "bSearchable": true },
+
+
+                    { "bSearchable": true }
+
+
+
+                    , { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }
+                ],
+                "bSort": true,
+
+                dom: 'Bfrtip',
+                pageLength: 50,
+                buttons: [],
+
+
+
+
+                "createdRow": function (row, data, dataIndex) {
+
+                    if (data[6] == "High") {
+                        $(row).addClass('redz');
+
+                    }
+
+
+                },
+                columnDefs: [{ targets: 6, visible: false }],
+
+            })
+    })
+
+    function loadminutes() {
+        $('#loadingid').show();
+        var Data = { search: $('#searchFilter').val(), Deptid: 0, type: 0, TypeSub: 0 }
+      
+        $.ajax({
+            async: true,
+       
+            url: "/MinuteReporting/loadSearchMinue",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+
+                            var flag = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminuten == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminuten + ' </button>'
+                            }
+                            else if (data[i].Statusofminuten == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminuten + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+
+                            }
+                            else if (data[i].Statusofminuten == "Completed") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-primary btn-xs" style="width: 100%;">  ' + data[i].Statusofminuten + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Completed" data-original-title="Completed"  class="fa fa-check fa-2x" aria-hidden="true" style="color:#0088cc;" ></span>'
+
+                            }
+
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminuten + ' </button>'
+
+
+                            }
+
+
+
+
+                            var reminder = "";
+
+                            if (data[i].IsReminder == "1") {
+
+                                reminder = '<span style="background-color:red" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span>'
+                            }
+
+
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                flag + (i + 1) + reminder, data[i].MinuteCode,
+                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                data[i].WithAttachSubject.split('~')[0], '<strong>' + data[i].WithAttachSubject.split('~')[1] + '</strong>',
+                               data[i].Initiatedby + '  ' + fwd,
+                                   data[i].Priority, htmlStatus
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+
+                    else {
+
+                        $('#ProductTableID').html('');
+                    }
+
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function ViewMinute(elment0) {
+
+     
+
+
+        window.open('/Eminute/EditViewForMinute/' + elment0, '_blank');
+        
+
+    }
+
+
+
+
+
+    function loadSubtype() {
+        //debugger
+
+        //if ($('#Type').val() == "0") {
+
+        //    var TypeSub = $('#Subtype');
+        //    TypeSub.empty();
+        //    TypeSub.append(new Option("-- All--", "0"));
+
+        //    TypeSub.selectpicker('refresh');
+
+        //    return;
+        //}
+
+
+        //var Data = { type: $('#Type').val() }
+
+        //$.ajax({
+        //    async: false,
+        //    url: "/Eminute/getSubtype",
+        //    data: Data,
+        //    success: function (data) {
+
+        //        if (data != null) {
+
+        //            var TypeSub = $('#Subtype');
+        //            TypeSub.empty();
+
+        //            $('#Subtype').append(new Option("-- All--", "0"));
+        //            $.each(data,
+        //                function (index, item) {
+        //                    var datafil = new Option(item.Text, item.Value);
+        //                    TypeSub.append(datafil);
+        //                });
+
+        //            TypeSub.selectpicker('refresh');
+
+        //            TypeSub.selectpicker({
+        //                liveSearch: true,
+        //                size: 10,
+
+        //                // width: 'auto',
+        //                container: "body"
+        //            });
+
+
+
+        //        }
+        //    },
+        //    error: function () {
+        //        ReturnValue = false;
+
+        //    }
+        //})
+
+
+
+    }
+
+
+
+    function showInstruction()
+    {
+        $('#myModal').modal();
+    }
+
+
+</script>
+
+
+

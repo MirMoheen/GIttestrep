@@ -1,0 +1,690 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+@{
+    ViewBag.Title = "ION";
+}
+@using (@Html.BeginForm("Save", "ION", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary();
+    <input type="hidden" id="DocDetailRowNo" />
+    <input type="hidden" id="htmlboxValue" name="htmlboxValue" value="@Model.HtmlBox" />
+
+
+
+
+    if (Model.MinuteID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+    @Html.HiddenFor(model => model.MinuteID)
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">EmployeeType Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input EmployeeType data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        <div class="tabs tabs-primary">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> ION</a>
+                                </li>
+                                @*<li>
+                                    <a href="#ItemsMinuteDoc" data-toggle="tab"><i class="fa fa-building-o"></i> Attach File  <span class="badge badge-light"> @ViewData["NumberAttachment"] </span></a>
+                                </li>*@
+                            </ul>
+                            <div class="tab-content">
+                                <div id="ItemsInfo" class="tab-pane active ">
+                                    <br />
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">ION No : </label>
+                                        <div class="col-sm-2 ">
+                                            @Html.TextBoxFor(model => model.MinuteCode, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-3 control-label"> </label>
+                                        <label class="col-sm-1 control-label">Location:</label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.LocationProject, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Initiating Department: </label>
+                                        <div class="col-sm-4 ">
+                                            @Html.TextBoxFor(model => model.InitiatedDepartment, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-1 control-label"> </label>
+                                        <label class="col-sm-1 control-label">Date : </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.MinuteDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Initiating by: </label>
+                                        <div class="col-sm-4 ">
+                                            @Html.TextBoxFor(model => model.Initiatedby, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-1 control-label"> </label>
+                                        <label class="col-sm-1 control-label">Priority: </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.DropDownListFor(model => model.Priority, Model.LoadPriority(), new { @class = "form-control selectpicker " })
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group">
+                                        <label class="col-sm-2 control-label">Type: </label>
+                                        <div class="col-sm-4 ">
+                                            @Html.DropDownListFor(model => model.Type, Model.LoadMinuteType(), new { @class = "form-control selectpicker " })
+                                        </div>
+
+
+                                    </div>*@
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Subject: </label>
+                                        <div class="col-sm-9 ">
+                                            @Html.TextBoxFor(model => model.Subject, new { @class = "form-control  ", required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Details: </label>
+                                        <div class="col-sm-9 ">
+                                            <label class=""><span class="required">Short Keys: ( Select All = Ctrl+A )  ( Copy = Ctrl+C )       ( Cut = Ctrl+X )        ( Paste = Ctrl+V )</span> </label>
+                                            @Html.TextAreaFor(model => model.HtmlBox, new { @id = "HtmlBox", @name = "HtmlBox", @class = "form-control uneditable-input " })
+                                        </div>
+                                    </div>
+
+
+
+                                    @*@{
+                                        var obj = new HRandPayrollSystemModel.DBModel.tblEminuteInfo().LoadEmployeeInfo(new SAGERPNEW2018.Models.SystemLogin().GetUser().EmployeeID);
+
+
+                                        if (Convert.ToBoolean(ViewData["Editmode"]))
+                                        {   <div class="form-group">
+                                    <label class="col-sm-2 control-label">Comments by: </label>
+                                    <div class="col-sm-9 ">
+                                        <label class=""><span class="required" id="Activeuser">@obj.DepartmentName - @obj.Initiatedby</span> </label>
+                                        @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control  ", required = "required" })
+                                    </div>
+                                </div>
+                                        }
+                                   
+                                          
+                                      }*@
+                                    
+
+
+                                   
+                                    
+
+                                    <br />
+                                    @{
+
+                                        if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                        {
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">For Info / CC: </label>
+                                                <div class="col-sm-9 ">
+                                                    <select class="selectpicker form-control" id="SelectInfo" name="SelectInfo" multiple>
+                                                        @{
+                                                            var DataemployeeForinfo = Model.LoadForwardDesginationWise(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs));
+                                                            foreach (var item in DataemployeeForinfo)
+                                                            {
+                                                                <option value="@item.Value"> @item.Text </option>
+                                                            }
+
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                                            }
+                                    }
+                                </div>
+
+
+                                @*<div id="ItemsMinuteDoc" class="tab-pane">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                                <h3>Minute Attachment</h3>
+                                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                       <thead>
+                                                        <tr>
+                                                            <th>Description</th>
+                                                            <th>Attached File</th>
+                                                            <th> Action </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="DocBodyID">
+                                                        @{ if (Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"]))
+                                                            {
+                                                                var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                                                //  string host = Request.Url.Authority;
+                                                                int a = 0;
+                                                                foreach (var item in Model.detailistDoc)
+                                                                {
+                                                                    <tr id="@a">
+                                                                        <td class="input"> <input id="lisdescription_@a" type="text" value="@item.Description" class="form-control" name="lisdescription" /> </td>
+                                                                        <td>  <a href="@host@item.PathDoc.TrimStart('~')" download="Doc-@DateTime.Now">View</a> <input type="hidden" value="@item.PathDoc" id="listdocpath_@a" name="listdocpath" /> </td>
+                                                                        <td> <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-xs btn-circle"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button></td>
+                                                                    </tr>
+                                                                    a++;
+                                                                }
+                                                            }
+
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12"></div>
+                        </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                {
+                                <button type="button" onclick="postform()" class="btn btn-primary">Forward</button>
+                                }
+                                @if (Convert.ToBoolean(Model.IsPrint))
+                                {
+                                    <button type="button" onclick="print()" class="btn btn-success">Preview</button>
+                                }
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+                                                            }
+<script src="~/ckeditor/ckeditor.js"></script>
+<script>
+    //   / ['mode', 'document', 'doctools', 'clipboard', 'undo', 'find', 'selection', 'spellchecker', 'editing', 'forms', 'basicstyles', 'cleanup', 'list', 'indent', 'blocks', 'styles', 'align', 'bidi', 'paragraph', 'links', 'insert', 'colors', 'tools', 'others']
+    CKEDITOR.replace('HtmlBox', {
+        toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+        uiColor: '#c5fff0',
+        height: 200,
+        removePlugins: 'elementspath',
+        resize_enabled: false,
+        allowedContent: true,
+
+        //EnterMode:"BR",
+        //ShiftEnterMode:"DIV",
+        removeButtons: 'Save,Print,Preview,Find,About',
+
+    });
+
+
+    function postform() {
+        var ReturnValue = true
+
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+
+
+        bootbox.confirm("Are sure to save data!", function (result) {
+            if (result) {
+                if (ReturnValue) {
+                    $("#myform").submit();
+
+                }
+
+            }
+        });
+
+
+    }
+    function checkvalue() {
+
+        console.log($('#IsApprovec').is(":checked"));
+
+        //if ($('#IsApprovec').is(":checked") == true)
+        //{
+        //    $('#IsCancelc').is(":checked") = false;
+        //}
+
+    }
+    function saveautodata() {
+
+
+        var editor_data = CKEDITOR.instances['HtmlBox'].getData();
+        var url = '@Url.Action("SaveAuto", "Eminute")';
+        var data = { Html: editor_data, Remarks: $('#Remarks').val() };
+        $.post(url, data, function (result) {
+
+        });
+    }
+
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+
+
+        var x = setInterval(function () {
+            saveautodata();
+
+            // alert(value)
+
+        }, 10000)
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+
+
+            $('#SelectInfo').selectpicker('val', [@Model.ForInfo]);
+            $("#Priority").attr('disabled', 'disabled');
+            $("#Type").attr('disabled', 'disabled');
+            $("#ForwardTo").attr('disabled', 'disabled');
+            $('#Subject').prop('readonly', true);
+            $('#HtmlBox').prop('readonly', true);
+
+
+
+
+        }
+
+
+
+
+        $("#MinuteDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+
+        var DateOfB = '@Model.MinuteDate.Value.Day' + '/' + '@Model.MinuteDate.Value.Month' + '/' + '@Model.MinuteDate.Value.Year';
+
+
+
+
+        $('#MinuteDate').datepicker('setDate', DateOfB);
+
+
+        $('.selectpicker').selectpicker('refresh');
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+        @*if ('@Model.detailistDoc.Count()' < 1) {
+
+            AddDocumentData(0, true)
+        }*@
+    });
+
+
+
+    function AddDocumentData(ThisRowID, FromDocumentDotReady) {
+        debugger
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("lisdescription_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Please Choose Image");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#DocBodyID tr").each(function () {
+
+            if (document.getElementById("lisdescription_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("DocDetailRowNo").value = $('#DocBodyID tr:last').attr('id');
+                document.getElementById("DocDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("DocDetailRowNo").value = 0
+            }
+
+
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + document.getElementById("DocDetailRowNo").value + '">';
+            dtProductDetailInfoHtml += '<td class="input"> <input   class="form-control"  id="lisdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="lisdescription"    /> </td>';
+            dtProductDetailInfoHtml += '<td > @*@Html.TextBoxFor(x => x.File, new { type = "file", multiple = "true" })*@      <input type="file" class="form-control" id="DocFile_' + document.getElementById("DocDetailRowNo").value + '" name="DocFile" />   </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+            '" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_'
+            + document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocBodyID").append(dtProductDetailInfoHtml);
+
+            document.getElementById("DocImagePath_" + document.getElementById("DocDetailRowNo").value);
+
+        }
+    }
+    function DeleteDocDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocBodyID tr").remove();
+            AddDocumentData(0, true);
+        }
+    }
+
+    $('#chIsDepartment').click(function () {
+        if ($(this).is(':checked')) {
+            var Data = { id: 0 }
+
+            $.ajax({
+                async: false,
+                url: "/Eminute/loadFarwardUser",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+
+                        var ForwardTo = $('#NEwForwardTo');
+                        ForwardTo.empty();
+
+                        $.each(data,
+                            function (index, item) {
+
+                                var datafil = new Option(item.Text, item.Value);
+                                ForwardTo.append(datafil);
+                            });
+
+                        ForwardTo.selectpicker('refresh');
+
+                        ForwardTo.selectpicker({
+                            liveSearch: true,
+                            size: 10,
+
+                            // width: 'auto',
+                            container: "body"
+                        });
+
+
+
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+
+
+
+
+        } else {
+
+
+
+            var Data = { id: 1 }
+
+            $.ajax({
+                async: false,
+                url: "/Eminute/loadFarwardUser",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+
+                        var ForwardTo = $('#NEwForwardTo');
+                        ForwardTo.empty();
+
+                        $.each(data,
+                            function (index, item) {
+                                var datafil = new Option(item.Text, item.Value);
+                                ForwardTo.append(datafil);
+                            });
+
+                        ForwardTo.selectpicker('refresh');
+
+                        ForwardTo.selectpicker({
+                            liveSearch: true,
+                            size: 10,
+
+                            // width: 'auto',
+                            container: "body"
+                        });
+
+
+
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+        }
+    });
+
+
+    function loadCC() {
+
+        var Data = { id: $('#ForwardTo').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/loadFarwardUser1",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var SelectInfo = $('#SelectInfo');
+                    SelectInfo.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            SelectInfo.append(datafil);
+                        });
+
+                    SelectInfo.selectpicker('refresh');
+
+                    SelectInfo.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function loadCC1() {
+
+
+        var Data = { id: $('#NEwForwardTo').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/loadFarwardUser1",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var SelectInfo = $('#SelectInfo');
+                    SelectInfo.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            SelectInfo.append(datafil);
+                        });
+
+                    SelectInfo.selectpicker('refresh');
+
+                    SelectInfo.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function LoadForwardEmploye() {
+        debugger
+
+
+    }
+
+    function print() {
+        debugger
+
+        var currentdate = new Date();
+        var datetime = "Now: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth() + 1) + "/"
+                    + currentdate.getFullYear() + " Time: "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
+
+        var origin = window.location.origin;
+       
+
+        let popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+        popupWin.document.open();
+        //docprint.document.write('');
+        //docprint.document.write('<!DOCTYPE html>');
+        var form='';
+        form +='<!DOCTYPE html>';
+        form+='<html><head><title>Minute -Al-Shifa Trust Eye Hospitals</title><meta http-equiv=content-type content="text/html;charset=UTF-8">';
+        form+='<link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class ="img-rounded" type="image/x-icon"> <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon"></head>';
+        form += '<body   style="overflow-y:auto"><table><tbody>';
+        form += '<tr><td><img src="' + origin + '/AppFiles/Images/logo.png" height="100" width="100"></td>'
+        form+='<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td>'
+        form+='<td><center  > <h2>Al-Shifa Trust Eye Hospital</h2></center><br /><h3 style="margin-top:-24px;"> Minute Sheet</h3></td>'
+        form+='</tr></tbody></table> <hr />';
+        form+='<table> <tbody> <tr>';
+        form+='<td><label><strong>Minute No: </strong></label></td>';
+        form += '<td><label ><strong style="color: red;"> ' + $('#MinuteCode').val() + '  </strong></label></td>';
+        form+='<td style="padding-left: 100px;"><label><strong>Location: </strong></label></td>';
+        form += '<td><label><strong >' + $('#LocationProject').val() + '</strong></la.combel></td> </tr><tr>';
+        form += '<td><label><strong>Department: </strong></label></td><td><label><strong >' + $('#InitiatedDepartment').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Date: </strong></label></td><td><label><strong> ' + $('#MinuteDate').val() + '</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Initiated By: </strong></label></td><td><label><strong>' + $('#Initiatedby').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Priority: </strong></label></td><td><label><strong>' + $("#Priority option:selected").text(); +'</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Type: </strong></label></td><td><label><strong>' + $("#Type option:selected").text(); +'</strong></label></td>';
+        form+='<td style="padding-left: 100px;"><label><strong></strong></label></td><td><label><strong></strong></label></td>';
+        form += '</tr><tr><td><label><strong>Subject/Title: </strong></label></td><td><label><strong>' + $('#Subject').val() + ' </strong></label></td>';
+        form+='<td style="padding-left: 100px;"><label><strong></strong></label></td><td><label><strong></strong></label></td>';
+        form += ' </tr><tr><td colspan="4"><hr /></td><td></td><td></td><td></td><td></td></tr>';
+        form += '<tr><td colspan="4">' + $('#htmlboxValue').val() + '</td><td></td><td ></td><td></td></tr></tbody>';
+        form += '</table><p>Printed By ' + $('#Activeuser').text() + ' ' + datetime + ' </p>  <button onclick="window.print();window.close()" >Print</button><br/><span id="abcid" style="color:Green;font-weight:bold;"><span style="font-size:large;">P</span>lease consider the environment before printing this document. <span style="font-size:large;">D</span>on\'t print this unless you really need to.</span></body></html>';
+        console.log(form)
+
+        popupWin.document.write(form);
+        popupWin.document.close();
+
+  //      onload = "window.print();window.close()"
+        //  <!DOCTYPE html>
+        //  <html>
+        //    <head>
+        //      <title>Minute -Al-Shifa Trust Eye Hospitals</title>
+        //      <meta http-equiv=content-type content="text/html; charset=UTF-8">
+        //        <link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class="img-rounded" type="image/x-icon">
+        //        <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon">
+        //     </head>
+        //<body onload="window.print();window.close()">
+
+
+
+
+        //</body>
+        //  </html>
+
+    }
+
+
+</script>

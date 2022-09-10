@@ -1,0 +1,541 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEmployeeLoan
+
+@{
+    ViewBag.Title = "Employee Loans";
+}
+
+@using (@Html.BeginForm("Save", "Loan", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+
+    @Html.HiddenFor(model => model.LoanID)
+    if (Model.LoanID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">Employee loan</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Employee Loan data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @if (TempData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(TempData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> Record Save Successfully .
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <div class="row">
+                           
+                            <div class="col-md-3">
+                                <label class="control-label">Department <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.fromDepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = " fromloadDesignation()" })
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Designation  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.fromDesignation, new HRandPayrollSystemModel.DBModel.tblEmployee().LoadDesignation(0), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadEmployee()" })
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Employee  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.EmployeeId, Model.loadEmployee( Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadEmployeeData()" })
+
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Loan Type  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.LoanType, Model.loadLoanType(), new { @class = "form-control selectpicker ", @required = "required" })
+
+                            </div>
+
+
+                        </div>
+                        <br />
+                   <hr />
+                        <br />
+
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                @Html.Label("Loan Date", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.LoanDate, new { @class = "form-control" })
+                            </div>
+                         
+                            <div class="col-md-2">
+                                @Html.Label("Payment Start Date", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.PaymentStartDate, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label"> Recovery Mode  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.PaymentMode, Model.LoadPaymentMode(), new { @class = "form-control selectpicker ", @required = "required" })
+
+
+                            </div>
+
+                            @*<div class="col-md-3">
+                                @Html.Label("Payment End Date", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.PaymentEndDate, new { @class = "form-control" })
+                            </div>*@
+                            <div class="col-md-2">
+                                @Html.Label("Requested Amount", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.RequestedAmount, new { @class = "form-control number", @required = "required", @onchange = "calculate()" })
+
+                            </div>
+
+                            <div class="col-md-2">
+                                @Html.Label("Installment Type", new { @class = "control-label" })<br />
+                                <div style="padding: 4px;">
+                                    % :   @Html.RadioButtonFor(model => model.FixnPercentage, "true")
+                                    Fix : @Html.RadioButtonFor(model => model.FixnPercentage, "false")
+                                </div>
+                            </div>
+
+                          
+
+
+                           
+                          
+                        </div>
+
+
+               <br />
+                        <div class="row">
+
+
+                            <div class="col-md-2">
+                                <label> <span id="LbPaymentAmount"> Payment Amount</span></label>
+
+                                @Html.TextBoxFor(model => model.PaymentAmount, new { @class = "form-control number", @required = "required", @onchange = "calculate()" })
+
+                            </div>
+                            <div class="col-md-2">
+                                @Html.Label("Gross Salary", new { @class = "control-label " })
+
+                                @Html.TextBoxFor(model => model.GrossSalry, new { @class = "form-control ", @required = "required", @readonly = "readonly" })
+
+                            </div>
+
+
+                        
+
+                            <div class="col-md-2">
+                                <label>  Per Installment</label>
+                                @Html.TextBoxFor(model => model.PerInstallment, new { @class = "form-control number", @required = "required", @readonly = "readonly" })
+
+                            </div>
+
+
+                           
+                            <div class="col-md-2">
+                                @Html.Label("No Of Installments", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.NoOfInstallments, new { @class = "form-control number", @required = "required" , @readonly = "readonly" })
+                            </div>
+
+                            <div class="col-md-4">
+
+                                @Html.Label("Remarks", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.Remark, new { @class = "form-control ", @required = "required" })
+                            </div>
+
+
+                           
+
+                        </div>
+                        
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+
+
+
+        if ($("#EmployeeId").val() == "0") {
+            $('#EmployeeId').selectpicker('setStyle', 'btn-danger');
+            $('#EmployeeId').selectpicker('refresh');
+
+            //  bootbox.alert("Please Select Designation")
+
+            ReturnValue = false;
+        }
+
+       
+        $("#myform").validate();
+
+
+
+        var Data = { ID: $('#EmployeeId').val() }
+        $.ajax({
+            async: false,
+            url: "/Loan/LoanCheckEmployee",
+            data: Data,
+            success: function (data) {
+                console.log(data)
+              debugger
+                if (data == "false") {
+                    bootbox.alert("Already Loan on this employee")
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+        if (ReturnValue) {
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+
+
+
+                }
+            });
+        }
+
+    }
+    $(document).ready(function () {
+
+       
+        $("#PaymentStartDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+        //$("#PaymentEndDate").datepicker({
+        //    format: "dd-M-yyyy",
+        //    autoclose: true,
+        //    todayBtn: true,
+
+
+        //});
+
+        $("#LoanDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+
+        var DateOfL = '@Model.LoanDate.Value.Day' + '/' + '@Model.LoanDate.Value.Month' + '/' + '@Model.LoanDate.Value.Year';
+        var DateofS = '@Model.PaymentStartDate.Value.Day' + '/' + '@Model.PaymentStartDate.Value.Month' + '/' + '@Model.PaymentStartDate.Value.Year';
+        @*var DateofE = '@Model.PaymentEndDate.Value.Day' + '/' + '@Model.PaymentEndDate.Value.Month' + '/' + '@Model.PaymentEndDate.Value.Year';*@
+
+
+
+        $('#LoanDate').datepicker('setDate', DateOfL);
+        $('#PaymentStartDate').datepicker('setDate', DateofS);
+        //$('#PaymentEndDate').datepicker('setDate', DateofE);
+
+
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+
+
+    });
+
+
+
+
+
+    function fromloadDesignation() {
+
+        if ($('#fromDepartmentID').val() == "0") {
+
+            var Designation = $('#fromDesignation');
+            Designation.empty();
+            Designation.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#fromDepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadDesginationbyDepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Designation = $('#fromDesignation');
+                    Designation.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Designation.append(datafil);
+                        });
+
+                    Designation.selectpicker('refresh');
+
+                    Designation.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+        ///  loadEmployee();
+    }
+
+
+    function loadEmployee() {
+
+        if ($('#fromDesignation').val() == "0") {
+
+            var employee = $('#EmployeeId');
+            employee.empty();
+            employee.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#fromDesignation').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadEmployeebyDesgination",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var employee = $('#EmployeeId');
+                    employee.empty();
+                    console.log(data)
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            employee.append(datafil);
+                        });
+
+                    employee.selectpicker('refresh');
+
+                    employee.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function loadEmployeeData() {
+
+
+
+        var Data = { id: $('#EmployeeId').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Loan/EmployeData",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    console.log(data)
+                    $('#GrossSalry').val(data.GrossSalary)
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function OnperscentorCash() {
+    
+        $('#PaymentAmount').val(0);
+   
+        $('#PerInstallment').val(0);
+        $('#NoOfInstallments').val(0);
+
+        if ($("#PaymentMode").val() == "1") {
+
+            $('#LbPaymentAmount').text('Recovery %');
+
+
+
+        } else {
+
+            $('#LbPaymentAmount').text('Recovery Amount');
+
+        }
+
+    }
+
+
+
+    function calculate() {
+        debugger;
+
+        var PaymentAmount = $('#PaymentAmount').val();
+        var GrossSalry = $('#GrossSalry').val();
+        var RequestedAmount = $('#RequestedAmount').val();
+
+        if ($("#PaymentMode").val() == "1") {
+
+      
+            if (  $('input[name="FixnPercentage"]:checked').val() =="true") {
+
+                var perInstallment = (parseFloat(GrossSalry) / 100) * PaymentAmount;
+                var noOfInstallment = parseFloat(RequestedAmount) / parseFloat(perInstallment);
+                $("#PerInstallment").val(perInstallment)
+                $("#NoOfInstallments").val(noOfInstallment)
+
+
+            } else {
+
+                var perInstallment = (parseFloat(RequestedAmount) / parseFloat(PaymentAmount));
+                $("#NoOfInstallments").val(perInstallment)
+                $("#PerInstallment").val(PaymentAmount)
+            }
+
+        }
+        else {
+            var perInstallment = (parseFloat(RequestedAmount) / parseFloat(PaymentAmount));
+            $("#NoOfInstallments").val(perInstallment)
+            $("#PerInstallment").val(PaymentAmount)
+
+
+        }
+    }
+   
+
+
+
+    $(function () {
+
+        $("input:radio").on("change", function () {
+
+
+            $('#PaymentAmount').val(0);
+
+            $('#PerInstallment').val(0);
+            $('#NoOfInstallments').val(0);
+
+        
+        });
+
+    });
+
+</script>

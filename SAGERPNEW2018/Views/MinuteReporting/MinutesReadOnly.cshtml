@@ -1,0 +1,412 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+
+@{
+    ViewBag.Title = "New E-Minutes (Read Only)";
+}
+
+
+<style>
+    .redz {
+        background-color: #f1d0d0;
+    }
+</style>
+
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<br />
+<br />
+
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      Minute Guideline
+                </a>
+            </li>
+
+        </ol>
+
+        <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        @*addTable Here*@
+        @if (TempData["St"].ToString() == "0")
+        {
+            <h3><strong style="color:#137324;">New E-Minutes (Read Only)</strong>  </h3>
+        }
+
+
+
+
+        @if (TempData["St"].ToString() == "0")
+        {
+
+            <table>
+                <tr>
+                    @* <td class="col-md-1" style="padding-left: 0px;">    <input type="text" id="DayFilter" class="form-control number" onchange="LoadMinutesAgeWise()" placeholder="Minute Age" /></td>*@
+                    <td class="col-md-11" style="padding-left: 0px;">
+
+                        <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and high priority rows are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+                    </td>
+
+
+                </tr>
+
+            </table>
+
+
+        }
+        else
+
+        {
+
+            <h5><p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and high priority rows are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+
+        }
+
+
+
+
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+
+        <table class="table table-bordered  mb-none  " id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:25px">S/N</th>
+                    <th style="width:50px"> <span id="na">EM-No</span></th>
+                    <th style="width:80px">Initiated Date </th>
+                    <th style="width:80px">Department</th>
+                    <th>Subject </th>
+                    <th>Forwarded Info </th>
+                    <th style="width:80px">Priority </th>
+
+                    <th style="width:80px">Days </th>
+
+                    <th width="60px">Status</th>
+
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+        $("#ProductTableID").on('click', 'tr', function (e) {
+
+            if ($(this).children().first().next().text() != "")
+            {
+                ViewMinute($(this).children().first().next().text());
+
+            }
+
+
+        });
+
+
+        var a = '@TempData["St"]'
+        if (a == "0") {
+            $('#headtitle').text("List of Minutes")
+            loadnewminutes();
+        }
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true },
+
+
+                     { "bSearchable": true }
+
+
+
+                     , { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },{ "bSearchable": true }
+                    ],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 pageLength: 50,
+                 buttons: [],
+
+
+
+
+                 "createdRow": function (row, data, dataIndex) {
+
+                     if (data[6] == "High") {
+                         $(row).addClass('redz');
+
+                     }
+
+
+                 },
+                 columnDefs: [
+
+
+                 {
+                targets: [ 6 ],
+                visible: false,
+                searchable: false
+                 }
+
+                 ],
+
+             })
+
+
+    })
+
+
+
+
+
+
+
+
+    function loadnewminutes() {
+
+
+
+        try {
+            $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/MinuteReporting/LoadNewMinutesReadOnly",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+
+                    if (Response.length == 0) {
+                        bootbox.alert('No more E-minutes are available to process, Returning to main.');
+                    }
+
+
+
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var flag = '';
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else if (data[i].Statusofminute == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + '.</button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+
+                            }
+
+                            else if (data[i].Statusofminute == "Completed") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-primary btn-xs" style="width: 100%;"> ' + data[i].Statusofminute + '. </button>'
+                                flag = '<span  data-toggle="tooltip" title="Completed" data-original-title="Completed"  class="fa fa-check fa-2x" aria-hidden="true" style="color:#0088cc;" ></span>'
+
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+                            var reminder="";
+
+                            if (data[i].IsReminder == "1") {
+
+                                reminder = '<span style="background-color:#ed9c28" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span>'
+                            }
+
+
+                            var Discuss = "";
+
+                            if (data[i].IsDiscuss == "1") {
+
+                                Discuss = '<span style="background-color:#3e28ed" data-toggle="tooltip" title="Discuss" class="btn badge badge-danger">D</span>'
+                            }
+
+
+                            var holdminute = "";
+
+                            if (data[i].IsHold == "1") {
+
+                                holdminute = '<span style="background-color:#A833FF" data-toggle="tooltip" title="Hold" class="btn badge badge-danger">H</span>'
+                            }
+
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">Today</button></td>'
+
+
+                            }
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                    flag + (i + 1) + '</strong> ' + reminder + " " + holdminute + " " + Discuss  , data[i].MinuteCode,
+                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                               data[i]. Initiatedby +'  ' + fwd,
+                                    data[i].Priority, htmlPendingDays, htmlStatus
+
+                                ]).draw();
+
+                        }
+
+
+                    }
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+        }
+        catch (err) {
+         console.log( err.message);
+        }
+    }
+
+
+
+    function ViewMinute(elment0)
+    {
+        // window.location.href = "/Eminute/pendminuteLoadEdit/" + elment0
+        window.open('/Eminute/pendminuteLoadEdit/' + elment0, '_blank');
+        //window.location.href = "/Eminute/Edit/" + elment0
+    }
+
+    function showInstruction()
+    {
+        $('#myModal').modal();
+    }
+
+</script>
+
+
+
+
+
+

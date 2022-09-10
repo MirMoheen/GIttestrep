@@ -1,0 +1,292 @@
+﻿@model HRandPayrollSystemModel.DBModel.tbl_kplinfo
+
+
+
+@using (@Html.BeginForm("Save", "Kpl", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+
+    <input type="hidden" id="htmlboxValue" name="htmlboxValue" value="@Model.HtmlBox" />
+    <input type="hidden" id="divdata" name="divdata" value="@Model.HtmlBox" />
+
+
+
+    if (Model.KPI_ID > 0)
+    {
+        if (Model.fldStatus != null)
+        {
+            ViewBag.Title = ViewBag.Title + " ( Read Only )";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " ( New )";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+
+
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+
+
+
+            </ol>
+            <a class="sidebar-right-toggle" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+    @Html.HiddenFor(model => model.KPI_ID)
+    @Html.HiddenFor(model => model.KPI_Code)
+    @Html.HiddenFor(model => model.HtmlBox)
+    <div class="panel">
+
+        <!-- start: page -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <section class="panel">
+
+               
+
+                    <br />
+                    <br />
+                    <br />
+         
+                    <div class="panel-body">
+                        <label class="">   <span><strong style="color:red">Note:</strong> <strong> For recommendations and updates please contact to IT department.</strong>  </span> </label>
+
+                        <a class="sidebar-right-toggle" style="float:right;" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i><strong> BACK</strong> </a>
+                        <div class="tabs tabs-primary">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> KPL </a>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div id="ItemsInfo" class="tab-pane active ">
+                                    <br />
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> EM No :</strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.KPI_Code, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+
+                                        <label class="col-sm-1 control-label"><strong> Date :</strong> </label>
+                                        <div class="col-sm-2">
+                                            @Html.TextBoxFor(model => model.EntryDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-1 control-label"><strong>Location:</strong> </label>
+                                        <div class="col-sm-2 ">
+                                            @Html.TextBoxFor(model => model.LocationProject, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> Initiating Department: </strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.InitiatedDepartment, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                        <label class="col-sm-1 control-label" style="padding-right: 0px;"><strong> Initiated by: </strong> </label>
+                                        <div class="col-sm-5">
+                                            @Html.TextBoxFor(model => model.Initiatedby, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                               
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> Month - Year :</strong> </label>
+                                        <div class="col-sm-3">
+                                            @Html.TextBoxFor(model => model.KPIMMYY, new { @class = "form-control ", required = "required", @type = "month" })
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong>Details:</strong>  </label>
+                                        <div class="col-sm-9 ">
+
+                                            <label class=""><span class="required"><strong> Short Keys:</strong> ( Select All = Ctrl+A )  ( Copy = Ctrl+C )       ( Cut = Ctrl+X )        ( Paste = Ctrl+V )</span> </label>
+
+                                       
+
+                                            @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                <a id="start-record-btn" data-toggle="tooltip" title="" data-original-title="Speak Here" href="#" onclick="StartMic()" style="color:green;margin-top:5px;float:right;display:block">
+                                                    <i class="fa fa-microphone fa-2x"></i>
+                                                </a>
+                                            }
+
+
+
+                                            @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                @Html.TextAreaFor(model => model.HtmlBox, new { @id = "HtmlBox", @name = "HtmlBox", @class = "form-control uneditable-input " })
+
+                                            }
+                                            else
+                                            {
+                                                <div id="divhtmlbox" style="height:500px; overflow: auto;background-color:#deeef3;padding: 10px;"></div>
+
+
+                                            }
+
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12"></div>
+                            </div>
+                        </div>
+                        <footer class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-9">
+
+
+
+                                    @if (string.IsNullOrWhiteSpace(Model.fldStatus) && !Convert.ToBoolean(ViewData["Editmode"]))
+                                    {
+
+                                        <button type="button" onclick="postform()" class="btn btn-primary">Save <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                    }
+                                @*    @if (Convert.ToBoolean(Model.IsPrint))*@
+
+                                        @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                        
+                                            {
+                                        <button type="button" onclick="print()" class="btn btn-success">Preview <i class="fa fa-search" aria-hidden="true"></i></button>
+                                    }
+
+                                  
+
+                                    <button type="button" id="cancelll" class="btn btn-default" onclick="location.href = '../../Eminute/ViewList/@Session["MinuteList"]'">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+
+                                    @*<button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>*@
+                                </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/AutoType/script.js"></script>
+
+    <script>
+
+    if ('@ViewData["Editmode"]' == 'False') {
+
+        CKEDITOR.replace('HtmlBox', {
+            toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+            uiColor: '#c5fff0',
+            height: 500,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            allowedContent: true,
+            //EnterMode:"BR",
+            //ShiftEnterMode:"DIV",
+            removeButtons: 'Save,Print,Preview,Find,About',
+
+
+        });
+    }
+
+        function postform() {
+            var ReturnValue = true
+
+
+
+
+            $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+
+
+            bootbox.confirm("Are sure to process!", function (result) {
+                if (result) {
+
+                        $("#myform").submit();
+
+
+
+                }
+            });
+
+
+        }
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+
+
+            $('#KPIMMYY').prop('readonly', true);
+
+            $('#HtmlBox').prop('readonly', true);
+            $('#estimatedcost').prop('readonly', true);
+
+            var htmlboxdata = $('#divdata').val();
+            $('#divhtmlbox').html(htmlboxdata.replace('&lt', '<').replace('&gt', '>'));
+
+            $('#divhtmlbox').scrollTop($('#divhtmlbox')[0].scrollHeight);
+
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        }

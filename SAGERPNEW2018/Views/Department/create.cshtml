@@ -1,0 +1,224 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblDepartment
+
+@{
+    ViewBag.Title = "Department Information ";
+}
+
+
+@using (@Html.BeginForm("Save", "Department", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.DepartmentID  > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = "Department Info View";
+        }
+        else
+        {
+            ViewBag.Title = "Department Info Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = " Department Info Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>Department Info</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Department Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Department data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+
+
+                        @Html.HiddenFor(model => model.DepartmentID)
+                        @*<div class="form-group">
+                            <label class="col-sm-2 control-label">Project <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+
+                                @Html.DropDownListFor(model => model.ProjectID, Model.LoadProjects(), "Select Project", new { @class = "form-control selectpicker", required = "required" })
+
+                            </div>
+                        </div>*@
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Department Title <span class="required">*</span></label>
+                            <div class="col-sm-8 ">
+                                @Html.TextBoxFor(model => model.DepartmentName, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Title" })
+
+                            </div>
+                        </div>
+                        
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Department Code<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                              
+                                @Html.TextBoxFor(model => model.DepartmentCode, new {  @readonly= "readonly", @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Department Code" })
+
+                            </div>
+                            <label class="col-sm-2 control-label">Order No<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.OrderNo, new { @class = "form-control uneditable-input ", type = "Number", required = "required", @placeholder = "Enter Order NO" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"> Allow Type  <span class="required">*</span></label>
+                            <div class="col-sm-8 ">
+                           
+
+                                <select class="selectpicker form-control" id="SelectType" name="SelectType" multiple>
+                                    @{
+                                        var Typlist = new HRandPayrollSystemModel.DBModel.tblEminuteSubType().loadMinutetype();
+                                        foreach (var item in Typlist)
+                                        {
+                                            <option value="@item.Value"> @item.Text </option>
+                                        }
+
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">InActive<span class="required"></span></label>
+                            <div class="col-sm-9 ">
+                                @Html.CheckBoxFor(model => model.Inactive)
+                                @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+
+
+
+    function postform() {
+        debugger;
+        var ReturnValue = true
+
+        $("#myform").validate();
+
+
+
+        var Data = { Name: $('#DepartmentName').val(), ID: $("#DepartmentID").val() }
+        $.ajax({
+            async: false,
+            url: "/Department/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+        if (ReturnValue) {
+            $("#myform").submit();
+
+        }
+
+    }
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+
+        $('.selectpicker').selectpicker();
+
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+
+
+            $('#SelectType').selectpicker('val', [@Model.AllowTypeIDs]);
+
+
+        }
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+</script>
+
+
+

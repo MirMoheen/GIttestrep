@@ -1,0 +1,3885 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+@{
+    ViewBag.Title = "E-Minute";
+}
+
+@using (@Html.BeginForm("Save", "Eminute", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data", onsubmit = "showLoader(this);" }))
+{
+
+    <style>
+        .newimg {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        img:hover {
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+   
+        .newimg {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        img:hover {
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+
+
+
+        .no-js #loader {
+            display: block;
+        }
+
+        .js #loader {
+            display: block;
+            position: absolute;
+            left: 100px;
+            top: 0;
+        }
+
+        .se-pre-con {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index:9999;
+            opacity:70%;
+            background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+        }
+    </style>
+
+
+
+    @Html.Partial("_minuteGudie")
+    <div id="loadingid" style="display:none" class="se-pre-con"></div>
+
+
+
+    <div class="modal fade" id="Favmodel" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Add Favourite  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Please Enter Favourite Text</h3>
+                    <div class="input-single">
+                        <input type="text" id="txtfavtxt" name="txtfavtxt" class="form-control" />
+                        @*<textarea id="note-textarea" class="form-control" placeholder="Create a new note by typing or using voice recognition." rows="6"></textarea>*@
+                    </div>
+                    <br />
+                    <table class="table table-bordered table-striped mb-none table-hover" id="tblfav">
+                        <thead>
+                            <tr>
+                                <th>Favourite  </th>
+
+                                <th align="center" width="50px">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblfavbody">
+                            @foreach (var item in new HRandPayrollSystemModel.DBModel.tblFavorite().getAlldata(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid).Where(x => x.inactive == false).ToList())
+                            {
+                                <tr>
+                                    <td> @item.FavText </td>
+
+                                    <td align="center">
+                                        @if (Convert.ToBoolean(Model.Isdelete))
+                                        {
+                                            <a href="#basic" class="edit-row mb-xs mt-xs mr-xs " title="Delete" onclick="confirmPopupDelete(@item.FavoriteID)"><i class="glyphicon glyphicon-trash"></i> </a>
+                                        }
+                                        @*<button class="btn btn-success btn-xs" onclick="view(@item["Voucherid"])"><span class="glyphicon glyphicon-blackboard"></span> View</button>*@
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                    <button type="button" id="btnSavefav" name="btnSavefav" data-dismiss="modal" class="btn btn-success">Save</button>
+
+
+                    @*<button type="button" id="pause-record-btn" onclick="assignDatatextToHtmlbox()" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="basicEdit" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Speech to text  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Speech to text service</h3>
+                    <div class="input-single">
+                        <textarea id="note-textarea" class="form-control" placeholder="Create a new note by typing or using voice recognition." rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" id="pause-record-btn" >Stop</button>*@
+
+                    <button type="button" id="pause-record-btn" onclick="assignDatatextToHtmlbox()" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="TechnicalPid" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Techincal Person Comment  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Techincal Person Comment</h3>
+                    <div class="input-single">
+                        <div id="divtechbox" style="height:auto; overflow: auto;background-color:#deeef3;padding: 10px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" id="pause-record-btn" >Stop</button>*@
+
+                    <button type="button" id="techclose" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Animation -->
+    @*<div id="basicEdit" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Are you sure?</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="modal-wrapper">
+                        <div class="modal-icon">
+                            <i class="fa fa-question-circle"></i>
+                        </div>
+                        <div class="modal-text">
+                            <p>Are you sure that you want to edit this record?</p>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-default modal-dismiss">Cancel</button>
+                            <button type="button" class="btn btn-primary " onclick="confirmPopupEdit()">Confirm</button>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </div>*@
+
+
+
+    <input type="hidden" id="DocDetailRowNo" />
+    <input type="hidden" id="BudgetDetailRowNo" />
+
+    <input type="hidden" id="htmlboxValue" name="htmlboxValue" value="@Model.HtmlBox" />
+
+
+
+
+    if (Model.MinuteID > 0)
+    {
+        if (Model.fldStatus != null)
+        {
+            ViewBag.Title = ViewBag.Title + " ( Read Only )";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " ( New )";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+
+
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+
+
+
+            </ol>
+            <a class="sidebar-right-toggle" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+    @Html.HiddenFor(model => model.MinuteID)
+    @Html.HiddenFor(model => model.MinuteCode)
+    @Html.HiddenFor(model => model.EntryID)
+    @Html.HiddenFor(model => model.ModifiedID)
+    @Html.HiddenFor(model => model.BillClear)
+    @Html.HiddenFor(model => model.ReminderMinute)
+    @Html.HiddenFor(model => model.DiscussMinute)
+    @Html.HiddenFor(model => model.Minuteopen)
+    @Html.HiddenFor(model => model.HoldMinute)
+
+    <input type="hidden" id="techpesonReq" name="techpesonReq" value="@Model.IsTech.ToString()" />
+
+
+
+
+
+
+
+
+    <input type="hidden" id="minuteStatusPre" name="minuteStatusPre" value="@Model.Status" />
+
+
+    <input type="hidden" id="divdata" name="divdata" value="@Model.HtmlBox" />
+
+
+    <br />
+    <br />
+
+    <br />
+    <div class="panel">
+
+        <!-- start: page -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <section class="panel">
+
+                    @*<header class="panel-heading">
+                            <div class="panel-actions">
+                                <a href="#" class="fa fa-caret-down"></a>
+                                <a href="#" class="fa fa-times"></a>
+                            </div>
+                            <h2 class="panel-title">EmployeeType Info</h2>
+                            <p class="panel-subtitle">
+                                Form control for input EmployeeType data .
+                            </p>
+                        </header>*@
+                    <div class="panel-body">
+                        <label class="">   <span><strong style="color:red">Note:</strong> <strong> For recommendations and updates please contact to IT department.</strong>  </span> </label>
+
+                        <a class="sidebar-right-toggle" style="float:right;" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i><strong> BACK</strong> </a>
+                        <br />   <p class="sidebar-right-toggle" style="float:right;"><strong> <span id="totalcount"> </span></strong> </p>
+                        <div class="tabs tabs-primary">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> Minute Sheet</a>
+                                </li>
+                                <li>
+                                    <a href="#ItemsMinuteDoc" data-toggle="tab"><i class="fa fa-building-o"></i> Attach File  <span style="background-color:red" class="badge badge-danger"> @ViewData["NumberAttachment"] </span></a>
+                                </li>
+
+
+                                <li>
+                                    <a href="#ItemsFix" data-toggle="tab"><i class="fa fa-box"></i> Fixed Asset List</a>
+                                </li>
+                                @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment) || Convert.ToBoolean(Model.IsBudget))
+                                {
+                                    <li>
+                                        <a href="#BudgetInfo" data-toggle="tab"><i class="fa fa-box"></i> Budget Info</a>
+                                    </li>
+                                }
+
+
+
+                            </ul>
+                            <div class="tab-content">
+                                <div id="ItemsInfo" class="tab-pane active ">
+                                    <br />
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> EM No :</strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.MinuteCode, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+
+                                        <label class="col-sm-1 control-label"><strong> Date :</strong> </label>
+                                        <div class="col-sm-2">
+                                            @Html.TextBoxFor(model => model.MinuteDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-1 control-label"><strong>Location:</strong> </label>
+                                        <div class="col-sm-2 ">
+                                            @Html.TextBoxFor(model => model.LocationProject, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> Initiating Department: </strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.InitiatedDepartment, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                        <label class="col-sm-1 control-label" style="padding-right: 0px;"><strong> Initiated by: </strong> </label>
+                                        <div class="col-sm-5">
+                                            @Html.TextBoxFor(model => model.Initiatedby, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        @*<label class="col-sm-1 control-label"> </label>*@
+                                        @*<label class="col-sm-1 control-label">Date : </label>
+                                            <div class="col-sm-3 ">
+                                                @Html.TextBoxFor(model => model.MinuteDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                            </div>*@
+                                    </div>
+
+                                    <div class="form-group">
+
+
+
+
+                                        <label class="col-sm-2 control-label"><strong> Type:</strong>  </label>
+                                        <div class="col-sm-3 ">
+
+
+                                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                @Html.DropDownListFor(model => model.Type, Model.LoadMinuteTypeEdit(), new { @class = "form-control selectpicker " })
+
+                                            }
+                                            else
+                                            {
+
+                                                @Html.DropDownListFor(model => model.Type, Model.LoadMinuteType(new SAGERPNEW2018.Models.SystemLogin().GetUser().DepartmentID).OrderBy(x => x.Text), new { @class = "form-control selectpicker ", @onchange = "loadSubtype()" })
+
+                                            }
+
+
+
+                                        </div>
+
+
+
+                                        <label class="col-sm-1 control-label"><strong>  Sub Type: </strong> </label>
+                                        <div class="col-sm-5 ">
+                                            @Html.DropDownListFor(model => model.Subtype, Model.loadSubtype(Convert.ToInt32(Model.Type)).OrderBy(x => x.Text), new { @class = "form-control selectpicker ", @onchange = "loadFixedAssitListTypeSubWise() " })
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="form-group">
+
+
+
+
+                                    </div>
+
+                                    @*<div class="form-group">
+                                            <label class="col-sm-2 control-label">Sub Type: </label>
+                                            <div class="col-sm-4 ">
+                                                @Html.DropDownListFor(model => model.Subtype,Model. loadSubtype(), new { @class = "form-control  ", required = "required" })
+                                            </div>
+                                            <label class="col-sm-1 control-label"> </label>
+
+                                            <label class="col-sm-2 control-label">Estimated Cost: </label>
+                                            <div class="col-sm-3 ">
+                                                @Html.TextBoxFor(model => model.estimatedcost, new { @class = "form-control number  ", required = "required" })
+                                            </div>
+
+                                        </div>*@
+
+
+                                <div class="form-group">
+
+                                    <label class="col-sm-2 control-label"><strong>  Priority: </strong> </label>
+                                    <div class="col-sm-3 ">
+                                        @Html.DropDownListFor(model => model.Priority, Model.LoadPriority(), new { @class = "form-control selectpicker " })
+                                    </div>
+
+
+                                    @if (Model.BudgetAmount != null && Model.BudgetAmount > 0)
+                                    {
+                                        <label class="col-sm-1 control-label"><strong>Total:</strong> </label>
+                                        <div class="col-sm-3 ">
+
+                                            <input type="text" id="BudgetAmountabc" name="BudgetAmountabc" readonly="readonly" style="font-weight:800;font-size: x-large;color:red" class="form-control number" value="@string.Format("{0:N0}", Model.totalPayableamt)" />
+
+
+                                            @if (!Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                                            {
+
+                                                <input type="hidden" id="BudgetAmount" name="BudgetAmount" readonly="readonly" style="font-weight:800;font-size: x-large;color:red" class="form-control number" value="@Model.BudgetAmount" />
+
+
+                                            }
+
+
+                                        </div>
+                                    }
+
+
+
+                                    @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                    {
+
+                                        if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IspettyCash) && Model.BudgetAmount == null)
+                                        {
+
+
+
+                                            <div class="col-sm-2"> </div>
+                                            <div class="col-sm-2">
+                                                @Html.CheckBoxFor(model => model.IspettyCash, new { @id = "chkstock" })
+                                                <label class="" for="IspettyCash" style= "color:Blue;text-shadow: 2px 2px 5px red" >Mark for Petty Cash</label>
+                                            </div>
+
+                                        }
+                                    }
+
+                                        @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                        {
+
+
+
+                                            if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IspettyCash) && Model.BudgetAmount == null)
+                                            {
+
+
+
+                                                <div class="col-sm-2"> </div>
+                                                <div class="col-sm-2">
+                                                    @Html.CheckBoxFor(model => model.IspettyCash, new { @id = "chkstock" })
+                                                    <label class="" for="IspettyCash" style= "color:Blue;text-shadow: 2px 2px 5px red" >Mark for Petty Cash</label>
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                @Html.HiddenFor(model => model.IspettyCash)
+
+                                                if (Model.IspettyCash)
+                                                {
+
+
+                                                    <br /> <br />
+                                                    <div class="col-sm-2">
+
+                                                    </div>
+                                                    @*<label class="col-lg-1 control-label"> </label>*@
+                                                    <div class="col-sm-8">
+                                                        <label class=""> <strong style="font-weight: 800;color: red;"><strong>Rs. </strong> @Model.BudgetAmount<strong> /- </strong>Petty Cash Applied</strong></label>
+                                                        <input type="hidden" value="@Model.BudgetAmount" name="BudgetAmount" id="BudgetAmount" />
+                                                    </div>
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    </div>
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IspettyCash) && Model.BudgetAmount == null)
+                                    {
+
+
+                                        <div class="form-group" id="dvstock" style="display: none">
+                                            <label class="col-sm-2 control-label"><strong>Petty Cash Amount:</strong> </label>
+                                            <div class="col-sm-3 ">
+                                                @*<input type="text" class="form-control number" name="OtherPayable" id="OtherPayable" value="@Model.OtherPayable" />*@
+                                                <input type="text" class="form-control number" name="BudgetAmount" id="BudgetAmount" value="@Model.BudgetAmount" />
+
+                                            </div>
+                                        </div>
+
+
+                                    }
+                                    else
+                                    {
+                                        @*<div class="form-group" id="dvstock" style="display: none">
+                                            <label class="col-sm-2 control-label"><strong>Petty Cash Amount :</strong> </label>
+                                            <div class="col-sm-3 ">
+                                                <input type="text" class="form-control number" name="BudgetAmount" id="BudgetAmount" value="@Model.BudgetAmount" />
+                                            </div>
+                                        </div>*@
+                                    }
+
+
+
+                                    <div class="form-group">
+
+
+
+
+                                        @if (Model.BudgetAmount != null && Model.BudgetAmount > 0 && Model.OtherPayable != null && Model.OtherPayable != 0)
+                                        {
+
+                                            <label class="col-sm-2 control-label"><strong>  Budget Amount: </strong> </label>
+                                            <div class="col-sm-3 ">
+                                                <input type="text" id="BudgtamtRead" name="BudgtamtRead" readonly="readonly" style="font-weight:800;font-size: x-large;color:red" class="form-control number" value="@string.Format("{0:N0}", Model.BudgetAmount)" />
+
+                                            </div>
+
+
+
+                                            <label class="col-sm-1 control-label"><strong>Other Payable:</strong> </label>
+                                            <div class="col-sm-3 ">
+
+                                                <input type="text" id="payabelAmtRead" name="payabelAmtRead" readonly="readonly" style="font-weight:800;font-size: x-large;color:red" class="form-control number" value="@string.Format("{0:N0}", Model.OtherPayable)" />
+
+
+                                            </div>
+
+                                        }
+
+
+
+                                    </div>
+                                    @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                    {
+
+                                        <div class="form-group">
+
+                                            @if (Model.IsPayBeforeApprovel)
+                                            {
+
+                                                <label class="col-sm-2 control-label"> </label>
+                                                <div class="col-sm-8">
+                                                    <button type="button" class="btn btn-success btn-xs">Note: This E-minute Payment Approve Before E-minute Approval. </button>
+                                                </div>
+
+                                            }
+
+                                        </div>
+                                    }
+
+                                    <div class="form-group">
+
+                                        <label class="col-sm-2 control-label"><strong> Subject:</strong><span class="required">*</span> </label>
+                                        <div class="col-sm-9 ">
+                                            @Html.TextBoxFor(model => model.Subject, new { @class = "form-control  ", required = "required", @spellcheck = "true" })
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong>Details:</strong>  </label>
+                                        <div class="col-sm-9 ">
+
+                                            <label class=""><span class="required"><strong> Short Keys:</strong> ( Select All = Ctrl+A )  ( Copy = Ctrl+C )       ( Cut = Ctrl+X )        ( Paste = Ctrl+V )</span> </label>
+
+                                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+
+                                                <button type="button" class="btn btn-danger btn-xs" onclick="showmodeltech()" style="float: right;">
+                                                    <span class="glyphicon glyphicon-user"></span> Technical Person Comments
+                                                </button>
+                                            }
+
+                                            @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                <a id="start-record-btn" data-toggle="tooltip" title="" data-original-title="Speak Here" href="#" onclick="StartMic()" style="color:green;margin-top:5px;float:right;display:block">
+                                                    <i class="fa fa-microphone fa-2x"></i>
+                                                </a>
+                                            }
+
+
+
+                                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                <div id="divhtmlbox" style="height:500px; overflow: auto;background-color:#deeef3;padding: 10px;"></div>
+
+                                            }
+                                            else
+                                            {
+                                                @Html.TextAreaFor(model => model.HtmlBox, new { @id = "HtmlBox", @name = "HtmlBox", @class = "form-control uneditable-input " })
+
+
+                                            }
+
+
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                    @{
+                                        var obj = new HRandPayrollSystemModel.DBModel.tblEminuteInfo().LoadEmployeeInfo(new SAGERPNEW2018.Models.SystemLogin().GetUser().EmployeeID);
+
+
+                                        if (Convert.ToBoolean(ViewData["Editmode"]) && string.IsNullOrWhiteSpace(Model.fldStatus))
+                                        {
+
+
+
+                                            var resultfav = new HRandPayrollSystemModel.DBModel.tblFavorite().favlist(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid);
+
+
+
+                                            if (resultfav != null)
+                                            {
+
+
+
+                                                <div class="row">
+
+                                                    <div class="col-md-2"></div>
+
+                                                    <div class="col-md-9">
+                                                        <label><span class="required"> PLEASE SELECT YOUR FAVOURITE COMMENTS   </span> </label>
+                                                        <button id="btnfav" type="button" name="btnfav" style="float: right;" class="btn btn-ms btn-circle fa fa-plus" aria-hidden="true">  </button> <br />
+
+
+                                                        <select id="favid" name="favname" class="selectpicker form-control " data-style="btn-success">
+                                                            <option value="0">--Please Select--</option>
+
+
+                                                            @foreach (var item in resultfav)
+                                                            {
+                                                                <option value="@item.Value">@item.Text</option>
+                                                            }
+
+                                                        </select>
+
+
+                                                    </div>
+
+
+
+
+                                                </div>
+                                            }
+
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label"><strong> Comments by:</strong><span class="required">* Comment box should not be empty </span> <span class="required">* At least 5 characters should be written</span></label>
+                                                <div class="col-sm-9 ">
+                                                    <label class=""><span class="required" id="Activeuser">  @obj.DepartmentName.ToUpper() - @obj.Initiatedby.ToUpper()</span> </label>
+                                                    <a id="start-record-btn" href="#" data-toggle="tooltip" title="" data-original-title="Speak Here" onclick="StartMic()" style="color: green;float: right;margin-top: 3px;display:block"> <i class="fa fa-microphone fa-2x"></i></a>
+                                                    <div style="border: groove;">
+                                                        @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control  ", required = "required" })
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        }
+                                        if ((Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"])))//&& !Convert.ToBoolean(ViewData["minInit"]))
+                                        {
+
+                                            <div class="form-group">
+
+                                                @{
+
+
+                                                    if (string.IsNullOrWhiteSpace(Model.fldStatus))
+                                                    {
+
+                                                        <label class="col-sm-2 control-label"><strong>Status:</strong>  </label>
+                                                        if (Model.IsApprove)
+                                                        {
+                                                            if (Model.BudgetAmount <= Convert.ToDecimal(new SAGERPNEW2018.Models.SystemLogin().GetUser().PaymentRange))
+                                                            {
+                                                                <div class="col-sm-2">
+                                                                    <input type="checkbox" id="IsApprovec" onchange="checkvalue()" name="IsApprovec" />
+                                                                    <label class="control-label" for="IsApprovec">Approve</label>
+                                                                </div>
+                                                            }
+                                                            else if (Model.BudgetAmount == null || Model.BudgetAmount == 0)
+                                                            {
+                                                                <div class="col-sm-2">
+                                                                    <input type="checkbox" id="IsApprovec" onchange="checkvalue()" name="IsApprovec" />
+                                                                    <label class="control-label" for="IsApprovec">Approve</label>
+                                                                </div>
+
+
+                                                            }
+
+                                                            <div class="col-sm-2">
+                                                                <input type="checkbox" id="Isput" onchange="PutUpcheckvalue()" name="Isput" />
+                                                                <label class="control-label" for="Isput">Putup details/discuss</label>
+                                                            </div>
+
+
+                                                            <div class="col-sm-2">
+                                                                <input type="checkbox" id="IsRec" onchange="Recommendedvalue()" name="Isput" />
+                                                                <label class="control-label" for="IsRec">Recommended</label>
+                                                            </div>
+
+                                                        }
+
+                                                        if (Model.IsCancel)
+                                                        {
+                                                            <div class="col-sm-2">
+                                                                <input type="checkbox" id="IsCancelc" onchange="Dcheckvalue()" name="IsCancelc" />
+                                                                <label class="control-label" for="IsCancelc">Disapprove </label>
+                                                            </div>}
+
+                                                        if (Model.IsComplete)
+                                                        {
+                                                            <div class="col-sm-2">
+                                                                <input type="checkbox" id="IsCompletec" onchange="completecheckvalue()" name="IsCompletec" />
+                                                                <label class="control-label" for="IsCompletec">Complete</label>
+                                                            </div>}
+
+
+                                                        if (Model.IsPo)
+                                                        {
+                                                            <div class="col-sm-2">
+                                                                @Html.CheckBoxFor(model => model.IsPo, new { @onclick = "return false;" })
+                                                                <label class="" for="IsPo">Issue Po </label>
+                                                            </div>
+                                                        }
+
+                                                        if (new SAGERPNEW2018.Models.SystemLogin().GetUser().EmployeeID == Model.techicalpersonID && !Model.IsTech)
+                                                        {
+                                                            <div class="col-sm-2" style="background: red;">
+                                                                @Html.CheckBoxFor(model => model.IsTech, new { })
+                                                                <label class="" style="color: antiquewhite;font-weight: 700;" for="IsTech">Technical Approval </label>
+                                                            </div>
+                                                        }
+
+                                                        if (Model.IsPayBeforeApprovel)
+                                                        {
+
+                                                            <div class="col-sm-2">
+                                                                @Html.CheckBoxFor(model => model.IsPayBeforeApprovel, new { @onclick = "return false;" })
+                                                                <label class="" for="IsPayBeforeApprovel">Before Approval </label>
+                                                            </div>
+
+                                                        }
+
+                                                    }
+
+                                                    else
+                                                    {
+
+                                                        <div class="col-sm-2" style="display:none">
+                                                            @Html.CheckBoxFor(model => model.IsTech, new { })
+                                                            <label class="" for="IsTech">Technical Approval </label>
+                                                        </div>
+
+                                                    }
+
+                                                    @*if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment) && string.IsNullOrWhiteSpace(Model.fldStatus))
+                        {
+
+                            <div class="col-sm-2">
+                                @Html.CheckBoxFor(model => model.IsBudget, new { })
+                                <label class="" for="IsBudget">IsBudget</label>
+                            </div>
+
+                        }*@
+                                                }
+
+
+
+
+
+
+                                            </div>
+                                            <div class="form-group">
+                                                @{
+
+
+                                                    if (string.IsNullOrWhiteSpace(Model.fldStatus))
+                                                    {
+
+                                                        <label class="col-sm-2 control-label"><strong> Forward to:</strong> </label>
+                                                        <div class="col-sm-3 ">
+
+                                                            @*  @onchange = "loadCC1()"*@
+
+                                                            @{
+
+                                                                if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                                {
+
+                                                                    if (Model.techicalpersonID > 0 && Model.techicalpersonID != new SAGERPNEW2018.Models.SystemLogin().GetUser().EmployeeID && new SAGERPNEW2018.Models.SystemLogin().GetUser().IsTechicalPerson && !Model.IsTech)
+                                                                    {
+                                                                        @Html.DropDownListFor(model => model.NEwForwardTo, Model.LoadAllDesignationWise().Where(x => x.Value == Model.techicalpersonID.ToString()), new { @class = "form-control selectpicker ", @onchange = "loadCC1()" })
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.DropDownListFor(model => model.NEwForwardTo, Model.LoadForwardDesginationWiseSendBack(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @onchange = "loadCC1()" })
+
+
+                                                                    }
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.DropDownListFor(model => model.NEwForwardTo, Model.LoadForwardDesginationWise(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @onchange = "loadCC1()" })
+
+
+                                                                }
+                                                            }
+
+
+                                                        </div>
+
+
+
+                                                    }
+
+                                                }
+
+                                                @if (string.IsNullOrWhiteSpace(Model.fldStatus))
+                                                {
+
+
+                                                    if (Model.IsDepartment)
+                                                    {
+                                                        <div class="col-sm-2 ">
+
+                                                            <input type="checkbox" id="chIsDepartment" name="chIsDepartment" />
+                                                            <label class="control-label" for="chIsDepartment"><strong>My Department</strong> </label>
+                                                        </div>
+                                                    }
+
+
+
+
+
+                                                    if (new SAGERPNEW2018.Models.SystemLogin().GetUser().AllowMarkPO)
+                                                    {
+                                                        <div class="col-sm-2">
+                                                            @Html.CheckBoxFor(model => model.IsPo, new { })
+                                                            <label class="" for="IsPo">Issue Po </label>
+                                                        </div>
+                                                    }
+
+
+
+
+                                                    if (new SAGERPNEW2018.Models.SystemLogin().GetUser().IsPaymentBeforeApprovel)
+                                                    {
+                                                        <div class="col-sm-2">
+                                                            @Html.CheckBoxFor(model => model.IsPayBeforeApprovel, new { })
+                                                            <label class="" for="IsPayBeforeApprovel">Before Approval </label>
+                                                        </div>
+                                                    }
+
+                                                }
+                                            </div>
+
+                                        }
+                                    }
+
+
+
+
+
+                                    @{
+
+                                        if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                        {<br />
+
+                                            <div class="form-group">
+
+
+                                                <label class="col-sm-2 control-label"><strong> Forward to:</strong> </label>
+                                                <div class="col-sm-3 ">
+
+                                                    @*, @onchange = "loadCC()"*@
+                                                    @Html.DropDownListFor(model => model.ForwardTo, Model.LoadForwardDesginationWise(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @onchange = "loadCC()" })
+                                                </div>
+
+                                                @*@if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                    {
+
+
+                    <div class="col-sm-2">
+                        @Html.CheckBoxFor(model => model.IsBudget, new { })
+                        <label class="" for="IsBudget">IsBudget</label>
+                    </div>
+                    }*@
+
+                                            </div>
+                                        }
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["Editmode"]) && string.IsNullOrWhiteSpace(Model.fldStatus))
+                                    {
+
+                                        <div class="form-group">
+
+                                            <label class="col-sm-2 control-label"> </label>
+                                            <div class="col-sm-9 ">
+
+                                                <label><span class="required">Note: Send back option forward back minute to sender.  </span></label>
+
+
+                                            </div>
+
+                                        </div>
+                                    }
+                                    <br />
+                                    @{
+
+                                        if (!Convert.ToBoolean(ViewData["forinfo"]))
+                                        {
+                                            @*<div class="form-group">
+                    <label class="col-sm-2 control-label">For Info / CC: </label>
+                    <div class="col-sm-9 ">
+                        <select class="selectpicker form-control" id="SelectInfo" name="SelectInfo" multiple>
+                            @{
+                                var DataemployeeForinfo = Model.LoadForwardDesginationWise(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs));
+                                foreach (var item in DataemployeeForinfo)
+                                {
+                                    <option value="@item.Value"> @item.Text </option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                </div>*@
+                                        }
+                                    }
+
+
+
+                                </div>
+
+
+                                <div id="ItemsMinuteDoc" class="tab-pane">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                                <h3>Minute Attachment</h3>
+                                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="750px">Description</th>
+                                                            <th width="400px">Attached File</th>
+                                                            <th width="150px"> Action </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="DocBodyID">
+                                                        @{ if (Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"]))
+                                                            {
+                                                                var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                                                //  string host = Request.Url.Authority;
+                                                                int a = 0;
+                                                                foreach (var item in Model.detailistDoc)
+                                                                {
+                                                                    <tr id="@a">
+                                                                        <td class="input"> <input id="lisdescription_@a" style="color:red; font-weight: bold;" readonly="readonly" type="text" value="@item.Description" class="form-control" name="lisdescription" /> </td>
+
+
+                                                                        <td>  <a target="_blank" href="@host@item.PathDoc.TrimStart('~')">   <img class="newimg" src="@host@item.PathDoc.TrimStart('~')" alt="&nbsp; View File" style="width:35px"></a> <input type="hidden" value="@item.PathDoc" id="listdocpath_@a" name="listdocpath" /> </td>
+                                                                        <td>
+                                                                            <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> Add</button>
+
+                                                                            <button type="button" style="display:none" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-ms btn-circle userDellbtn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    a++;
+                                                                }
+                                                            }
+
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div id="ItemsFix" class="tab-pane">
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <div id="fixdetail" style="height:auto;overflow-y:auto;">
+                                                <h3>Fixed Asset List</h3>
+                                                <table class="table table-bordered  mb-none table-hover" id="fixdatatable2">
+                                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="60px">Sr No. </th>
+                                                            <th>Asset Name</th>
+                                                            <th>Asset Tag</th>
+
+                                                            <th>Model</th>
+
+                                                            <th>Description</th>
+
+
+
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="fixBodyID">
+                                                        @{ int b = 1;
+                                                            string category = "";
+
+                                                            string grouping = "";
+
+
+                                                            if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                            {
+                                                                //var sfsdfff = Model.getfixassittypeandSubtypewise(Convert.ToInt32(Model.Type), Convert.ToInt32(Model.Subtype));
+
+
+                                                                foreach (var item in Model.getfixassittypeandSubtypewise(Convert.ToInt32(Model.Type), Convert.ToInt32(Model.Subtype)))
+                                                                {
+
+                                                                    if (category == "")
+                                                                    {
+                                                                        <tr style="background-color: darkgoldenrod;">
+                                                                            <td colspan=5><strong>@item.Cat_Name.ToUpper()</strong></td>
+
+                                                                        </tr>
+
+                                                                    }
+                                                                    else if (category.ToLower() != item.Cat_Name.ToLower())
+                                                                    {
+
+                                                                        <tr style="background-color: darkgoldenrod;">
+
+                                                                            <td colspan=5><strong>@item.Cat_Name.ToUpper()</strong></td>
+
+
+                                                                        </tr>
+
+                                                                    }
+
+                                                                    category = item.Cat_Name;
+
+
+                                                                    if (grouping == "")
+                                                                    {
+                                                                        <tr style="background-color: aquamarine;">
+                                                                            <td colspan=5><strong>@item.assetname.ToUpper()</strong></td>
+
+                                                                        </tr>
+
+                                                                    }
+                                                                    else if (grouping.ToLower() != item.assetname.ToLower())
+                                                                    {
+
+                                                                        <tr style="background-color: aquamarine;">
+
+                                                                            <td colspan=5><strong>@item.assetname.ToUpper()</strong></td>
+
+
+                                                                        </tr>
+                                                                        b = 1;
+                                                                    }
+
+                                                                    grouping = item.assetname;
+                                                                    <tr id="@b">
+                                                                        <td>@b </td>
+                                                                        <td>@item.assetname.ToUpper()  </td>
+                                                                        <td>@item.assetid.ToUpper()  </td>
+
+                                                                        <td>@item.AssetModel.ToUpper()  </td>
+                                                                        <td>@item.AssetDesc.ToUpper()</td>
+
+                                                                    </tr>
+                                                                    b++;
+                                                                }
+
+
+                                                            }
+                                                            else
+                                                            {
+
+
+
+                                                                foreach (var item in Model.getfixassitlist(new SAGERPNEW2018.Models.SystemLogin().GetUser().DepartmentID))
+                                                                {
+
+                                                                    if (category == "")
+                                                                    {
+                                                                        <tr style="background-color: darkgoldenrod;">
+                                                                            <td colspan=5><strong>@item.cate.ToUpper()</strong></td>
+
+                                                                        </tr>
+
+                                                                    }
+                                                                    else if (category.ToLower() != item.cate.ToLower())
+                                                                    {
+
+                                                                        <tr style="background-color: darkgoldenrod;">
+
+                                                                            <td colspan=5><strong>@item.cate.ToUpper()</strong></td>
+
+
+                                                                        </tr>
+
+                                                                    }
+
+                                                                    category = item.cate;
+
+
+                                                                    if (grouping == "")
+                                                                    {
+                                                                        <tr style="background-color: aquamarine;">
+                                                                            <td colspan=5><strong>@item.assetname.ToUpper()</strong></td>
+
+                                                                        </tr>
+
+                                                                    }
+                                                                    else if (grouping.ToLower() != item.assetname.ToLower())
+                                                                    {
+
+                                                                        <tr style="background-color: aquamarine;">
+
+                                                                            <td colspan=5><strong>@item.assetname.ToUpper()</strong></td>
+
+
+                                                                        </tr>
+                                                                        b = 1;
+                                                                    }
+
+                                                                    grouping = item.assetname;
+                                                                    <tr id="@b">
+                                                                        <td>@b </td>
+                                                                        <td>@item.assetname.ToUpper()  </td>
+                                                                        <td>@item.assetid.ToUpper()  </td>
+
+                                                                        <td>@item.AssetModel.ToUpper()  </td>
+                                                                        <td>@item.AssetDesc.ToUpper()</td>
+
+                                                                    </tr>
+                                                                    b++;
+                                                                }
+
+
+
+
+
+
+                                                            }
+
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+                                @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment) || Convert.ToBoolean(Model.IsBudget))
+                                {
+                                    <div id="BudgetInfo" class="tab-pane">
+
+
+                                        <div class="row">
+                                            <div class="col-md-10">
+
+
+
+                                                @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                                                {
+                                                    <div class="col-sm-3 ">
+                                                        <label><strong>Budget Amount:</strong> </label>
+
+
+
+                                                        @if (Model.BudgetAmount != null && Model.BudgetAmount > 0)
+                                                        {
+                                                            @Html.TextBoxFor(model => model.BudgetAmount, new { @class = "form-control number  ", @readonly = "readonly" })
+                                                            @*@Html.TextBoxFor(model => model.BudgetAmount, new { @class = "form-control number  "})*@
+
+
+
+                                                        }
+                                                        else
+                                                        {
+
+                                                            @Html.TextBoxFor(model => model.BudgetAmount, new { @class = "form-control number  " })
+
+
+
+                                                        }
+
+
+
+                                                    </div>
+
+                                                    <div class="col-sm-3 ">
+                                                        <label><strong>Other Payable:</strong> </label>
+
+
+
+                                                        @if (Model.BudgetAmount != null && Model.BudgetAmount > 0)
+                                                        {
+                                                            //    @Html.TextBoxFor(model => model.OtherPayable, new { @class = "form-control number  ", @readonly = "readonly" })
+                                                            @Html.TextBoxFor(model => model.OtherPayable, new { @class = "form-control   ", @onchange = "otherpayableandAmounttolal()", @type = "number" })
+
+
+
+                                                        }
+                                                        else
+                                                        {
+
+                                                            @Html.TextBoxFor(model => model.OtherPayable, new { @class = "form-control   ", @onchange = "otherpayableandAmounttolal()", @type = "number" })
+
+
+
+
+                                                        }
+
+
+
+                                                    </div>
+
+
+                                                    <div class="col-sm-3 ">
+                                                        <label><strong>Total:</strong> </label>
+
+
+                                                        <input type="text" id="ptotalAmount" name="ptotalAmount" value="@Model.totalPayableamt" class="form-control number" readonly="readonly" />
+
+
+                                                    </div>
+
+
+                                                }
+
+                                            </div>
+                                            <div class="col-md-2">
+
+                                                @if ((Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"])))//&& !Convert.ToBoolean(ViewData["minInit"]))
+                                                {
+                                                    if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment) && string.IsNullOrWhiteSpace(Model.fldStatus))
+                                                    {
+
+                                                        <div class="col-sm-12">
+                                                            @Html.CheckBoxFor(model => model.IsBudget, new { @style = "float:right" })
+                                                            <label class="" style="float:right;" for="IsBudget"><strong> For Payment&nbsp; </strong> </label>
+                                                        </div>
+
+                                                    }
+                                                }
+
+                                                @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                                {
+                                                    if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                                                    {
+                                                        <div class="col-sm-12">
+                                                            @Html.CheckBoxFor(model => model.IsBudget, new { @style = "float:right" })
+                                                            <label class="" style="float:right;" for="IsBudget"><strong> For Payment &nbsp; </strong> </label>
+                                                        </div>
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div><br />
+
+                                        <div class="alert alert-danger">
+
+
+                                            @*<div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="col-sm-2"><strong> Party Accounts</strong>  </label>
+
+                                                        @Html.DropDownListFor(model => model.SupplierAccountNo, new HRandPayrollSystemModel.InventryModel.tbl_Head().getbudgetAccount(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x => x.Text), new { @class = "form-control selectpicker " })
+
+
+
+                                                    </div>
+
+                                                </div>*@
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div id="docdetail" style="height:300px;overflow-y:auto;">
+                                                        <table class="table table-bordered table-hover" id="datatableBudget">
+                                                            @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                            <thead>
+                                                                <tr class="bg-primary">
+
+                                                                    <th width="200px">Project</th>
+
+                                                                    <th width="200px">Cost Center</th>
+                                                                    <th width="150px">Financial Year </th>
+                                                                    <th width="200px">Budget Head</th>
+
+                                                                    <th>Provision </th>
+                                                                    <th>Already Expense</th>
+                                                                    <th>This Expense</th>
+                                                                    <th>Total Expense</th>
+                                                                    <th>Budget Balance</th>
+                                                                    <th width="70px">Action</th>
+
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="BudgetBodyID">
+                                                                @{ if (Model.IsBudget && Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"]) && Model.detailistbudget != null)
+                                                                    {
+
+                                                                        int a = 0;
+                                                                        foreach (var item in Model.detailistbudget)
+                                                                        {
+                                                                            <tr id="@a">
+                                                                                @{
+
+                                                                                    var prodtta = new HRandPayrollSystemModel.InventryModel.tbl_Head().getproject();
+                                                                                    var Costcentrdata = new HRandPayrollSystemModel.InventryModel.tbl_Head().getcostonId(Convert.ToInt32(item.BudgetSubID));
+
+
+                                                                                    var bugetheadEdit = new HRandPayrollSystemModel.InventryModel.tbl_Head().gethead((int)item.BudgetSubID).OrderBy(x => x.Text);
+
+                                                                                    var finyearEdit = new HRandPayrollSystemModel.InventryModel.tbl_Head().getFinYear("01");
+
+
+                                                                                    @*<td> <select style="" class="form-control selectpicker" id="BudgetProjectID_' + q + '" name="BudgetProjectID" onchange="loadHeadDetail(this)" class="form-control"> ' + groups + ' </select>  </td>*@
+
+
+                                                                                    <td>
+                                                                                        <select id="BudgetProjectID_@a" name="BudgetProjectlist" onchange="loadProject(this)" class="form-control selectpicker">
+                                                                                            @foreach (var itemProject in prodtta)
+                                                                                            {
+                                                                                                if (Costcentrdata.Projectid.ToString() == itemProject.Value.Trim())
+                                                                                                {
+                                                                                                    <option selected value="@itemProject.Value">@itemProject.Text</option>
+
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    // <option value="@itemProject.Value">@itemProject.Text</option>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </select>
+
+
+                                                                                    </td>
+
+
+
+                                                                                    <td>
+
+
+                                                                                        <select id="BudgetHeadID_@a" name="BudgetHeadID" onchange="loadheadCostcentrwise(this)" class="form-control selectpicker">
+
+                                                                                            <option selected value="@Costcentrdata.ID">@Costcentrdata.Name</option>
+
+                                                                                            @*@foreach (var itemsub in Costcentrdata)
+                                                                                                {
+                                                                                                    if (item.BudgetSubID.ToString() == itemsub.Value.Trim())
+                                                                                                    {
+                                                                                                        <option selected value="@itemsub.Value">@itemsub.Text</option>
+
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                       // <option value="@itemsub.Value">@itemsub.Text</option>
+                                                                                                    }
+                                                                                                }*@
+
+                                                                                        </select>
+
+
+
+
+
+
+                                                                                    </td>
+
+
+
+                                                                                    <td>
+
+
+                                                                                        <select id="FinancalYear_@a" name="FinancalYear" onchange="loadHeadDetail(this)" class="form-control selectpicker">
+                                                                                            @foreach (var itemfin in finyearEdit)
+                                                                                            {
+                                                                                                if (item.FinancalYear.ToString() == itemfin.Value.Trim())
+                                                                                                {
+                                                                                                    <option selected value="@itemfin.Value">@itemfin.Text</option>
+
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    // <option value="@itemfin.Value">@itemfin.Text</option>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </select>
+
+
+
+                                                                                    </td>
+
+
+                                                                                    <td>
+                                                                                        <select id="BudgetSubID_@a" name="BudgetSubID" onchange="loadHeadDetail(this)" class="form-control selectpicker">
+                                                                                            @foreach (var itemHEAD in bugetheadEdit)
+                                                                                            {
+                                                                                                if (item.BudgetHeadID.ToString() == itemHEAD.Value.Trim())
+                                                                                                {
+                                                                                                    <option selected value="@itemHEAD.Value">@itemHEAD.Text</option>
+
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    //<option value="@itemHEAD.Value">@itemHEAD.Text</option>
+                                                                                                }
+                                                                                            }
+
+                                                                                        </select>
+
+
+                                                                                    </td>
+
+
+
+                                                                                }
+
+
+                                                                                <td>  <input type="text" class="form-control" value="@string.Format("{0:N0}", item.BudgetPro)" readonly="readonly" id="budgetprovence_@a" name="BudgetPro" /> </td>
+                                                                                <td>  <input type="text" class="form-control" value="@string.Format("{0:N0}", item.AlreadyExpense)" readonly="readonly" id="AlreadyExpense_@a" name="AlreadyExpense" /> </td>
+                                                                                <td>  <input type="text" class="form-control" value="@string.Format("{0:N0}", item.ThisExpense)" id="ThisExpense_@a" readonly="readonly" name="ThisExpense" onchange="calculteTheValue()" /> </td>
+                                                                                <td>  <input type="text" class="form-control" value="@string.Format("{0:N0}", item.TotalExpense)" readonly="readonly" id="TotalExpense_@a" name="TotalExpenses" /> </td>
+                                                                                <td>  <input type="text" class="form-control" value="@string.Format("{0:N0}", item.Balance)" readonly="readonly" id="Balance_@a" name="Balance" /> </td>
+
+                                                                                <td>
+                                                                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                                                                                    {
+
+                                                                                        <button type="button" style="" class="btn btn-success  btn-xs btn-circle" id="detailBudgetDataAdd_@a" value="+" onclick="AddBudgetData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> </button>
+
+                                                                                        <button type="button" style="" id="detailBudgetDataDelete_@a" title="Remove" value="-" onclick="DeleteBudgetDetailData(this,@a)" class="btn btn-danger  btn-xs btn-circle"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>
+                                                                                    }
+                                                                                </td>
+
+
+
+                                                                            </tr>
+                                                                            a++;
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+                                }
+
+
+
+
+                                @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsOpen) && Convert.ToBoolean(ViewData["Editmode"]) && !string.IsNullOrWhiteSpace(Model.fldStatus) && (Model.Status == 2 || Model.Status == 3))
+                                {
+                                    <div class="row">
+                                        <label class="col-sm-2 control-label"><strong> Reason: </strong> </label>
+                                        <div class="col-lg-9 ">
+                                            <input type='text' id='MinuteOpenStatus' name='MinuteOpenStatus' value="" class='form-control' />
+                                        </div>
+                                        <div class="col-md-12"></div>
+                                    </div>
+
+
+                                    <br />
+
+                                    <div class="row">
+                                        <label class="col-sm-2 control-label"><strong> Forward To: </strong> </label>
+                                        <div class="col-sm-3 ">
+
+                                            @Html.DropDownListFor(model => model.NEwForwardTo, Model.LoadAllDesignationWise(), new { @class = "form-control selectpicker ", @onchange = "loadCC1()" })
+
+
+                                        </div>
+                                    </div>
+
+                                }
+
+
+
+
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12"></div>
+                            </div>
+                        </div>
+                        <footer class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-9">
+
+
+                                    @if (string.IsNullOrWhiteSpace(Model.fldStatus))
+                                    {
+
+                                        <button type="button" onclick="postform()" class="btn btn-primary">Process <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                    }
+                                    @if (Convert.ToBoolean(Model.IsPrint))
+                                    {
+                                        <button type="button" onclick="print()" class="btn btn-success">Preview <i class="fa fa-search" aria-hidden="true"></i></button>
+                                    }
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsReminder) && Convert.ToBoolean(ViewData["Editmode"]) && !string.IsNullOrWhiteSpace(Model.fldStatus) && (Model.Status == 1 || Model.Status == 0))
+                                    {
+                                        <button type="button" id="reminder" class="btn btn-warning" onclick="ReminderMinte()">Reminder <i class="fa fa-bell" aria-hidden="true"></i></button>
+
+                                    }
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsDiscuss) && Convert.ToBoolean(ViewData["Editmode"]) && !string.IsNullOrWhiteSpace(Model.fldStatus) && (Model.Status == 1 || Model.Status == 0))
+                                    {
+                                        <button type="button" id="Discussid" class="btn btn-primary" onclick="DiscusMinute()">Discuss <i class="fa fa-comment" aria-hidden="true"></i></button>
+
+                                    }
+
+
+
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsHold) && Convert.ToBoolean(ViewData["Editmode"]) && (!Model.IsHold) && (Model.Status == 1 || Model.Status == 0))
+                                    {
+                                        <button type="button" id="btnHold" class="btn btn-danger" onclick="setholdMinte()">Eminute Hold  <i class="fa fa-stop" aria-hidden="true"></i></button>
+
+                                    }
+
+
+
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsOpen) && Convert.ToBoolean(ViewData["Editmode"]) && !string.IsNullOrWhiteSpace(Model.fldStatus) && (Model.Status == 2 || Model.Status == 3))
+                                    {
+                                        <button type="button" id="btnOpen" class="btn btn-primary" onclick="funMinuteopen()">Minute Open <i class="fa fa-book" aria-hidden="true"></i></button>
+
+                                    }
+
+                                    <button type="button" id="cancelll" class="btn btn-default" onclick="location.href = '../../Eminute/ViewList/@Session["MinuteList"]'">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+
+                                    @*<button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>*@
+                                </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/assets/vendor/jquery-cookie/jquery.cookie.js"></script>
+<script src="~/ckeditor/ckeditor.js"></script>
+<script src="~/Scripts/AutoType/script.js"></script>
+
+<script>
+    $(document).ready(function () {
+        loadnewminutes();
+    });
+
+    function loadnewminutes() {
+
+
+
+        try {
+
+            var count = 0;
+            var Data = { id: 0 }
+            $.ajax({
+                async: true,
+                url: "/Home/LoadNewMinutes",
+                data: Data,
+                success: function (Response) {
+                    for (var n = 0; n < Response.length; n++) {
+                        if (Response[n].Statusofminute == 'In-Process') {
+                            count = count + 1;
+                        }
+
+                    }
+
+
+                    $("#totalcount").html("Showing 1 to " + count + " of " + count + " entries");
+
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+
+
+
+
+
+    }
+    //   / ['mode', 'document', 'doctools', 'clipboard', 'undo', 'find', 'selection', 'spellchecker', 'editing', 'forms', 'basicstyles', 'cleanup', 'list', 'indent', 'blocks', 'styles', 'align', 'bidi', 'paragraph', 'links', 'insert', 'colors', 'tools', 'others']
+
+    if ('@ViewData["Editmode"]' == 'False') {
+
+        CKEDITOR.replace('HtmlBox', {
+            toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+            uiColor: '#c5fff0',
+            height: 500,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            allowedContent: true,
+            //EnterMode:"BR",
+            //ShiftEnterMode:"DIV",
+            removeButtons: 'Save,Print,Preview,Find,About',
+
+
+        });
+    }
+
+    if ('@ViewData["Editmode"]' == 'True' && '@Model.fldStatus' == '') {
+
+        CKEDITOR.replace('Remarks', {
+            toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+
+            toolbar: 'Custom',
+            //toolbar_Custom: [],
+
+            // uiColor: '#c5fff0',
+            height: 200,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            allowedContent: true,
+
+            //EnterMode:"BR",
+            //ShiftEnterMode:"DIV",
+            removeButtons: 'Save,Print,Preview,Find,About',
+
+        });
+
+    }
+
+    function funMinuteopen() {
+
+        var ispo = true;
+        var isclear = true;
+        var iswo = true;
+        var istranction = true;
+
+
+        $('#Minuteopen').val(1);
+
+        var ReturnValue = true
+
+
+        var Data = { code: $('#MinuteCode').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/getminutestatusPoorclear",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    isclear = data[0]
+                    ispo = data[1]
+                    iswo = data[2]
+                    istranction = data[3]
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (isclear == false && ispo == false && iswo == false && istranction==false) {
+
+
+            if (ReturnValue) {
+
+                //<input type='text' id='OpenStatusid' name='OpenStatusid' class='form-control' />
+                bootbox.confirm("Are you sure to open E-minute ? <br/> ", function (result) {
+
+                    if (result) {
+
+                        ///$('#MinuteOpenStatus').val($('#OpenStatusid').val())
+
+                         $("#myform").submit();
+
+                    }
+
+
+                });
+            }
+        } else {
+
+
+            //bootbox.alert({
+            //    size: "small",
+            //    title: "Your Title",
+            //    message: "Your message here…",
+            //    callback: function () { /* your callback code */ }
+            //})
+
+
+            bootbox.alert("<strong style='color: red'>Note: </strong>Clear or Po attached E-minute couldn't open. <br/>Please contact to IT department")
+
+
+        }
+
+
+
+
+
+
+
+
+
+    }
+
+
+    function ReminderMinte() {
+
+        $('#ReminderMinute').val(1);
+
+        var ReturnValue = true
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are you sure to sending reminder ?", function (result) {
+
+                if (result) {
+                    $("#myform").submit();
+
+                }
+
+
+            });
+        }
+    }
+
+
+
+
+    function DiscusMinute() {
+
+        $('#DiscussMinute').val(1);
+
+        var ReturnValue = true
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are you sure to send discuss E-minute ?", function (result) {
+
+                if (result) {
+                    $("#myform").submit();
+
+                }
+
+
+            });
+        }
+    }
+
+
+
+
+
+    function setholdMinte() {
+
+        $('#HoldMinute').val(1);
+
+        var ReturnValue = true
+
+
+        //var remarksof = CKEDITOR.instances['Remarks'].getData();
+
+        //if (remarksof.length <= 9) {
+
+        //    bootbox.alert("Comment limit greater then 5 character")
+        //    ReturnValue = false;
+
+        //}
+
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are you sure to hold E-minute ?", function (result) {
+
+                if (result) {
+                    $("#myform").submit();
+
+                }
+
+
+            });
+        }
+    }
+
+
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+        debugger
+        if ('@ViewData["Editmode"]' == 'False') {
+
+            if ($("#Type").val() == "0") {
+                $('#Type').selectpicker('setStyle', 'btn-danger');
+                $('#Type').selectpicker('refresh');
+
+                bootbox.alert("Please Select Type.")
+
+                ReturnValue = false;
+            }
+
+
+            var desc = CKEDITOR.instances['HtmlBox'].getData();
+
+
+            if (desc.length <= 13) {
+
+                bootbox.alert("Detail limit greater then 5 character")
+                ReturnValue = false;
+
+            }
+
+
+
+
+        }
+
+        if ($("#ForwardTo").val() == "0") {
+            $('#ForwardTo').selectpicker('setStyle', 'btn-danger');
+            $('#ForwardTo').selectpicker('refresh');
+
+            bootbox.alert("Please Select forward to.")
+
+            ReturnValue = false;
+        }
+
+
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+
+
+
+             @{ var ispettycash = new SAGERPNEW2018.Models.SystemLogin().GetUser().IspettyCash.ToString(); }
+   
+
+            if ('@ispettycash'.toLowerCase() == 'true'.toLowerCase() ) {
+
+
+
+                if ($('#chkstock').is(":checked") == true) {
+
+                    if ($('#BudgetAmount').val() == '' || $('#BudgetAmount').val() == "0") {
+
+                  
+                        bootbox.alert("Petty Cash not be Zero.")
+                        ReturnValue = false;
+                    }
+                    else {
+                    var Data = { amount: $('#BudgetAmount').val() }
+
+                    $.ajax({
+                        async: false,
+                        url: "/Eminute/checkpettycashlimite",
+                        data: Data,
+                        success: function (data) {
+
+                            if (data != null) {
+                                ///  alert(ReturnValue)
+
+                                if (data) {
+
+
+                                    bootbox.alert("Your petty cash limit exceeded");
+                                    ReturnValue = false;
+                                }
+
+                                else {
+
+                                    ReturnValue = true;
+
+                                }
+
+
+                            }
+                        },
+                        error: function () {
+                            ReturnValue = false;
+
+                        }
+                    })
+                }
+
+
+                }
+
+            }
+
+
+
+            if ($('#IsBudget').is(":checked") == true) {
+
+                //if ($('#SupplierAccountNo').val() == '0') {
+                //    bootbox.alert("Please Select Party Account ")
+                //    ReturnValue = false;
+                //}
+
+
+                if ($('#BudgetAmount').val()==''|| parseFloat($('#BudgetAmount').val()) < 1 ) {
+                    bootbox.alert("Budget Amount can not be zero ")
+                    ReturnValue = false;
+                }
+
+
+
+
+
+
+                //for (var i = 0; i < $('#BudgetBodyID tr').length; i++) {
+
+
+
+
+                //    var Budgetproject = parseFloat($('#BudgetProjectID_' + i).val());
+
+                //    if (Budgetproject == "0") {
+                //        bootbox.alert("Budget Project select first ")
+                //        ReturnValue = false;
+                //        break;
+
+                //    }
+
+
+
+
+
+                //    var BudgetID = parseFloat($('#BudgetHeadID_' + i).val());
+
+                //    if (BudgetID == "0") {
+                //        bootbox.alert("Budget head select first ")
+                //        ReturnValue = false;
+                //        break;
+
+                //    }
+
+
+
+
+
+                //         var BudgetSubID = parseFloat($('#BudgetSubID_' + i).val());
+                //         if (BudgetSubID =="0") {
+                //            bootbox.alert("Budget Sub head select first ")
+                //            ReturnValue = false;
+                //            break;
+
+                //        }
+                //    }
+
+
+
+
+                //if (parseFloat($('BudgetAmount').val()) < 1) {
+                //    for (var i = 0; i < $('#BudgetBodyID tr').length ; i++) {
+                //        var thisExpens = parseFloat($('#ThisExpense_' + i).val());
+
+                //        if (thisExpens < 1) {
+                //            bootbox.alert("Budget Amount can be not zero ")
+                //            ReturnValue = false;
+                //            break;
+
+                //        }
+                //    }
+                //}
+
+
+
+
+
+            }
+
+
+            var remarksof = CKEDITOR.instances['Remarks'].getData();
+
+            console.log(remarksof.length);
+
+            if (remarksof.length <= 9) {
+
+                bootbox.alert("Comment limit greater then 5 character")
+                ReturnValue = false;
+
+            }
+
+
+        }
+
+
+        //var datahmtl = window.btoa($('#HtmlBox').val())
+        //$('#HtmlBox').val(datahmtl);
+
+
+        //var dataComent = window.btoa($('#Remarks').text())
+        //$('#Remarks').val(dataComent);
+
+
+
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are you sure to process this minute!", function (result) {
+
+                if (result) {
+
+
+
+
+                    try {
+
+
+
+                        if ($('#IsTech').prop("checked") == false) {
+
+
+                            bootbox.confirm("Please do select the check box while giving techincal comments/approval.", function (result) {
+
+                                if (result) {
+                              $("#myform").submit();
+
+                                }
+
+
+                            });
+
+
+                        }
+                        else {
+
+                         $("#myform").submit();
+
+                        }
+
+                        if (typeof  $('#IsTech').prop("checked") == 'undefined') {
+
+                       $("#myform").submit();
+
+                        }
+
+                    } catch (e) {
+                     $("#myform").submit();
+
+                    }
+
+
+
+
+
+                }
+
+
+            });
+        }
+
+    }
+
+
+
+    function checkvalue() {
+
+        console.log($('#IsApprovec').is(":checked"));
+
+        if ($('#IsApprovec').is(":checked") == true) {
+            $('#IsCancelc').prop('checked', false);
+            $('#Isput').prop('checked', false);
+            $('#IsCompletec').prop('checked', false);
+            $('#IsRec').prop('checked', false);
+
+
+
+            CKEDITOR.instances['Remarks'].setData('<p>Approved.</p>')
+
+        }
+        else {
+            CKEDITOR.instances['Remarks'].setData('')
+
+
+        }
+
+
+
+    }
+
+    function Dcheckvalue() {
+
+
+        if ($('#IsCancelc').is(":checked") == true) {
+            $('#IsApprovec').prop('checked', false);
+            $('#Isput').prop('checked', false);
+            $('#IsCompletec').prop('checked', false);
+            $('#IsRec').prop('checked', false);
+
+
+            CKEDITOR.instances['Remarks'].setData('<p>Disapproved.</p>')
+
+        }
+        else {
+            CKEDITOR.instances['Remarks'].setData('')
+
+
+        }
+
+
+    }
+
+
+
+    function Recommendedvalue() {
+
+
+        if ($('#IsRec').is(":checked") == true) {
+            $('#IsCancelc').prop('checked', false);
+            $('#IsApprovec').prop('checked', false);
+            $('#IsCompletec').prop('checked', false);
+            $('#Isput').prop('checked', false);
+
+
+
+            CKEDITOR.instances['Remarks'].setData('<p>Recommended.</p>')
+            @{ var IsDirectApprovaldata= new SAGERPNEW2018.Models.SystemLogin().GetUser().IsDirectApproval; }
+
+            if ('@IsDirectApprovaldata' == 'True') {
+                $("#NEwForwardTo").val(1407)
+
+                $("#NEwForwardTo").selectpicker('refresh');
+
+            }
+
+
+        }
+        else {
+            CKEDITOR.instances['Remarks'].setData('')
+
+
+        }
+
+
+
+    }
+
+
+    function PutUpcheckvalue() {
+
+
+        if ($('#Isput').is(":checked") == true) {
+            $('#IsCancelc').prop('checked', false);
+            $('#IsApprovec').prop('checked', false);
+            $('#IsCompletec').prop('checked', false);
+            $('#IsRec').prop('checked', false);
+
+            CKEDITOR.instances['Remarks'].setData('<p>Putup detail/discuss.</p>')
+
+        }
+        else {
+            CKEDITOR.instances['Remarks'].setData('')
+
+
+        }
+
+
+
+    }
+
+
+    function completecheckvalue() {
+
+
+        if ($('#IsCompletec').is(":checked") == true) {
+            $('#IsCancelc').prop('checked', false);
+            $('#IsApprovec').prop('checked', false);
+            $('#Isput').prop('checked', false);
+            $('#IsRec').prop('checked', false);
+
+
+            CKEDITOR.instances['Remarks'].setData('<p>Completed.</p>')
+
+        }
+        else {
+            CKEDITOR.instances['Remarks'].setData('')
+
+
+        }
+
+
+
+    }
+
+
+
+    function saveautodata() {
+        var editor_data = CKEDITOR.instances['HtmlBox'].getData();
+        var url = '@Url.Action("SaveAuto", "Eminute")';
+        var data = { Html: editor_data, Remarks: $('#Remarks').val() };
+        $.post(url, data, function (result) {
+
+        });
+
+    }
+
+    function calcultebudget() {
+        debugger
+        try {
+
+            var budgetprovence = $("#budgetprovence").val().replace(",", "").replace(",", "").replace(",", "").replace(",", "");
+            var Alraedyexpense = $("#expense").val().replace(",", "").replace(",", "").replace(",", "").replace(",", "");
+            var ThisExpense = $("#BudgetAmount").val().replace(",", "").replace(",", "").replace(",", "").replace(",", "");
+
+
+            //var alreadyof   =    parseFloat(Alraedyexpense) - parseFloat(ThisExpense)
+
+
+            var TotalExpense = parseFloat(Alraedyexpense) + parseFloat(ThisExpense);
+            // var TotalExpense = parseFloat(Alraedyexpense)   ;
+
+            $("#TotalExpense").val(TotalExpense.toLocaleString());
+
+            var BudgetBalance = parseFloat(budgetprovence) - parseFloat(TotalExpense);
+            $("#BudgetBalance").val(BudgetBalance.toLocaleString());
+
+
+        } catch (e) {
+
+        }
+
+
+
+
+    }
+
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+
+
+        if ('@Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsDeleteAT)' == 'True') {
+            $(".userDellbtn").show();
+        }
+
+        if ('@ViewData["Editmode"]' == 'False') {
+
+            var x = setInterval(function () {
+                saveautodata();
+
+            }, 10000)
+            $('#myModal').modal();
+
+            var d = new Date();
+            $('#FinancialYear').val(d.getFullYear());
+
+        }
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+            debugger
+
+            $('#SelectInfo').selectpicker('val', [@Model.ForInfo]);
+            //    $("#Priority").attr('disabled', 'disabled');
+            $("#Type").attr('disabled', 'disabled');
+            $("#estimatedcostRange").attr('disabled', 'disabled');
+
+            $("#Subtype").attr('disabled', 'disabled');
+            $('#Subject').prop('readonly', true);
+
+
+            $('#HtmlBox').prop('readonly', true);
+            $('#estimatedcost').prop('readonly', true);
+
+            var htmlboxdata = $('#divdata').val();
+            $('#divhtmlbox').html(htmlboxdata.replace('&lt', '<').replace('&gt', '>'));
+
+            $('#divhtmlbox').scrollTop($('#divhtmlbox')[0].scrollHeight);
+
+        }
+
+        if ('@ViewData["Budgetmode"]' == 'False') {
+
+            $("#SupplierAccountNo").attr('disabled', 'disabled');
+            $("#FinancialYear").attr('disabled', 'disabled');
+
+            $("#BudgetHead").attr('disabled', 'disabled');
+            $("#BudgetSubHead").attr('disabled', 'disabled');
+            $('#BudgetAmount').prop('readonly', true);
+
+
+
+        }
+
+
+       // calcultebudget();
+
+        $("#MinuteDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+
+        var DateOfB = '@Model.MinuteDate.Value.Day' + '/' + '@Model.MinuteDate.Value.Month' + '/' + '@Model.MinuteDate.Value.Year';
+
+
+
+
+        $('#MinuteDate').datepicker('setDate', DateOfB);
+
+
+        $('.selectpicker').selectpicker('refresh');
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+        if ('@Model.IsBudget' == 'False' || '@Model.detailistbudget'==''  ) {
+
+            AddBudgetData(0, true)
+
+        }
+
+
+
+        if ('@Model.detailistDoc.Count()' < 1) {
+            AddDocumentData(0, true)
+
+        }
+
+    });
+
+
+
+
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+
+    function AddDocumentData(ThisRowID, FromDocumentDotReady) {
+        debugger
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("lisdescription_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Please Attach file or image and description must be enter.");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#DocBodyID tr").each(function () {
+
+            if (document.getElementById("lisdescription_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("DocDetailRowNo").value = $('#DocBodyID tr:last').attr('id');
+                document.getElementById("DocDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("DocDetailRowNo").value = 0
+            }
+
+
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + document.getElementById("DocDetailRowNo").value + '">';
+            dtProductDetailInfoHtml += '<td class="input"> <input   class="form-control"  id="lisdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="lisdescription"    /> </td>';
+            dtProductDetailInfoHtml += '<td > @*@Html.TextBoxFor(x => x.File, new { type = "file", multiple = "true" })*@      <input type="file" class="form-control"   onchange="ValidateSize(this)"   id="DocFile_' + document.getElementById("DocDetailRowNo").value + '" name="DocFile" />   </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+            '" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"> </span><span><strong></strong></span> Add</button> <button type="button" style="display:none"  id="detailDocDataDelete_'
+            + document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-ms btn-circle userDellbtn"   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocBodyID").append(dtProductDetailInfoHtml);
+
+            document.getElementById("DocImagePath_" + document.getElementById("DocDetailRowNo").value);
+
+        }
+    }
+    function DeleteDocDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocBodyID tr").remove();
+            AddDocumentData(0, true);
+        }
+    }
+
+
+
+    $('#BudgetAmount').change(function () {
+
+       var amount= $('#BudgetAmount').val();
+       if (parseFloat(amount) > 0) {
+           $('#IsBudget').prop('checked', true);
+
+       }
+       else {
+
+           $('#IsBudget').prop('checked', false);
+
+       }
+
+
+
+    });
+
+    $('#chIsDepartment').click(function () {
+
+        if ($(this).is(':checked')) {
+            var Data = { id: 0, typeid: $('#Type').val(), istechperson: $('#techpesonReq').val() }
+
+            $.ajax({
+                async: false,
+                url: "/Eminute/loadFarwardUser",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+
+                        var ForwardTo = $('#NEwForwardTo');
+                        ForwardTo.empty();
+
+                        $.each(data,
+                            function (index, item) {
+
+                                var datafil = new Option(item.Text, item.Value);
+                                ForwardTo.append(datafil);
+                            });
+
+                        ForwardTo.selectpicker('refresh');
+
+                        ForwardTo.selectpicker({
+                            liveSearch: true,
+                            size: 10,
+
+                            // width: 'auto',
+                            container: "body"
+                        });
+
+
+
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+
+
+
+
+        } else {
+
+
+
+            var Data = { id: 1, typeid: $('#Type').val(), istechperson: $('#techpesonReq').val() }
+
+            $.ajax({
+                async: false,
+                url: "/Eminute/loadFarwardUser",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+
+                        var ForwardTo = $('#NEwForwardTo');
+                        ForwardTo.empty();
+
+                        $.each(data,
+                            function (index, item) {
+                                var datafil = new Option(item.Text, item.Value);
+                                ForwardTo.append(datafil);
+                            });
+
+                        ForwardTo.selectpicker('refresh');
+
+                        ForwardTo.selectpicker({
+                            liveSearch: true,
+                            size: 10,
+
+                            // width: 'auto',
+                            container: "body"
+                        });
+
+
+
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+        }
+    });
+
+
+    function loadCC() {
+
+        var Data = { id: $('#ForwardTo').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/loadFarwardUser1",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var SelectInfo = $('#SelectInfo');
+                    SelectInfo.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            SelectInfo.append(datafil);
+                        });
+
+                    SelectInfo.selectpicker('refresh');
+
+                    SelectInfo.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function loadCC1() {
+
+
+        var Data = { id: $('#NEwForwardTo').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/loadFarwardUser1",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var SelectInfo = $('#SelectInfo');
+                    SelectInfo.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            SelectInfo.append(datafil);
+                        });
+
+                    SelectInfo.selectpicker('refresh');
+
+                    SelectInfo.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function LoadForwardEmploye() {
+        debugger
+
+
+    }
+
+    function print() {
+
+
+        var currentdate = new Date();
+        var datetime = "Now: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth() + 1) + "/"
+                    + currentdate.getFullYear() + " Time: "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
+
+
+        var origin = window.location.origin;
+
+
+      //  let popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+        let popupWin = window.open('', '_blank', 'height=500, width=500');
+
+        popupWin.document.open();
+
+
+        var minuteStatusPre = '';
+        if ($('#minuteStatusPre').val() == "0") {
+            minuteStatusPre = 'New';
+
+        }
+        else if ($('#minuteStatusPre').val() == "1") {
+            minuteStatusPre = 'Pending';
+
+        }
+        else if ($('#minuteStatusPre').val() == "2") {
+            minuteStatusPre = 'Approved';
+
+        }
+        else if ($('#minuteStatusPre').val() == "3") {
+            minuteStatusPre = 'Completed';
+
+        }
+        else if ($('#minuteStatusPre').val() == "4") {
+            minuteStatusPre = 'Disapproved';
+
+        }
+
+
+        var status = '';
+        if ($('#BillClear').val() != 'False') {
+            status = 'CLEARED';
+        }
+        else {
+            status = '';
+        }
+
+        var form = '';
+        form += '<!DOCTYPE html>';
+        form += '<html><head><title>Minute -Al-Shifa Trust Eye Hospitals</title><link rel="stylesheet" media="print" href="print.css" />';
+        form += '<link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class ="img-rounded" type="image/x-icon"> <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon">';
+        form += '<style> #background { position: absolute; z-index: 0; background: white;display: block;min-height: 50%; min-width: 50%;color: yellow; } #content {position: absolute;z-index: 1;}#bg-text { color: lightgrey;font-size: 120px; transform: rotate(300deg);-webkit-transform: rotate(300deg);margin-top:340px; } </style>   </head>';
+        form += '<body   style="overflow-y:auto;font-family: sans-serif;font-size: 12px">    <button id="btnid" onclick="printDiv()">Print</button><div id="background">    <p id="bg-text">' + status + '  </p> </div>    <div id="content"> <div id="divName"><table><tbody> ';
+        form += '<tr><td><img src="' + origin + '/AppFiles/Images/logo.png" height="100" width="100"></td>'
+        form += '<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td>'
+        form += '<td><center  > <h2>Al-Shifa Trust Eye Hospital</h2></center><br /><h3 style="margin-top:-24px;">E-Minute Sheet</h3></td>'
+        form += '</tr></tbody></table> <hr />';
+        form += '<table> <tbody> <tr>';
+        form += '<td><label><strong>EM No: </strong></label></td>';
+        form += '<td><label ><strong style="color: red;"> ' + $('#MinuteCode').val() + '  </strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Location: </strong></label></td>';
+        form += '<td><label><strong >' + $('#LocationProject').val() + '</strong></la.combel></td> </tr><tr>';
+        form += '<td><label><strong>Department: </strong></label></td><td><label><strong >' + $('#InitiatedDepartment').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Date: </strong></label></td><td><label><strong> ' + $('#MinuteDate').val() + '</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Initiated By: </strong></label></td><td><label><strong>' + $('#Initiatedby').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Priority: </strong></label></td><td><label><strong>' + $("#Priority option:selected").text(); +'</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Type: </strong></label></td><td><label><strong>' + $("#Type option:selected").text().toUpperCase(); +'</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Status:</strong></label></td><td><label><strong  style="font-weight: 1000;font-size: medium;" >' + minuteStatusPre + '</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Subject/Title: </strong></label></td><td><label><strong>' + $('#Subject').val() + ' </strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Amount: </strong></label></td><td><label><strong style="font-weight: 1000;font-size: medium;" > ' + $('#BudgetAmountabc').val() + '   </strong></label></td>';
+        form += ' </tr><tr><td colspan="4"><hr /></td><td></td><td></td><td></td><td></td></tr>';
+        form += '<tr><td colspan="4">' + $('#htmlboxValue').val() + '</td><td></td><td ></td><td></td></tr></tbody>';
+        form += '</table><hr /><p>Printed By ' + $('#Activeuser').text() + ' ' + datetime + ' </p>  <br/><span id="abcid" style="color:Green;font-weight:bold;"><span style="font-size:large;">P</span>lease consider the environment before printing this document. <span style="font-size:large;">D</span>on\'t print this unless you really need to.</span> </div></div>';
+
+        // form += '<button onclick="printDiv()" >Print</button>';
+        //form += '<script>function printDiv() {var printContents = document.getElementById("divName").innerHTML;var originalContents = document.body.innerHTML; document.body.innerHTML = printContents; window.print();document.body.innerHTML = originalContents; }'
+        form += '<script>function printDiv() { var x = document.getElementById("btnid"); x.style.display = "none"; var printContents = document.getElementById("content").innerHTML; var originalContents = document.body.innerHTML; document.body.innerHTML = printContents; document.body.innerHTML = originalContents; window.print("","", "height=500, width=500"); }'
+
+        form += '</'
+        form += 'script>'
+        form += '</body></html>'
+
+        console.log(form)
+
+        popupWin.document.write(form);
+        popupWin.document.close();
+
+
+
+
+        //      onload = "window.print();window.close()"
+        //  <!DOCTYPE html>
+        //  <html>
+        //    <head>
+        //      <title>Minute -Al-Shifa Trust Eye Hospitals</title>
+        //      <meta http-equiv=content-type content="text/html; charset=UTF-8">
+        //        <link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class="img-rounded" type="image/x-icon">
+        //        <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon">
+        //     </head>
+        //<body onload="window.print();window.close()">
+
+
+
+
+        //</body>
+        //  </html>
+
+    }
+
+
+
+
+    function loadSubtype() {
+
+
+        if ($('#Type').val() == "0") {
+
+            var TypeSub = $('#Subtype');
+            TypeSub.empty();
+            TypeSub.append(new Option("--Please Select--", "0"));
+            TypeSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { type: $('#Type').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/getSubtype",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var TypeSub = $('#Subtype');
+                    TypeSub.empty();
+                    TypeSub.append(new Option("--Please Select--", "0"));
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            TypeSub.append(datafil);
+                        });
+
+                    TypeSub.selectpicker('refresh');
+
+                    TypeSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+        loadFixedAssitListTypeWise();
+
+    }
+
+
+
+
+
+
+
+    function loadFixedAssitListTypeWise() {
+
+
+        var Data = { typeid: $('#Type').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/LoadFixedAssiListTypewise",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+
+                    console.log(data)
+
+                    var b = 1;
+                    var category = "";
+                    var html = '';
+                    var grouping = "";
+
+                    for (var i = 0; i < data.length; i++) {
+
+                        if (category == "") {
+                            html += '<tr style="background-color: darkgoldenrod;"><td colspan=5><strong> ' + data[i].Cat_Name.toUpperCase() + '</strong></td> </tr>'
+
+                        }
+                        else if (category.toLowerCase() != data[i].Cat_Name.toLowerCase()) {
+
+                            html += '<tr style="background-color: darkgoldenrod;"> <td colspan=5><strong>' + data[i].Cat_Name.toUpperCase() + '</strong></td> </tr>'
+
+                        }
+
+                        category = data[i].Cat_Name;
+
+
+                        if (grouping == "") {
+                            html += '<tr style="background-color: aquamarine;"> <td colspan=5><strong>' + data[i].assetname.toUpperCase() + '</strong></td></tr>'
+
+                        }
+                        else if (grouping.toLowerCase() != data[i].assetname.toLowerCase()) {
+
+                            html += '<tr style="background-color: aquamarine;"><td colspan=5><strong>' + data[i].assetname.toUpperCase() + '</strong></td></tr>'
+                            b = 1;
+                        }
+
+                        grouping = data[i].assetname;
+                        html += '<tr id="' + b + '">'
+                        html += '<td>' + b + '</td>'
+                        html += '<td>' + data[i].assetname.toUpperCase() + ' </td>'
+                        html += '<td>' + data[i].assetid.toUpperCase() + '</td>'
+                        html += '<td>' + data[i].AssetModel.toUpperCase() + ' </td>'
+                        html += '<td>' + data[i].AssetDesc.toUpperCase() + '</td>'
+                        html += '</tr>'
+                        b++;
+                    }
+
+
+
+
+                    $('#fixBodyID').html(html);
+
+                    loadFixedAssitListTypeSubWise()
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+
+
+
+    function loadFixedAssitListTypeSubWise() {
+
+
+        var Data = { typeSubid: $('#Subtype').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/LoadFixedAssiListTypeSubwise",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+
+                    console.log(data)
+
+                    var b = 1;
+                    var category = "";
+                    var html = '';
+                    var grouping = "";
+
+                    for (var i = 0; i < data.length; i++) {
+
+                        if (category == "") {
+                            html += '<tr style="background-color: darkgoldenrod;"><td colspan=5><strong> ' + data[i].Cat_Name.toUpperCase() + '</strong></td> </tr>'
+
+                        }
+                        else if (category.toLowerCase() != data[i].Cat_Name.toLowerCase()) {
+
+                            html += '<tr style="background-color: darkgoldenrod;"> <td colspan=5><strong>' + data[i].Cat_Name.toUpperCase() + '</strong></td> </tr>'
+
+                        }
+
+                        category = data[i].Cat_Name;
+
+
+                        if (grouping == "") {
+                            html += '<tr style="background-color: aquamarine;"> <td colspan=5><strong>' + data[i].assetname.toUpperCase() + '</strong></td></tr>'
+
+                        }
+                        else if (grouping.toLowerCase() != data[i].assetname.toLowerCase()) {
+
+                            html += '<tr style="background-color: aquamarine;"><td colspan=5><strong>' + data[i].assetname.toUpperCase() + '</strong></td></tr>'
+                            b = 1;
+                        }
+
+                        grouping = data[i].assetname;
+                        html += '<tr id="' + b + '">'
+                        html += '<td>' + b + '</td>'
+                        html += '<td>' + data[i].assetname.toUpperCase() + ' </td>'
+                        html += '<td>' + data[i].assetid.toUpperCase() + '</td>'
+                        html += '<td>' + data[i].AssetModel.toUpperCase() + ' </td>'
+                        html += '<td>' + data[i].AssetDesc.toUpperCase() + '</td>'
+                        html += '</tr>'
+                        b++;
+                    }
+
+
+
+
+                    $('#fixBodyID').html(html);
+
+                    console.log(html)
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+
+
+    function loadSubhead() {
+
+
+        if ($('#BudgetHead').val() == "0") {
+
+            var BudgetSub = $('#BudgetSubHead');
+            BudgetSub.empty();
+            BudgetSub.append(new Option("--Please Select--", "0"));
+            BudgetSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { headid: $('#BudgetHead').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/getSubHead",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var BudgetSub = $('#BudgetSubHead');
+                    BudgetSub.empty();
+                    BudgetSub.append(new Option("--Please Select--", "0"));
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            BudgetSub.append(datafil);
+                        });
+
+                    BudgetSub.selectpicker('refresh');
+
+                    BudgetSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+
+    }
+
+
+
+
+    function ValidateSize(file) {
+   //     var FileSize = file.files[0].size / 1024 / 1024; // in MB
+
+        var FileSize = file.files[0].size / 1024 / 1024;
+
+        if (FileSize > 10) {
+            bootbox.alert('File size exceeds 10 MB');
+            $(file).val(''); //for clearing with Jquery
+        } else {
+
+        }
+    }
+
+
+
+
+    function AddBudgetData(ThisRowID, FromDocumentDotReady) {
+        debugger
+        var dtBudgetDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("BudgetHeadID_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Please Select Budget Head.");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#BudgetBodyID tr").each(function () {
+
+            if (document.getElementById("BudgetHeadID_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("BudgetDetailRowNo").value = $('#BudgetBodyID tr:last').attr('id');
+                document.getElementById("BudgetDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("BudgetDetailRowNo").value = 0
+            }
+
+
+
+
+
+            var q = document.getElementById("BudgetDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+            debugger;
+
+
+            dtBudgetDetailInfoHtml = '';
+            dtBudgetDetailInfoHtml = '<tr id="' + document.getElementById("BudgetDetailRowNo").value + '">';
+
+
+
+
+            var ProjectData = '@Model.JsonProject'.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+
+            var jsonConvertedProject = JSON.parse(ProjectData);
+            var groups = '';
+            for (var i = 0; i < jsonConvertedProject.length; i++) {
+                groups += '<option value="' + jsonConvertedProject[i]['Value'] + '">' + jsonConvertedProject[i]['Text'] + '</option>';
+            }
+
+            dtBudgetDetailInfoHtml += '<td  > <select style="" class="form-control selectpicker" id="BudgetProjectID_' + q + '" name="BudgetProjectlist"   onchange="loadProject(this)"   class="form-control"> ' + groups + ' </select>  </td>';
+
+
+            var groups = '';
+            dtBudgetDetailInfoHtml += '<td  > <select style="" class="form-control selectpicker" id="BudgetHeadID_' + q + '" name="BudgetHeadID"    onchange= "loadheadCostcentrwise(this)" class="form-control">  </select>  </td>';
+
+
+             var HeadFinancalYearData = '@Model.JsonHeadFinancalYear'.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+
+            var jsonConverted = JSON.parse(HeadFinancalYearData);
+
+            for (var i = 0; i < jsonConverted.length; i++) {
+                groups += '<option value="' + jsonConverted[i]['Value'] + '">' + jsonConverted[i]['Text'] + '</option>';
+            }
+
+            dtBudgetDetailInfoHtml += '<td  > <select style="" class="form-control selectpicker" id="FinancalYear_' + q + '" name="FinancalYear"   class="form-control"  onchange="loadHeadDetail(this)"    > ' + groups + ' </select>  </td>';
+
+
+
+            var groups = '';
+            dtBudgetDetailInfoHtml += '<td  > <select style="" class="form-control selectpicker" id="BudgetSubID_' + q + '" name="BudgetSubID"  class="form-control" onchange="loadHeadDetail(this)"> ' + groups + '     </select>  </td>';
+
+
+            dtBudgetDetailInfoHtml += '<td >  <input  type="text"  class="form-control" onkeypress="return isNumber(event)" value="0"  readonly="readonly"  id="budgetprovence_' + q + '" name="BudgetPro" /> </td>';
+            dtBudgetDetailInfoHtml += '<td >  <input  type="text"  class="form-control" onkeypress="return isNumber(event)" value="0" readonly="readonly"  id="AlreadyExpense_' + q + '" name="AlreadyExpense" /> </td>';
+            dtBudgetDetailInfoHtml += '<td >  <input  type="text"  class="form-control"    onkeypress="return isNumber(event)" value="0"  id="ThisExpense_' + q + '" name="ThisExpense"  readonly="readonly"    onchange="calculteTheValue()" /> </td>';
+            dtBudgetDetailInfoHtml += '<td >  <input  type="text"  class="form-control" onkeypress="return isNumber(event)" value="0" readonly="readonly"  id="TotalExpense_' + q + '" name="TotalExpenses" /> </td>';
+            dtBudgetDetailInfoHtml += '<td >  <input  type="text"  class="form-control" onkeypress="return isNumber(event)" value="0" readonly="readonly"  id="Balance_' + q + '" name="Balance" /> </td>';
+
+
+            dtBudgetDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailBudgetDataAdd_' + document.getElementById("BudgetDetailRowNo").value +
+          '" value="+" onclick="AddBudgetData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"> </span><span><strong></strong></span> </button> <button type="button" style="" id="detailBudgetDataDelete_'
+          + document.getElementById("BudgetDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteBudgetDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtBudgetDetailInfoHtml += '</tr>';
+            $("#BudgetBodyID").append(dtBudgetDetailInfoHtml);
+
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10,
+
+                // width: 'auto',
+                container: "body"
+            });
+
+
+        }
+    }
+    function DeleteBudgetDetailData(element, rowid) {
+
+
+        bootbox.confirm("Are you sure to delete!", function (result) {
+
+            if (result) {
+              //  alert('asd')
+
+                //$('#BudgetAmount').attr('readonly', false);
+
+                //$("#BudgetAmount").val(0);
+
+
+                var Next = $(element).parent().parent().next("tr").length;
+                var Prev = $(element).parent().parent().prev("tr").length;
+
+
+
+                var group = "";
+                group = { project: $('#BudgetProjectID_' + rowid).val(), fy: $('#FinancalYear_' + rowid).val(), budgethead: $('#BudgetHeadID_' + rowid).val(), subhead: $('#BudgetSubID_' + rowid).val(), eminute: $("#MinuteCode").val() }
+                // group = $("#" + a.id).val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Eminute/removebudget",
+                    data: group,
+                    dataType: "json",
+                    success: function (data) {
+                        //var c = JSON.parse(data);
+                        //console.log(c);
+
+
+
+                    },
+                    error: function () {
+                        //location.reload();
+                    }
+                });
+
+
+
+                if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+                    $(element).parent().parent().remove();
+                }
+                else {
+                    $("#BudgetBodyID tr").remove();
+                    AddBudgetData(0, true);
+                }
+                calcutebuget()
+
+            }
+
+
+        });
+
+
+
+
+    }
+
+
+    function calcutebuget() {
+
+        var CurrentExpanseAmount = 0;
+
+        for (var i = 0; i < $('#BudgetBodyID tr').length ; i++) {
+
+
+            try {
+                var thisExpens = parseFloat($('#ThisExpense_' + i).val().replace(",", "").replace(",", "").replace(",", "").replace(",", ""));
+
+
+            } catch (e) {
+
+            }
+
+            CurrentExpanseAmount = CurrentExpanseAmount + parseFloat(thisExpens)
+        }
+
+        $('#BudgetAmount').val(CurrentExpanseAmount)
+
+
+        if (CurrentExpanseAmount > 0) {
+            $('#BudgetAmount').attr('readonly', true);
+
+            $('#IsBudget').prop('checked', true);
+        }
+        else {
+
+            $('#BudgetAmount').attr('readonly', false);
+            $('#IsBudget').prop('checked', false);
+
+
+
+        }
+        otherpayableandAmounttolal();
+    }
+
+
+
+
+    function loadSubHead(a) {
+        debugger;
+
+
+        var idrow = a.id.split('_')
+
+
+
+        var group = "";
+        group = { headid: $("#" + a.id).val(), projectId: $('#BudgetProjectID_' + idrow[1]).val() }
+        // group = $("#" + a.id).val();
+        $.ajax({
+            type: "POST",
+            url: "/Eminute/getSubHead",
+            data: group,
+            dataType: "json",
+            success: function (data) {
+                //var c = JSON.parse(data);
+                //console.log(c);
+
+                //alert(c)
+                for (var i = 0; i < data.length; i++) {
+                    group += "<option value = '" + data[i]["Value"] + "'>" + data[i]["Text"] + "   </option>";
+                }
+
+                $("#BudgetSubID_" + idrow[1]).empty();
+                $("#BudgetSubID_" + idrow[1]).append(group);
+
+                $('.selectpicker').selectpicker('refresh');
+
+
+                loadHeadDetail(a)
+
+            },
+            error: function () {
+                //location.reload();
+            }
+        });
+
+    }
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
+
+    function loadProject(a) {
+
+
+
+        var idrow = a.id.split('_')
+
+
+
+        var group = "";
+        group = { projectId: $('#BudgetProjectID_' + idrow[1]).val() }
+        // group = $("#" + a.id).val();
+        $.ajax({
+            type: "POST",
+            url: "/Eminute/loadCostCenter",
+            data: group,
+            dataType: "json",
+            success: function (data) {
+                //var c = JSON.parse(data);
+                //console.log(c);
+
+                //alert(c)
+                for (var i = 0; i < data.length; i++) {
+                    group += "<option value = '" + data[i]["Value"] + "'>" + data[i]["Text"] + "   </option>";
+                }
+
+                $("#BudgetHeadID_" + idrow[1]).empty();
+                $("#BudgetHeadID_" + idrow[1]).append(group);
+
+                $('.selectpicker').selectpicker('refresh');
+
+
+              //  loadHeadDetail(a)
+
+            },
+            error: function () {
+                //location.reload();
+            }
+        });
+
+    }
+
+
+
+
+    function loadheadCostcentrwise(a) {
+
+
+
+        var idrow = a.id.split('_')
+
+
+
+        var group = "";
+        group = { costcenter: $('#BudgetHeadID_' + idrow[1]).val() }
+        // group = $("#" + a.id).val();
+        $.ajax({
+            type: "POST",
+            url: "/Eminute/loadHeadCostCenter",
+            data: group,
+            dataType: "json",
+            success: function (data) {
+                //var c = JSON.parse(data);
+                //console.log(c);
+
+                //alert(c)
+                for (var i = 0; i < data.length; i++) {
+                    group += "<option value = '" + data[i]["Value"] + "'>" + data[i]["Text"] + "   </option>";
+                }
+
+                $("#BudgetSubID_" + idrow[1]).empty();
+                $("#BudgetSubID_" + idrow[1]).append(group);
+
+                $('.selectpicker').selectpicker('refresh');
+
+
+
+            },
+            error: function () {
+                //location.reload();
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+    function loadHeadDetail(a) {
+
+        var splitdata = a.id.split('_')
+
+
+        var idrow = splitdata[1];
+        $("#Balance_" + idrow).val(0)
+        $("#TotalExpense_" + idrow).val(0)
+        $("#AlreadyExpense_" + idrow).val(0)
+        $("#budgetprovence_" + idrow).val(0)
+        $("#ThisExpense_" + idrow).val(0)
+
+
+
+        document.getElementById("ThisExpense_" + idrow).readOnly = false;
+
+
+
+        var Data = { headid: $('#BudgetSubID_' + idrow).val(), subhead: $('#BudgetSubID_' + idrow).val(), fyear: $('#FinancalYear_' + idrow).val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/getHeadDetail",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+                    console.log(data)
+                    $("#AlreadyExpense_" + idrow).val(data.Totalexpense.toLocaleString())
+                    $("#budgetprovence_" + idrow).val(data.BudgetPro.toLocaleString())
+                    $("#TotalExpense_" + idrow).val(data.Totalexpense.toLocaleString())
+
+
+                    //var budgetpro = data.BudgetPro;
+                    //var budgetexpense = data.Expense;
+
+                    //var balance = parseFloat(budgetpro) - parseFloat(budgetexpense)
+                    $("#Balance_" + idrow).val(data.balance.toLocaleString())
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+    function calculteTheValue() {
+
+
+        for (var i = 0; i < $('#BudgetBodyID tr').length; i++) {
+            var currentExpense = $('#ThisExpense_' + i).val().replace(",", "").replace(",", "").replace(",", "").replace(",", "");
+            var Alreadyexpens = $('#AlreadyExpense_' + i).val().replace(",", "").replace(",", "").replace(",", "").replace(",", "");
+            var CurrentTotalExp = parseFloat(currentExpense) + parseFloat(Alreadyexpens);
+
+
+
+
+            var BudgetPro = $('#budgetprovence_' + i).val().replace(",", "").replace(",", "").replace(",", "").replace(",", "");
+
+            var balance = (parseFloat(BudgetPro) - (parseFloat(Alreadyexpens) + parseFloat(currentExpense)));
+
+
+            //   var CurrentTotalBalnc = parseFloat(Balance) - parseFloat(currentExpense);
+
+            $('#Balance_' + i).val(balance.toLocaleString())
+            $('#TotalExpense_' + i).val(CurrentTotalExp.toLocaleString())
+
+
+
+        }
+
+
+        calcutebuget();
+
+    }
+
+
+    function onpriortycolor() {
+
+        if ($("#Priority").val() == "1") {
+            $('#Priority').selectpicker('setStyle', 'btn-danger');
+            $('#Priority').selectpicker('refresh');
+
+
+        }
+
+    }
+
+
+
+
+    $("#Subject").keypress(function (event) {
+        var inputValue = event.charCode;
+        //alert(inputValue);
+        if (!((inputValue > 64 && inputValue < 91) || (inputValue > 96 && inputValue < 123) || (inputValue == 32) || (inputValue > 47 && inputValue < 58) || (inputValue == 32) || (inputValue == 0))) {
+            event.preventDefault();
+        }
+    });
+
+
+
+    window.onload = function () {
+        var oTextbox = new AutoSuggestControl("Subject");
+
+    }
+
+
+    //$('Remarks').ckeditor();
+    //CKEDITOR.on('instanceReady', function (evt) {
+    //    CKEDITOR.instances.contractData.execCommand('AutoSuggestControl');
+    //});
+
+
+    //$('.CKeditor').ckeditor();
+    //for (var i in CKEDITOR.instances) {
+    //    CKEDITOR.instances[i].on('change', function () {
+    //        alert('text changed!');
+
+    //      //  CKEDITOR.instances['Remarks']
+    //        var oTextbox = new AutoSuggestControl("Remarks");
+    //    });
+    //}
+
+
+    function StartMic() {
+
+        $('#basicEdit').modal();
+    }
+
+
+    function assignDatatextToHtmlbox() {
+
+      var textdata=  $('#note-textarea').val();
+
+
+      if ('@ViewData["Editmode"]' == 'False') {
+          CKEDITOR.instances['HtmlBox'].setData('<p> ' + textdata + '</p>')
+      } else {
+
+          CKEDITOR.instances['Remarks'].setData('<p> ' + textdata + '</p>')
+
+      }
+
+    }
+
+    function otherpayableandAmounttolal() {
+        debugger
+
+        var Othrpayable = $('#OtherPayable').val();
+        var BudgetAmt = $('#BudgetAmount').val();
+        if (BudgetAmt=='') {
+            BudgetAmt = 0;
+        }
+        if (Othrpayable == '') {
+            Othrpayable = 0;
+        }
+      var totalpayble=  parseFloat(BudgetAmt)+  parseFloat(Othrpayable)
+      $('#ptotalAmount').val(totalpayble.toLocaleString());
+
+    }
+
+
+    function showmodeltech() {
+
+
+        var Data = { code: $('#MinuteCode').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/getTechnicalPersonComment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+                    console.log(data)
+
+                    $('#divtechbox').html(data)
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+        $('#TechnicalPid').modal();
+
+
+
+
+    }
+
+
+    //favorite working
+
+
+    $("#favid").change(function () {
+
+        if ($('#favid').val()!="0") {
+
+            var favcoment = $("#favid option:selected").text();
+
+            CKEDITOR.instances['Remarks'].setData('<p> ' + favcoment + '</p>')
+        }
+
+
+    });
+
+
+
+
+
+    $("#btnfav").click(function () {
+        $('#Favmodel').modal();
+
+    });
+
+
+
+    $("#btnSavefav").click(function () {
+
+
+
+        var Data = { text: $('#txtfavtxt').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/favouriteAdd",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+                    console.log(data)
+
+                    loadfavDrop();
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    });
+
+
+
+
+
+
+    function loadfavDrop() {
+
+        var group = '';
+
+        group = { id:0 }
+        // group = $("#" + a.id).val();
+        $.ajax({
+            type: "POST",
+            url: "/Eminute/loadfavlist",
+            data: group,
+            dataType: "json",
+            success: function (data) {
+
+                $("#favid").empty();
+
+                $("#favid").append(new Option("--Please Select--", "0"));
+
+                for (var i = 0; i < data.length; i++) {
+                    group += "<option value = '" + data[i]["Value"] + "'>" + data[i]["Text"] + "   </option>";
+                }
+
+
+                $("#favid").append(group);
+
+                $('.selectpicker').selectpicker('refresh');
+
+
+                loadfavtable()
+
+            },
+            error: function () {
+                //location.reload();
+            }
+        });
+
+    }
+
+
+
+    function loadfavtable() {
+
+        var html = '';
+
+        group = { id: 0 }
+        // group = $("#" + a.id).val();
+        $.ajax({
+            type: "POST",
+            url: "/Eminute/loadFavData",
+            data: group,
+            dataType: "json",
+            success: function (data) {
+
+
+                $('#tblfavbody').html('');
+
+                for (var i = 0; i < data.length; i++) {
+
+                    html += '<tr >'
+                    html += '<td>' + data[i].FavText + ' </td>'
+                    html += '<td align="center">    <a href="#basic" class="edit-row mb-xs mt-xs mr-xs " title="Delete" onclick="confirmPopupDelete('+data[i].FavoriteID+')"><i class="glyphicon glyphicon-trash"></i> </a> </td>'
+                    html += '</tr>'
+                }
+
+
+
+                $('#tblfavbody').html(html);
+
+
+            },
+            error: function () {
+                //location.reload();
+            }
+        });
+
+    }
+
+
+    function confirmPopupDelete(DeleteID) {
+
+
+
+        var Data = { id: DeleteID }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/favremovedata",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+                    console.log(data)
+
+                    loadfavDrop();
+                    loadFavData()
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+    $("#chkstock").click(function () {
+
+        if ($(this).is(":checked")) {
+
+            $("#dvstock").show();
+            $("#OtherPayable").addClass("required");
+
+
+        } else {
+
+            $("#dvstock").hide();
+            $("#OtherPayable").addClass("form-control");
+
+        }
+    });
+
+
+
+    var showLoader = function (form) {
+        $('#loadingid').show();
+    }
+
+
+
+
+
+</script>

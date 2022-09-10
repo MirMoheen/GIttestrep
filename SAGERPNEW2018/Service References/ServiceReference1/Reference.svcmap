@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="609f0421-2692-45e1-9a15-ed15471f04b0" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://cbs.zong.com.pk/ReachCWSv2/CorporateSMS.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="CorporateSMS.xsd" MetadataType="Schema" ID="7b48a494-f3ba-406b-a194-220c0f5a4870" SourceId="1" SourceUrl="http://cbs.zong.com.pk/ReachCWSv2/CorporateSMS.svc?xsd=xsd1" />
+    <MetadataFile FileName="CorporateSMS.disco" MetadataType="Disco" ID="9a01b939-c538-4a66-bc25-4b054a266682" SourceId="1" SourceUrl="http://cbs.zong.com.pk/ReachCWSv2/CorporateSMS.svc?disco" />
+    <MetadataFile FileName="CorporateSMS1.xsd" MetadataType="Schema" ID="94c68036-57df-414a-ae44-2ee9c6c4ede6" SourceId="1" SourceUrl="http://cbs.zong.com.pk/ReachCWSv2/CorporateSMS.svc?xsd=xsd2" />
+    <MetadataFile FileName="CorporateSMS2.xsd" MetadataType="Schema" ID="0ad90931-f3f6-43d9-9598-477d57922f91" SourceId="1" SourceUrl="http://cbs.zong.com.pk/ReachCWSv2/CorporateSMS.svc?xsd=xsd0" />
+    <MetadataFile FileName="Service1.wsdl" MetadataType="Wsdl" ID="42ee9e90-c688-48db-9577-209d79f5c124" SourceId="1" SourceUrl="http://cbs.zong.com.pk/ReachCWSv2/CorporateSMS.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

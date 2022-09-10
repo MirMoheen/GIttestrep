@@ -1,0 +1,181 @@
+﻿@model HRandPayrollSystemModel.DBModel.EmployeeType
+
+@{
+    ViewBag.Title = "Employee Type Information ";
+}
+
+
+@using (@Html.BeginForm("Save", "EmployeeType", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.EmpoyeeTypeID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = "Employee Type Info View";
+        }
+        else
+        {
+            ViewBag.Title = "Employee Type Info Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = " Employee Type Info Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>EmployeeType Info</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">EmployeeType Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input EmployeeType data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+
+
+                        @Html.HiddenFor(model => model.EmpoyeeTypeID)
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">EmployeeType Title <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.EmployeeTypeName, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Title" })
+
+                            </div>
+                        </div>
+
+                       
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">InActive</label>
+                            <div class="col-sm-9 ">
+                                @Html.CheckBoxFor(model => model.inactive)
+                                @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+
+
+
+    function postform() {
+        debugger;
+        var ReturnValue = true
+
+        $("#myform").validate();
+
+
+
+        var Data = { Name: $('#EmployeeTypeName').val(), ID: $("#EmpoyeeTypeID").val() }
+        $.ajax({
+            async: false,
+            url: "/EmployeeType/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+
+
+        bootbox.confirm("Are sure to save data!", function (result) {
+            if (result) {
+                if (ReturnValue) {
+                    $("#myform").submit();
+
+                }
+
+            }
+        });
+       
+
+    }
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+</script>
+
+
+

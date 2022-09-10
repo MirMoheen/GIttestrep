@@ -1,0 +1,312 @@
+﻿@model SAGERPNEW2018.Models.ReportModel
+
+@{
+    ViewBag.Title = "Ledager Report";
+}
+
+
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Reports</span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+
+<div class="panel">
+    <!-- start: page -->
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                        <a href="#" class="fa fa-times"></a>
+                    </div>
+
+                    <h2 class="panel-title">@ViewBag.Title</h2>
+                    <p class="panel-subtitle">
+                        Form control for @ViewBag.Title data .
+                    </p>
+                </header>
+                <div class="panel-body">
+
+
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+
+                            <label> Account No<span class="required">*</span></label>
+
+                            @Html.DropDownListFor(model => model.AccountID, Model.loadAccountsAccount(), new { @class = "form-control selectpicker ", @required = "required" })
+
+                        </div>
+
+                        <div class="col-md-2">
+
+                            <label>From Date <span class="required">*</span></label>
+
+                            @Html.TextBoxFor(model => model.DateFrom, new { @class = "form-control ", @required = "required" })
+
+                        </div>
+
+
+                        <div class="col-md-2">
+
+                            <label>TO Date <span class="required">*</span></label>
+
+                            @Html.TextBoxFor(model => model.DateTo, new { @class = "form-control ", @required = "required" })
+
+
+                        </div>
+
+
+
+
+                        <div class="col-md-3">
+
+                            <button style="margin-top: 24px;" type="button" id="Show" onclick="loaddata()" class="btn  btn-primary"> <span class="glyphicon glyphicon-search"></span> Show</button>
+
+                            @if (Model.IsPrint)
+                            {
+                                <button style="margin-top: 24px;" type="submit" id="Add" onclick="viewpdf()" class="btn  btn-success"> <span class="glyphicon glyphicon-print"></span>   Print</button>
+                            }
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+
+
+
+
+
+
+                        <div class="col-md-12">
+
+                            <h3>@ViewBag.Title</h3>
+
+                            <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+
+                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                    <thead>
+                                        <tr>
+                                            <th> <strong>Account No</strong> </th>
+                                            <th> <strong>Voucher Date</strong></th>
+                                            <th><strong>Prefix </strong></th>
+                                            <th ><strong>Narration </strong></th>
+                                            <th width="100"><strong>Debit </strong></th>
+                                            <th width="100"><strong>Credit </strong></th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DocmentBodyID">
+
+                                        @{
+
+
+
+                                        }
+
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <footer class="panel-footer"></footer>
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<style>
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+    }
+</style>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        //$("input[type=text]").focus(function () {
+        //    $(this).select();
+        //});
+
+
+        $("#DateFrom").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+        $("#DateTo").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+        $('#DateFrom').datepicker('setDate', new Date());
+        $('#DateTo').datepicker('setDate', new Date());
+
+
+    });
+
+
+    function loaddata() {
+
+        
+
+        if ($('#AccountID').val() == '0') {
+            bootbox.alert('Please Select Account First');
+            return false;
+
+        }
+
+        var Data = { Id: $('#AccountID').val(), DateFrom: $('#DateFrom').val(), DateTo: $("#DateTo").val() }
+        $.ajax({
+            async: false,
+            url: "/SystemReport/LoadLedger",
+            data: Data,
+            success: function (data) {
+
+
+                console.log(data)
+
+                if (data != '') {
+
+
+
+                    var totalOpdr = 0;
+                    var totalOpcr = 0;
+                    var totalDR = 0;
+                    var totalCR = 0;
+
+                    var name = '';
+
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        html += '<tr>'
+
+                        //if (name == '') {
+                        //    html += '<td>' + data[i].PaymentNo + '</td>'
+                        //    name = data[i].PaymentNo;
+                        //}
+                        //else if (name != data[i].PaymentNo) {
+                        //    html += '<td>' + data[i].PaymentNo + '</td>'
+                        //    name = data[i].PaymentNo;
+
+                        //}
+                        //else {
+
+                        //    html += '<td></td>'
+                        //}
+                        html += '<td>' + data[i].Voucherno + '</td>'
+                        html += '<td>' + data[i].FormatDate + '</td>'
+                        html += '<td>' + data[i].prefix + '</td>'
+                        html += '<td>' + data[i].narrartion + '</td>'
+                        html += '<td  style="text-align: right">' + data[i].debit + '</td>'
+                        html += '<td style="text-align: right">' + data[i].credit + '</td>'
+
+                        html += '</tr>'
+                    
+                        totalDR = parseFloat(totalDR) + parseFloat(data[i].debit)
+                        totalCR = parseFloat(totalCR) + parseFloat(data[i].credit)
+
+
+
+                    }
+                    html += '<tr><td></td><td> <strong>Total :</strong></td><td> </td>   <td></td><td style="text-align: right"><strong>' + totalDR + '</strong></td><td style="text-align: right"><strong>' + totalCR + '</strong></td></tr>'
+
+                    $('#DocmentBodyID').html(html);
+                }
+                else {
+
+                    bootbox.alert('Record Not Found')
+                }
+
+            },
+            error: function () {
+                ReturnValue = false;
+                alert("Error")
+            }
+        })
+
+
+
+
+    }
+
+
+
+
+    function viewpdf() {
+
+        if ($('#AccountID').val() == '0') {
+            bootbox.alert('Please Select Account First');
+            return false;
+
+        }
+
+        var id = "" + $('#DateFrom').val() + "|" + $('#DateTo').val() + "|" + $('#AccountID').val() + ""
+        //   window.open('/SystemReport/GetRecoveryReport/?data=' + id + '   ', '_blank');
+        window.location.href = '/SystemReport/GetLedagerReport/?data=' + id + '';
+
+
+    }
+
+
+</script>
+
+
+
+
+
+

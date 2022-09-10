@@ -1,0 +1,249 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblCompany
+
+@{
+    ViewBag.Title = "Company Information ";
+}
+
+
+@using (@Html.BeginForm("Save", "CompanyInfo", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.id > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = "Company Info View";
+        }
+        else
+        { 
+        ViewBag.Title = "Company Info Edit";
+    }
+
+}
+    else
+    {
+
+    ViewBag.Title = " Company Info Create";
+
+}
+    @*@Html.HiddenFor(m => m.id)*@
+    <input id="id" name="id" type="hidden" value="@Model.id">
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>Company Info</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Company Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input CompanyInfo data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Company Title <span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Title" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Address<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.CompanyAddress, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Address" })
+
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <label class="col-sm-3 control-label">Email Address<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.ma, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Email" })
+
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Phone No<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Phone" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Mobile No<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Mobile no" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">WebSite<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.CompanyDesc, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Website" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"> Description<span class="required">*</span></label>
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(model => model.CompanyDesc, new { @class = "form-control uneditable-input ", required = "required", @placeholder = "Enter Description" })
+
+                            </div>
+                        </div>
+
+                      
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="pic">Picture <span class="required">*</span></label>
+                            <div class="col-sm-9">
+
+                                <input type="hidden" id="LogoPath" name="LogoPath" value="@Model.CompanyLogo" />
+                                <input style="margin-top: 5px;" type="file" value="" name="ImageUpload" size="40" accept="image/jpeg, image/png" class="form-control" onchange="ShowImagePreview(this,document.getElementById('imagePreview'))" />
+
+                                <br><br>
+
+                                <div class="col-sm-3">
+                                    <img src="@Url.Content(Model.CompanyLogo)" @*height="500" width="500"*@ class="img-circle img-responsive img-fluid img-thumbnail " id="imagePreview" />
+                              
+                                </div>
+                                <div class="col-sm-9">
+                                    <p>
+                                        <strong>Instructions for Upload Picture:</strong><br>
+                                        Scan your recent passport size colour photograph taken at a photo studio   at 300 dpi. Your application will be rejected if the uploaded   photograph does not meet the following requirements: <br>
+                                        <a href="@Url.Content(Model.CompanyLogo)" target="_blank">Click Here to View Sample</a>
+                                    </p>
+                                    <ul>
+                                        <li>Your full face must be clearly visible.</li>
+                                        <li>Background must be plain white, off-white or clear. (plain blue is acceptable)</li>
+                                        <li>The photograph must be scanned clearly and must not be blurry or pixelated.</li>
+                                        <li>Uploaded photograph must be in JPEG (.jpg) file format.</li>
+                                    </ul>
+                                    <p>
+                                    </p>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+<script>
+
+
+    function ShowImagePreview(imageUploader, previewImage) {
+        if (imageUploader.files && imageUploader.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(previewImage).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(imageUploader.files[0]);
+        }
+    }
+
+    function postform() {
+
+        debugger;
+
+        var ReturnValue = true
+    
+        $("#myform").validate();
+      
+
+
+
+        var Data = { Name: $('#CompanyName').val(), ID: $("#id").val() }
+        $.ajax({
+            async: false,
+            url: "/CompanyInfo/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c =JSON.parse(data);
+                if (c!="") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+        if (ReturnValue) {
+            $("#myform").submit();
+
+        }
+
+    }
+    $(document).ready(function () {
+       // $('#Myform :input').select()
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+</script>
+
+
+

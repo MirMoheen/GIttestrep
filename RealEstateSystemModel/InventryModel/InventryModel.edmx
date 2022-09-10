@@ -1,0 +1,786 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="InventoryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="projecttbl">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="550" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Inventory.dbo.tbl_AddBudget' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="tbl_AddBudget">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="status" />
+            <PropertyRef Name="adjustment" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="headID" Type="int" />
+          <Property Name="fY" Type="nvarchar" MaxLength="50" />
+          <Property Name="BudgetPro" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="AlreadyExpense" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="ThisExpense" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="TotalExpense" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="Balance" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="status" Type="bit" Nullable="false" />
+          <Property Name="uid" Type="nvarchar" MaxLength="50" />
+          <Property Name="createDate" Type="datetime" />
+          <Property Name="IP" Type="nvarchar" MaxLength="50" />
+          <Property Name="remarks" Type="nvarchar(max)" />
+          <Property Name="adjustment" Type="bit" Nullable="false" />
+          <Property Name="Reallocate" Type="decimal" Precision="25" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_Costcenter">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="500" />
+          <Property Name="Projectid" Type="int" />
+          <Property Name="isClose" Type="bit" />
+          <Property Name="status" Type="bit" />
+          <Property Name="createDate" Type="datetime" />
+          <Property Name="uid" Type="varchar" MaxLength="10" />
+          <Property Name="IP" Type="varchar" MaxLength="50" />
+          <Property Name="ModifyDate" Type="datetime" />
+          <Property Name="ModifyUid" Type="varchar" MaxLength="10" />
+          <Property Name="ModifyIP" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tbl_Costcenterbudgetheadamount">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CostcenterID" Type="int" />
+          <Property Name="HeadID" Type="int" />
+          <Property Name="projectid" Type="int" />
+          <Property Name="FY" Type="varchar" MaxLength="15" />
+          <Property Name="BudgetPro" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="Expense" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="IsClose" Type="bit" />
+          <Property Name="status" Type="bit" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="Uid" Type="varchar" MaxLength="10" />
+          <Property Name="IP" Type="varchar" MaxLength="50" />
+          <Property Name="ModifyDate" Type="datetime" />
+          <Property Name="ModifyIP" Type="varchar" MaxLength="50" />
+          <Property Name="ModifyUid" Type="varchar" MaxLength="10" />
+          <Property Name="Expenseopening" Type="decimal" Precision="25" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_Costcenterbudgetheads">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectID" Type="int" />
+          <Property Name="Costcenterid" Type="int" />
+          <Property Name="HeadName" Type="varchar(max)" />
+          <Property Name="status" Type="bit" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="Uid" Type="varchar" MaxLength="10" />
+          <Property Name="IP" Type="varchar" MaxLength="50" />
+          <Property Name="ModifyDate" Type="datetime" />
+          <Property Name="ModifyUid" Type="varchar" MaxLength="10" />
+          <Property Name="ModifyIP" Type="varchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReportCostCenterShow" Type="nvarchar" MaxLength="500" />
+          <Property Name="FinanceCostCenterID" Type="int" />
+          <Property Name="FinanceCostCenterName" Type="nvarchar" MaxLength="500" />
+          <Property Name="SRNO" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Inventory.dbo.tblpo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="tblpo">
+          <Key>
+            <PropertyRef Name="fldpono" />
+            <PropertyRef Name="fldserialno" />
+            <PropertyRef Name="fldCategoryNo" />
+            <PropertyRef Name="isadvance" />
+            <PropertyRef Name="isprinted" />
+          </Key>
+          <Property Name="fldpono" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="fldpodate" Type="datetime" />
+          <Property Name="fldstatus" Type="nvarchar" MaxLength="15" />
+          <Property Name="fldsupplierno" Type="char" MaxLength="5" />
+          <Property Name="fldpotype" Type="nvarchar" MaxLength="20" />
+          <Property Name="fldpocompletestatus" Type="bit" />
+          <Property Name="fldserialno" Type="decimal" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fldCategoryNo" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="PaymentTermNConditions" Type="nvarchar" MaxLength="4000" />
+          <Property Name="Currency" Type="char" MaxLength="1" />
+          <Property Name="fldRemarks" Type="nvarchar" MaxLength="4000" />
+          <Property Name="fldPo" Type="char" MaxLength="1" />
+          <Property Name="fldgst" Type="char" MaxLength="1" />
+          <Property Name="flduser" Type="nvarchar" MaxLength="50" />
+          <Property Name="fldip" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="IP" Type="varchar" MaxLength="50" />
+          <Property Name="ModifyBy" Type="nchar" MaxLength="10" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifyIP" Type="varchar" MaxLength="50" />
+          <Property Name="fldSrdID" Type="int" />
+          <Property Name="fldsrdDate" Type="date" />
+          <Property Name="InstrumentNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="AdvanceAmount" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="isadvance" Type="bit" Nullable="false" />
+          <Property Name="Advanceuserid" Type="int" />
+          <Property Name="advanceDate" Type="datetime" />
+          <Property Name="AdvanceIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="BankID" Type="int" />
+          <Property Name="taxper" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="taxAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="AmountexcTax" Type="decimal" Precision="25" Scale="2" />
+          <Property Name="ModeofPayment" Type="int" />
+          <Property Name="onlinetxNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="budgetDate" Type="datetime" />
+          <Property Name="budgetUserId" Type="int" />
+          <Property Name="budgetUserIp" Type="nvarchar" MaxLength="50" />
+          <Property Name="POApproveDate" Type="datetime" />
+          <Property Name="POApproveUserID" Type="int" />
+          <Property Name="POApproveUserIp" Type="nvarchar" MaxLength="50" />
+          <Property Name="isPoApprove" Type="bit" />
+          <Property Name="isPoBudget" Type="int" />
+          <Property Name="ForwardedInformation" Type="nvarchar(max)" />
+          <Property Name="fwdstatus" Type="int" />
+          <Property Name="EMinuteNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="isprinted" Type="bit" Nullable="false" />
+          <Property Name="fldpaymentdate" Type="datetime" />
+          <Property Name="PayNo" Type="int" />
+          <Property Name="fldSRDPR" Type="varchar" MaxLength="3" />
+          <Property Name="istaxPaid" Type="bit" />
+          <Property Name="returnBackIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="checkPrintDate" Type="datetime" />
+          <Property Name="checkPrintIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="checkPrintUser" Type="nvarchar" MaxLength="5" />
+        </EntityType>
+        <Function Name="Alshifa_jv_Desc_Fill" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="LedgerYear" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Alshifa_jv_Desc_Fill2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="LedgerYear" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="budgetHeadLedger" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="headid" Type="nvarchar" Mode="In" />
+          <Parameter Name="subHeadID" Type="nvarchar" Mode="In" />
+          <Parameter Name="startDate" Type="nvarchar" Mode="In" />
+          <Parameter Name="endDate" Type="nvarchar" Mode="In" />
+          <Parameter Name="fy" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Get_BudgetFinYears" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="hospcode" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Get_FinYears" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="hospcode" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="getBudgetProvisionamount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="head" Type="nvarchar" Mode="In" />
+          <Parameter Name="subHead" Type="nvarchar" Mode="In" />
+          <Parameter Name="fy" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_budgetSummryForEminute" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="project" Type="int" Mode="In" />
+          <Parameter Name="Head" Type="int" Mode="In" />
+          <Parameter Name="subhead" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_getAllfinyearForEminute" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="InventoryModelStoreContainer">
+          <EntitySet Name="projecttbl" EntityType="Self.projecttbl" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Costcenter" EntityType="Self.tbl_Costcenter" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Costcenterbudgetheadamount" EntityType="Self.tbl_Costcenterbudgetheadamount" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Costcenterbudgetheads" EntityType="Self.tbl_Costcenterbudgetheads" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_AddBudget" EntityType="Self.tbl_AddBudget" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [tbl_AddBudget].[id] AS [id], 
+    [tbl_AddBudget].[headID] AS [headID], 
+    [tbl_AddBudget].[fY] AS [fY], 
+    [tbl_AddBudget].[BudgetPro] AS [BudgetPro], 
+    [tbl_AddBudget].[AlreadyExpense] AS [AlreadyExpense], 
+    [tbl_AddBudget].[ThisExpense] AS [ThisExpense], 
+    [tbl_AddBudget].[TotalExpense] AS [TotalExpense], 
+    [tbl_AddBudget].[Balance] AS [Balance], 
+    [tbl_AddBudget].[status] AS [status], 
+    [tbl_AddBudget].[uid] AS [uid], 
+    [tbl_AddBudget].[createDate] AS [createDate], 
+    [tbl_AddBudget].[IP] AS [IP], 
+    [tbl_AddBudget].[remarks] AS [remarks], 
+    [tbl_AddBudget].[adjustment] AS [adjustment], 
+    [tbl_AddBudget].[Reallocate] AS [Reallocate]
+    FROM [dbo].[tbl_AddBudget] AS [tbl_AddBudget]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="tblpo" EntityType="Self.tblpo" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [tblpo].[fldpono] AS [fldpono], 
+    [tblpo].[fldpodate] AS [fldpodate], 
+    [tblpo].[fldstatus] AS [fldstatus], 
+    [tblpo].[fldsupplierno] AS [fldsupplierno], 
+    [tblpo].[fldpotype] AS [fldpotype], 
+    [tblpo].[fldpocompletestatus] AS [fldpocompletestatus], 
+    [tblpo].[fldserialno] AS [fldserialno], 
+    [tblpo].[fldCategoryNo] AS [fldCategoryNo], 
+    [tblpo].[PaymentTermNConditions] AS [PaymentTermNConditions], 
+    [tblpo].[Currency] AS [Currency], 
+    [tblpo].[fldRemarks] AS [fldRemarks], 
+    [tblpo].[fldPo] AS [fldPo], 
+    [tblpo].[fldgst] AS [fldgst], 
+    [tblpo].[flduser] AS [flduser], 
+    [tblpo].[fldip] AS [fldip], 
+    [tblpo].[CreatedOn] AS [CreatedOn], 
+    [tblpo].[IP] AS [IP], 
+    [tblpo].[ModifyBy] AS [ModifyBy], 
+    [tblpo].[ModifiedOn] AS [ModifiedOn], 
+    [tblpo].[ModifyIP] AS [ModifyIP], 
+    [tblpo].[fldSrdID] AS [fldSrdID], 
+    [tblpo].[fldsrdDate] AS [fldsrdDate], 
+    [tblpo].[InstrumentNo] AS [InstrumentNo], 
+    [tblpo].[AdvanceAmount] AS [AdvanceAmount], 
+    [tblpo].[isadvance] AS [isadvance], 
+    [tblpo].[Advanceuserid] AS [Advanceuserid], 
+    [tblpo].[advanceDate] AS [advanceDate], 
+    [tblpo].[AdvanceIP] AS [AdvanceIP], 
+    [tblpo].[BankID] AS [BankID], 
+    [tblpo].[taxper] AS [taxper], 
+    [tblpo].[taxAmount] AS [taxAmount], 
+    [tblpo].[AmountexcTax] AS [AmountexcTax], 
+    [tblpo].[ModeofPayment] AS [ModeofPayment], 
+    [tblpo].[onlinetxNo] AS [onlinetxNo], 
+    [tblpo].[budgetDate] AS [budgetDate], 
+    [tblpo].[budgetUserId] AS [budgetUserId], 
+    [tblpo].[budgetUserIp] AS [budgetUserIp], 
+    [tblpo].[POApproveDate] AS [POApproveDate], 
+    [tblpo].[POApproveUserID] AS [POApproveUserID], 
+    [tblpo].[POApproveUserIp] AS [POApproveUserIp], 
+    [tblpo].[isPoApprove] AS [isPoApprove], 
+    [tblpo].[isPoBudget] AS [isPoBudget], 
+    [tblpo].[ForwardedInformation] AS [ForwardedInformation], 
+    [tblpo].[fwdstatus] AS [fwdstatus], 
+    [tblpo].[EMinuteNo] AS [EMinuteNo], 
+    [tblpo].[isprinted] AS [isprinted], 
+    [tblpo].[fldpaymentdate] AS [fldpaymentdate], 
+    [tblpo].[PayNo] AS [PayNo], 
+    [tblpo].[fldSRDPR] AS [fldSRDPR], 
+    [tblpo].[istaxPaid] AS [istaxPaid], 
+    [tblpo].[returnBackIP] AS [returnBackIP], 
+    [tblpo].[checkPrintDate] AS [checkPrintDate], 
+    [tblpo].[checkPrintIP] AS [checkPrintIP], 
+    [tblpo].[checkPrintUser] AS [checkPrintUser]
+    FROM [dbo].[tblpo] AS [tblpo]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="InventoryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="InventoryEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="sp_getAllfinyearForEminute" ReturnType="Collection(InventoryModel.sp_getAllfinyearForEminute_Result)" />
+          <FunctionImport Name="Get_FinYears" ReturnType="Collection(InventoryModel.Get_FinYears_Result)">
+          <Parameter Name="hospcode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Alshifa_jv_Desc_Fill2" ReturnType="Collection(InventoryModel.Alshifa_jv_Desc_Fill2_Result)">
+          <Parameter Name="LedgerYear" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Alshifa_jv_Desc_Fill" ReturnType="Collection(InventoryModel.Alshifa_jv_Desc_Fill_Result)">
+          <Parameter Name="LedgerYear" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Get_BudgetFinYears" ReturnType="Collection(InventoryModel.Get_BudgetFinYears_Result)">
+          <Parameter Name="hospcode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_budgetSummryForEminute" ReturnType="Collection(InventoryModel.sp_budgetSummryForEminute_Result)">
+            <Parameter Name="project" Mode="In" Type="Int32" />
+            <Parameter Name="Head" Mode="In" Type="Int32" />
+            <Parameter Name="subhead" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="budgetHeadLedger" ReturnType="Collection(InventoryModel.budgetHeadLedger_Result)">
+            <Parameter Name="headid" Mode="In" Type="String" />
+            <Parameter Name="subHeadID" Mode="In" Type="String" />
+            <Parameter Name="startDate" Mode="In" Type="String" />
+            <Parameter Name="endDate" Mode="In" Type="String" />
+            <Parameter Name="fy" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="tbl_AddBudget" EntityType="InventoryModel.tbl_AddBudget" />
+          <EntitySet Name="tbl_Costcenter" EntityType="InventoryModel.tbl_Costcenter" />
+          <EntitySet Name="tbl_Costcenterbudgetheadamount" EntityType="InventoryModel.tbl_Costcenterbudgetheadamount" />
+          <EntitySet Name="tbl_Costcenterbudgetheads" EntityType="InventoryModel.tbl_Costcenterbudgetheads" />
+          <EntitySet Name="projecttbls" EntityType="InventoryModel.projecttbl" />
+          <FunctionImport Name="getBudgetProvisionamount" ReturnType="Collection(InventoryModel.getBudgetProvisionamount_Result)">
+            <Parameter Name="head" Mode="In" Type="String" />
+            <Parameter Name="subHead" Mode="In" Type="String" />
+            <Parameter Name="fy" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="tblpoes" EntityType="InventoryModel.tblpo" />
+        </EntityContainer>
+        <ComplexType Name="sp_getAllfinyearForEminute_Result">
+          <Property Type="String" Name="HospNo" Nullable="true" MaxLength="10" />
+          <Property Type="Int32" Name="Finyear" Nullable="true" />
+          <Property Type="Boolean" Name="AuditCompleted" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Get_FinYears_Result">
+          <Property Type="Int32" Name="code" Nullable="true" />
+          <Property Type="String" Name="fyear" Nullable="true" MaxLength="43" />
+          <Property Type="String" Name="fromdate" Nullable="true" MaxLength="36" />
+          <Property Type="String" Name="todate" Nullable="true" MaxLength="36" />
+          <Property Type="Boolean" Name="Audit" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Alshifa_jv_Desc_Fill2_Result">
+          <Property Type="String" Name="id" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="AccDes" Nullable="true" MaxLength="56" />
+        </ComplexType>
+        <ComplexType Name="Alshifa_jv_Desc_Fill_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="AccDes" Nullable="true" MaxLength="500" />
+        </ComplexType>
+        <ComplexType Name="Get_BudgetFinYears_Result">
+          <Property Type="Int32" Name="code" Nullable="true" />
+          <Property Type="String" Name="fyear" Nullable="true" MaxLength="43" />
+          <Property Type="String" Name="fromdate" Nullable="true" MaxLength="36" />
+          <Property Type="String" Name="todate" Nullable="true" MaxLength="36" />
+          <Property Type="Boolean" Name="Audit" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_budgetSummryForEminute_Result">
+          <Property Type="Int32" Name="ProjectID" Nullable="true" />
+          <Property Type="Int32" Name="HeadID" Nullable="true" />
+          <Property Type="Int32" Name="SubHeadID" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="head" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="SubHeadName" Nullable="true" />
+          <Property Type="Decimal" Name="TotalBudget" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="TotalExpense" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="Percentage" Nullable="true" Precision="38" Scale="6" />
+        </ComplexType>
+        <ComplexType Name="budgetHeadLedger_Result">
+          <Property Type="Int32" Name="ProjectID" Nullable="false" />
+          <Property Type="Int32" Name="HeadID" Nullable="true" />
+          <Property Type="String" Name="narration" Nullable="true" />
+          <Property Type="Decimal" Name="debit" Nullable="false" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="credit" Nullable="false" Precision="38" Scale="2" />
+          <Property Type="DateTime" Name="entrydate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="FY" Nullable="true" />
+          <Property Type="String" Name="asa" Nullable="true" MaxLength="1000" />
+        </ComplexType>
+        <EntityType Name="tbl_AddBudget">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="status" />
+            <PropertyRef Name="adjustment" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="headID" Type="Int32" />
+          <Property Name="fY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BudgetPro" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="AlreadyExpense" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="ThisExpense" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="TotalExpense" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="Balance" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
+          <Property Name="uid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="createDate" Type="DateTime" Precision="3" />
+          <Property Name="IP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="adjustment" Type="Boolean" Nullable="false" />
+          <Property Name="Reallocate" Type="Decimal" Precision="25" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_Costcenter">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Projectid" Type="Int32" />
+          <Property Name="isClose" Type="Boolean" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="createDate" Type="DateTime" Precision="3" />
+          <Property Name="uid" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyUid" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyIP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_Costcenterbudgetheadamount">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CostcenterID" Type="Int32" />
+          <Property Name="HeadID" Type="Int32" />
+          <Property Name="projectid" Type="Int32" />
+          <Property Name="FY" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="BudgetPro" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="Expense" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="IsClose" Type="Boolean" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="Uid" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyIP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyUid" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Expenseopening" Type="Decimal" Precision="25" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_Costcenterbudgetheads">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="Costcenterid" Type="Int32" />
+          <Property Name="HeadName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="Boolean" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="Uid" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifyUid" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyIP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReportCostCenterShow" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FinanceCostCenterID" Type="Int32" />
+          <Property Name="FinanceCostCenterName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SRNO" Type="Int32" />
+        </EntityType>
+        <EntityType Name="projecttbl">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="550" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <ComplexType Name="getBudgetProvisionamount_Result">
+          <Property Type="Int32" Name="HeadID" Nullable="true" />
+          <Property Type="Decimal" Name="BudgetPro" Nullable="false" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="Totalexpense" Nullable="false" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="balance" Nullable="true" Precision="38" Scale="2" />
+        </ComplexType>
+        <EntityType Name="tblpo">
+          <Key>
+            <PropertyRef Name="fldpono" />
+            <PropertyRef Name="fldserialno" />
+            <PropertyRef Name="fldCategoryNo" />
+            <PropertyRef Name="isadvance" />
+            <PropertyRef Name="isprinted" />
+          </Key>
+          <Property Name="fldpono" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="fldpodate" Type="DateTime" Precision="3" />
+          <Property Name="fldstatus" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="fldsupplierno" Type="String" MaxLength="5" FixedLength="true" Unicode="false" />
+          <Property Name="fldpotype" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="fldpocompletestatus" Type="Boolean" />
+          <Property Name="fldserialno" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fldCategoryNo" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="PaymentTermNConditions" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="Currency" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="fldRemarks" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="fldPo" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="fldgst" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="flduser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="fldip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="IP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifyBy" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifyIP" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fldSrdID" Type="Int32" />
+          <Property Name="fldsrdDate" Type="DateTime" Precision="0" />
+          <Property Name="InstrumentNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AdvanceAmount" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="isadvance" Type="Boolean" Nullable="false" />
+          <Property Name="Advanceuserid" Type="Int32" />
+          <Property Name="advanceDate" Type="DateTime" Precision="3" />
+          <Property Name="AdvanceIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BankID" Type="Int32" />
+          <Property Name="taxper" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="taxAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="AmountexcTax" Type="Decimal" Precision="25" Scale="2" />
+          <Property Name="ModeofPayment" Type="Int32" />
+          <Property Name="onlinetxNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="budgetDate" Type="DateTime" Precision="3" />
+          <Property Name="budgetUserId" Type="Int32" />
+          <Property Name="budgetUserIp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POApproveDate" Type="DateTime" Precision="3" />
+          <Property Name="POApproveUserID" Type="Int32" />
+          <Property Name="POApproveUserIp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="isPoApprove" Type="Boolean" />
+          <Property Name="isPoBudget" Type="Int32" />
+          <Property Name="ForwardedInformation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fwdstatus" Type="Int32" />
+          <Property Name="EMinuteNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="isprinted" Type="Boolean" Nullable="false" />
+          <Property Name="fldpaymentdate" Type="DateTime" Precision="3" />
+          <Property Name="PayNo" Type="Int32" />
+          <Property Name="fldSRDPR" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="istaxPaid" Type="Boolean" />
+          <Property Name="returnBackIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="checkPrintDate" Type="DateTime" Precision="3" />
+          <Property Name="checkPrintIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="checkPrintUser" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="InventoryModelStoreContainer" CdmEntityContainer="InventoryEntities">
+          <FunctionImportMapping FunctionImportName="sp_getAllfinyearForEminute" FunctionName="InventoryModel.Store.sp_getAllfinyearForEminute">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.sp_getAllfinyearForEminute_Result">
+                <ScalarProperty Name="HospNo" ColumnName="HospNo" />
+                <ScalarProperty Name="Finyear" ColumnName="Finyear" />
+                <ScalarProperty Name="AuditCompleted" ColumnName="AuditCompleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Get_FinYears" FunctionName="InventoryModel.Store.Get_FinYears">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.Get_FinYears_Result">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="fyear" ColumnName="fyear" />
+                <ScalarProperty Name="fromdate" ColumnName="fromdate" />
+                <ScalarProperty Name="todate" ColumnName="todate" />
+                <ScalarProperty Name="Audit" ColumnName="Audit" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Alshifa_jv_Desc_Fill2" FunctionName="InventoryModel.Store.Alshifa_jv_Desc_Fill2">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.Alshifa_jv_Desc_Fill2_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="AccDes" ColumnName="AccDes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Alshifa_jv_Desc_Fill" FunctionName="InventoryModel.Store.Alshifa_jv_Desc_Fill">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.Alshifa_jv_Desc_Fill_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="AccDes" ColumnName="AccDes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Get_BudgetFinYears" FunctionName="InventoryModel.Store.Get_BudgetFinYears">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.Get_BudgetFinYears_Result">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="fyear" ColumnName="fyear" />
+                <ScalarProperty Name="fromdate" ColumnName="fromdate" />
+                <ScalarProperty Name="todate" ColumnName="todate" />
+                <ScalarProperty Name="Audit" ColumnName="Audit" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_budgetSummryForEminute" FunctionName="InventoryModel.Store.sp_budgetSummryForEminute">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.sp_budgetSummryForEminute_Result">
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+                <ScalarProperty Name="SubHeadID" ColumnName="SubHeadID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="head" ColumnName="head" />
+                <ScalarProperty Name="SubHeadName" ColumnName="SubHeadName" />
+                <ScalarProperty Name="TotalBudget" ColumnName="TotalBudget" />
+                <ScalarProperty Name="TotalExpense" ColumnName="TotalExpense" />
+                <ScalarProperty Name="Percentage" ColumnName="Percentage" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="budgetHeadLedger" FunctionName="InventoryModel.Store.budgetHeadLedger">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.budgetHeadLedger_Result">
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+                <ScalarProperty Name="narration" ColumnName="narration" />
+                <ScalarProperty Name="debit" ColumnName="debit" />
+                <ScalarProperty Name="credit" ColumnName="credit" />
+                <ScalarProperty Name="entrydate" ColumnName="entrydate" />
+                <ScalarProperty Name="FY" ColumnName="FY" />
+                <ScalarProperty Name="asa" ColumnName="asa" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tbl_AddBudget">
+            <EntityTypeMapping TypeName="InventoryModel.tbl_AddBudget">
+              <MappingFragment StoreEntitySet="tbl_AddBudget">
+                <ScalarProperty Name="Reallocate" ColumnName="Reallocate" />
+                <ScalarProperty Name="adjustment" ColumnName="adjustment" />
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="createDate" ColumnName="createDate" />
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="TotalExpense" ColumnName="TotalExpense" />
+                <ScalarProperty Name="ThisExpense" ColumnName="ThisExpense" />
+                <ScalarProperty Name="AlreadyExpense" ColumnName="AlreadyExpense" />
+                <ScalarProperty Name="BudgetPro" ColumnName="BudgetPro" />
+                <ScalarProperty Name="fY" ColumnName="fY" />
+                <ScalarProperty Name="headID" ColumnName="headID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Costcenter">
+            <EntityTypeMapping TypeName="InventoryModel.tbl_Costcenter">
+              <MappingFragment StoreEntitySet="tbl_Costcenter">
+                <ScalarProperty Name="ModifyIP" ColumnName="ModifyIP" />
+                <ScalarProperty Name="ModifyUid" ColumnName="ModifyUid" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="createDate" ColumnName="createDate" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="isClose" ColumnName="isClose" />
+                <ScalarProperty Name="Projectid" ColumnName="Projectid" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Costcenterbudgetheadamount">
+            <EntityTypeMapping TypeName="InventoryModel.tbl_Costcenterbudgetheadamount">
+              <MappingFragment StoreEntitySet="tbl_Costcenterbudgetheadamount">
+                <ScalarProperty Name="Expenseopening" ColumnName="Expenseopening" />
+                <ScalarProperty Name="ModifyUid" ColumnName="ModifyUid" />
+                <ScalarProperty Name="ModifyIP" ColumnName="ModifyIP" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="Uid" ColumnName="Uid" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="IsClose" ColumnName="IsClose" />
+                <ScalarProperty Name="Expense" ColumnName="Expense" />
+                <ScalarProperty Name="BudgetPro" ColumnName="BudgetPro" />
+                <ScalarProperty Name="FY" ColumnName="FY" />
+                <ScalarProperty Name="projectid" ColumnName="projectid" />
+                <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+                <ScalarProperty Name="CostcenterID" ColumnName="CostcenterID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Costcenterbudgetheads">
+            <EntityTypeMapping TypeName="InventoryModel.tbl_Costcenterbudgetheads">
+              <MappingFragment StoreEntitySet="tbl_Costcenterbudgetheads">
+                <ScalarProperty Name="SRNO" ColumnName="SRNO" />
+                <ScalarProperty Name="FinanceCostCenterName" ColumnName="FinanceCostCenterName" />
+                <ScalarProperty Name="FinanceCostCenterID" ColumnName="FinanceCostCenterID" />
+                <ScalarProperty Name="ReportCostCenterShow" ColumnName="ReportCostCenterShow" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ModifyIP" ColumnName="ModifyIP" />
+                <ScalarProperty Name="ModifyUid" ColumnName="ModifyUid" />
+                <ScalarProperty Name="ModifyDate" ColumnName="ModifyDate" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="Uid" ColumnName="Uid" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="HeadName" ColumnName="HeadName" />
+                <ScalarProperty Name="Costcenterid" ColumnName="Costcenterid" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="projecttbls">
+            <EntityTypeMapping TypeName="InventoryModel.projecttbl">
+              <MappingFragment StoreEntitySet="projecttbl">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="getBudgetProvisionamount" FunctionName="InventoryModel.Store.getBudgetProvisionamount">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="InventoryModel.getBudgetProvisionamount_Result">
+                <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+                <ScalarProperty Name="BudgetPro" ColumnName="BudgetPro" />
+                <ScalarProperty Name="Totalexpense" ColumnName="Totalexpense" />
+                <ScalarProperty Name="balance" ColumnName="balance" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tblpoes">
+            <EntityTypeMapping TypeName="InventoryModel.tblpo">
+              <MappingFragment StoreEntitySet="tblpo">
+                <ScalarProperty Name="checkPrintUser" ColumnName="checkPrintUser" />
+                <ScalarProperty Name="checkPrintIP" ColumnName="checkPrintIP" />
+                <ScalarProperty Name="checkPrintDate" ColumnName="checkPrintDate" />
+                <ScalarProperty Name="returnBackIP" ColumnName="returnBackIP" />
+                <ScalarProperty Name="istaxPaid" ColumnName="istaxPaid" />
+                <ScalarProperty Name="fldSRDPR" ColumnName="fldSRDPR" />
+                <ScalarProperty Name="PayNo" ColumnName="PayNo" />
+                <ScalarProperty Name="fldpaymentdate" ColumnName="fldpaymentdate" />
+                <ScalarProperty Name="isprinted" ColumnName="isprinted" />
+                <ScalarProperty Name="EMinuteNo" ColumnName="EMinuteNo" />
+                <ScalarProperty Name="fwdstatus" ColumnName="fwdstatus" />
+                <ScalarProperty Name="ForwardedInformation" ColumnName="ForwardedInformation" />
+                <ScalarProperty Name="isPoBudget" ColumnName="isPoBudget" />
+                <ScalarProperty Name="isPoApprove" ColumnName="isPoApprove" />
+                <ScalarProperty Name="POApproveUserIp" ColumnName="POApproveUserIp" />
+                <ScalarProperty Name="POApproveUserID" ColumnName="POApproveUserID" />
+                <ScalarProperty Name="POApproveDate" ColumnName="POApproveDate" />
+                <ScalarProperty Name="budgetUserIp" ColumnName="budgetUserIp" />
+                <ScalarProperty Name="budgetUserId" ColumnName="budgetUserId" />
+                <ScalarProperty Name="budgetDate" ColumnName="budgetDate" />
+                <ScalarProperty Name="onlinetxNo" ColumnName="onlinetxNo" />
+                <ScalarProperty Name="ModeofPayment" ColumnName="ModeofPayment" />
+                <ScalarProperty Name="AmountexcTax" ColumnName="AmountexcTax" />
+                <ScalarProperty Name="taxAmount" ColumnName="taxAmount" />
+                <ScalarProperty Name="taxper" ColumnName="taxper" />
+                <ScalarProperty Name="BankID" ColumnName="BankID" />
+                <ScalarProperty Name="AdvanceIP" ColumnName="AdvanceIP" />
+                <ScalarProperty Name="advanceDate" ColumnName="advanceDate" />
+                <ScalarProperty Name="Advanceuserid" ColumnName="Advanceuserid" />
+                <ScalarProperty Name="isadvance" ColumnName="isadvance" />
+                <ScalarProperty Name="AdvanceAmount" ColumnName="AdvanceAmount" />
+                <ScalarProperty Name="InstrumentNo" ColumnName="InstrumentNo" />
+                <ScalarProperty Name="fldsrdDate" ColumnName="fldsrdDate" />
+                <ScalarProperty Name="fldSrdID" ColumnName="fldSrdID" />
+                <ScalarProperty Name="ModifyIP" ColumnName="ModifyIP" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifyBy" ColumnName="ModifyBy" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="fldip" ColumnName="fldip" />
+                <ScalarProperty Name="flduser" ColumnName="flduser" />
+                <ScalarProperty Name="fldgst" ColumnName="fldgst" />
+                <ScalarProperty Name="fldPo" ColumnName="fldPo" />
+                <ScalarProperty Name="fldRemarks" ColumnName="fldRemarks" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="PaymentTermNConditions" ColumnName="PaymentTermNConditions" />
+                <ScalarProperty Name="fldCategoryNo" ColumnName="fldCategoryNo" />
+                <ScalarProperty Name="fldserialno" ColumnName="fldserialno" />
+                <ScalarProperty Name="fldpocompletestatus" ColumnName="fldpocompletestatus" />
+                <ScalarProperty Name="fldpotype" ColumnName="fldpotype" />
+                <ScalarProperty Name="fldsupplierno" ColumnName="fldsupplierno" />
+                <ScalarProperty Name="fldstatus" ColumnName="fldstatus" />
+                <ScalarProperty Name="fldpodate" ColumnName="fldpodate" />
+                <ScalarProperty Name="fldpono" ColumnName="fldpono" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,335 @@
+﻿@model HRandPayrollSystemModel.DBModel.EmployeePlacement
+
+@{
+    ViewBag.Title = "Allowance Rewise";
+}
+
+@using (@Html.BeginForm("Save", "SalaryAllowanceRewise", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    //if (Model.PlacementID > 0)
+    //{
+    //    if (Model.IsView)
+    //    {
+    //        ViewBag.Title = ViewBag.Title + " View";
+    //    }
+    //    else
+    //    {
+    //        ViewBag.Title = ViewBag.Title + " Edit";
+    //    }
+
+    //}
+    //else
+    //{
+
+    //    ViewBag.Title = ViewBag.Title + " Create";
+
+    //}
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">EmployeeType Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input EmployeeType data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+
+                        @if (TempData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(TempData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> All Employees Salary Updated Record Save Successfully .
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>@ViewBag.Title Detail</h3>
+                                <div id="Allowancedetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                    <table class="table table-bordered table-striped mb-none table-hover" id="datatableAllowance">
+                                        @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                        <thead>
+                                            <tr>
+                                                <th> <strong>SR#</strong> </th>
+                                                <th> <strong>Allowance</strong></th>
+                                                <th><strong>Allowance Rate</strong></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="AllowanceBodyID">
+                                            @{
+
+                                                int b = 0;
+                                                var result = Model.getAllowancesDeduction(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs), false);
+                                                foreach (var item in result)
+                                                {
+
+                                                    <tr id="@b">
+                                                        @{
+                                                            int countserial = 0;
+                                                            countserial = 1 + @b;
+                                                        }
+                                                        <td><span id="SerialNo_@b" readonly="readonly" class="">@countserial </span></td>
+                                                        <td> <input type="hidden" id="AllowanceId_@b" name="AllowanceID" value="@item.AllowanceDeductionID" />  <span id="ShortName_@b" value="@item.AllowanceDeductionTitle" class="">@item.AllowanceDeductionTitle</span> </td>
+                                                        <td> <input type="hidden" id="AllowanceRate_@b" name="AllowanceRate" value="@item.Rate" />   <span id="spAllowanceRate_@b" value="@item.Rate">@item.Rate</span> </td>
+
+                                                    </tr>
+                                                                b++;
+                                                            }
+                                                            <tr>
+                                                                <td></td>
+                                                                <td><strong>Total</strong></td>
+                                                                <td>@result.Sum(x => x.Rate) <input type="hidden" id="TotalPercentage" name="TotalPercentage" value="@result.Sum(x => x.Rate)" /></td>
+
+
+                                                            </tr>
+
+
+
+                                            }
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+                                                            }
+<script>
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+        var percentage = parseInt($('#TotalPercentage').val());
+        if (percentage != 100) {
+
+            bootbox.alert('Allowance Rate must be 100 Percent')
+            ReturnValue = false;
+        }
+
+
+
+        if (ReturnValue) {
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+
+
+
+                }
+            });
+        }
+
+    }
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+
+
+
+
+
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+
+
+    });
+
+
+
+
+
+
+
+    function CalculteAmountOfAllowance(row) {
+
+        debugger
+        if ($('#IsAllowanceCheck_' + row).is(':checked')) {
+            var allowanceidrow = $('#AllowanceId_' + row).val()
+            $('#IsAllowanceCheck_' + row).val(allowanceidrow)
+            if ($('#GrossSalary').val() != '' && $('#GrossSalary').val() != '0') {
+
+
+
+                var GrosSalry = parseFloat($('#GrossSalary').val());
+                var RatePercent = parseFloat($('#AllowanceRate_' + row).val());
+
+                var basicSalry = (GrosSalry / 100) * RatePercent;
+                $('#AllowanceAmount_' + row).val(basicSalry)
+                $('#spAllowanceAmount_' + row).text(basicSalry)
+
+
+
+
+
+            }
+            else {
+                bootbox.alert("Please Enter Gross Salary")
+
+            }
+
+        }
+        else {
+
+            $('#spAllowanceAmount_' + row).text(0)
+            $('#AllowanceAmount_' + row).val(0)
+
+            $('#IsAllowanceCheck_' + row).val(false)
+
+        }
+
+
+        var TotalAmountSalry = 0
+        $('#AllowanceBodyID tr').each(function () {
+            TotalAmountSalry += parseFloat(0 + $('#spAllowanceAmount_' + this.id).text())
+
+        })
+        $('#TotalAllowanceAmount').text(TotalAmountSalry)
+
+
+
+    }
+
+
+
+    function Taxcalculate(row) {
+
+        if ($('#IsDeductionCheck_' + row).is(':checked')) {
+            $('#IsDeductionCheck_' + row).val($('#DeductionID_' + row).val())
+
+            if ($('#GrossSalary').val() != '' && $('#GrossSalary').val() != '0') {
+
+
+
+
+                var Data = { id: $('#DeductionID_' + row).val(), salary: $('#GrossSalary').val() }
+
+                $.ajax({
+                    async: false,
+                    url: "/EmployeePlacement/GetTaxCalculate",
+                    data: Data,
+                    success: function (data) {
+
+                        if (data != null) {
+
+                            if (parseFloat(data) > 0) {
+                                $('#spDeductionAmount_' + row).text(data)
+                                $('#DeductionAmount_' + row).val(data)
+
+
+
+                            }
+
+
+                        }
+                    },
+                    error: function () {
+                        ReturnValue = false;
+
+                    }
+                })
+
+
+
+
+                var TotalAmountSalry = 0
+                $('#deductionBodyID tr').each(function () {
+                    TotalAmountSalry += parseFloat(0 + $('#spDeductionAmount_' + this.id).text())
+
+                })
+                $('#TotalDeductionAmount').text(TotalAmountSalry)
+
+
+            }
+            else {
+                bootbox.alert("Please Enter Gross Salary")
+
+
+            }
+
+        }
+        else {
+
+
+            $('#IsDeductionCheck_' + row).val(false)
+
+        }
+    }
+
+
+</script>
+
+

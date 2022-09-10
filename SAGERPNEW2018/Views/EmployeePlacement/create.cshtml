@@ -1,0 +1,724 @@
+﻿@model HRandPayrollSystemModel.DBModel.EmployeePlacement
+@{
+    ViewBag.Title = "Employee Salary";
+}
+@using (@Html.BeginForm("Save", "EmployeePlacement", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    if (Model.PlacementID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">EmployeeType Info</h2>
+                        <p class="panel-subtitle">
+                            Form control for input EmployeeType data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @Html.HiddenFor(model => model.PlacementID)
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Department <span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.DropDownListFor(model => model.DepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = " loadDesignation()" })
+                            </div>
+                            <label class="col-sm-2 control-label"> Designation<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.DropDownListFor(model => model.DesiginationID, new HRandPayrollSystemModel.DBModel.tblEmployee().LoadDesignation(0), new { @class = "form-control selectpicker ", @required = "required" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Employee <span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                
+                               @{
+
+                                   if (Convert.ToBoolean(ViewData["Editmode"]))
+                                   {
+                                    @Html.DropDownListFor(model => model.EmployeeID, new HRandPayrollSystemModel.DBModel.tblEmployeeSalary().loadEmployee(Model.DepartmentID, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", })
+
+                                   }
+                                   else
+                                   {
+                                    @Html.DropDownListFor(model => model.EmployeeID, Model.loadEmployee(Model.DepartmentID, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", })
+
+                                   }
+
+                            }
+
+
+
+                            
+                            
+                            </div>
+                            <label class="col-sm-2 control-label">Bank Name <span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.DropDownListFor(model => model.BankID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadBanks(), new { @class = "form-control selectpicker ", @required = "required", })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Account Title<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.BankAccountTitle, new { @class = "form-control", @required = "required" })
+                            </div>
+                            <label class="col-sm-2 control-label">Account No <span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.BankAccountNo, new { @class = "form-control", @required = "required" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Gross Salary<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.GrossSalary, new { @class = "form-control number", @required = "required" })
+                            </div>
+                            <label class="col-sm-2 control-label">Tax Rebait<span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                @Html.TextBoxFor(model => model.TaxRebait, new { @class = "form-control number", @required = "required" })
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                                <label class="col-sm-2 control-label">Placement Date <span class="required">*</span></label>
+                                <div class="col-sm-3 ">
+                                    @Html.TextBoxFor(model => model.PlacemantDate, new { @class = "form-control ", @required = "required" })
+
+
+                                </div>
+
+                                <label class="col-sm-2 control-label">Probation Completed Date <span class="required">*</span></label>
+                                <div class="col-sm-3 ">
+                                    @Html.TextBoxFor(model => model.ProbationCompletedDtae, new { @class = "form-control ", @required = "required" })
+
+
+
+                                </div>
+
+
+                            </div>*@
+                        <div class="form-group">
+                            @*<label class="col-sm-1 control-label" for="isConfirm">IsConfirm</label>
+                                <div class="col-sm-1 ">
+                                    @Html.CheckBoxFor(model => model.isConfirm)
+
+                                </div>*@
+
+                            <label class="col-sm-2 control-label">Net Salary <span class="required">*</span></label>
+                            <div class="col-sm-3 ">
+                                <input type="text" class="form-control" id="NetSalary" readonly="readonly" name="NetSalary" />
+                            </div>
+
+                                <label class="col-sm-1 control-label" for="Inactive">InActive</label>
+                                <div class="col-sm-1 ">
+                                    @Html.CheckBoxFor(model => model.Inactive)
+                                    @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+                                </div>
+                            </div>
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>Allowance Detail</h3>
+                                <div id="Allowancedetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                    <table class="table table-bordered table-striped mb-none table-hover" id="datatableAllowance">
+                                        @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                        <thead>
+                                            <tr>
+                                                <th> <strong>SR#</strong> </th>
+                                                <th> <strong>Allowance</strong></th>
+                                                <th><strong>Allowance Rate</strong></th>
+                                                <th><strong>Allowance Amount</strong></th>
+                                                <th><strong>Check</strong></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="AllowanceBodyID">
+                                            @{
+
+                                                if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                {
+
+                                                    int a = 0;
+                                                    var resultedit = Model.getAllowancelacementByID(Convert.ToInt32(Model.PlacementID), Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs));
+                                                    foreach (var item in resultedit)
+                                                    {
+                                                        <tr id="@a">
+                                                            @{
+                                                                int countserial = 0;
+                                                                countserial = 1 + @a;
+                                                            }
+                                                            <td><span id="SerialNo_@a" readonly="readonly">@countserial </span></td>
+                                                            <td> <input type="hidden" value="@item.AllowanceID" id="AllowanceId_@a" name="AllowanceID" /><span id="ShortName_@a" value="@item.AllowanceDeductionTitle" class="">@item.AllowanceDeductionTitle</span> </td>
+                                                            <td> <input type="text" onkeypress="return isNumber(event)" style="width:70px" value="@Convert.ToInt32( item.AllowanceRate)" id="AllowanceRate_@a" name="AllowanceRate" onkeyup="CalculteAmountOfAllowance(@a)" />  @*<span id="spAllowanceRate_@a" value="@item.AllowanceRate">@item.AllowanceRate</span>*@ </td>
+                                                            <td>   <input type="hidden" value="@item.AllowanceAmount" id="AllowanceAmount_@a" name="AllowanceAmount" /> <span id="spAllowanceAmount_@a">@string.Format("{0:N0}", item.AllowanceAmount)  </span>  </td>
+                                                            @if (Convert.ToBoolean(item.IsCheck))
+                                                            {
+                                                                <td> <input type="checkbox" value="@item.AllowanceID" id="IsAllowanceCheck_@a" checked name="IsCheck" onclick="CalculteAmountOfAllowance(@a)" /> </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td> <input type="checkbox" value="@item.AllowanceID" id="IsAllowanceCheck_@a" name="IsCheck" onclick="CalculteAmountOfAllowance(@a)" /> </td>
+                                                            }
+                                                        </tr>
+                                                                    a++;
+                                                                }
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td><strong>Total</strong></td>
+                                                                    <td><span id="TotalAllowanceRate" name="TotalAllowanceRate">  @Convert.ToInt32(resultedit.Sum(x => x.AllowanceRate)) </span></td>
+                                                                    <td>  <span id="TotalAllowanceAmount" name="TotalAllowanceAmount"> @string.Format("{0:N0}", resultedit.Sum(x => x.AllowanceAmount))  </span> </td>
+                                                                    <td></td>
+                                                                </tr>
+
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    int b = 0;
+                                                                    var result = Model.getAllowancesDeduction(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs), false);
+                                                                    foreach (var item in result)
+                                                                    {
+
+                                                                        <tr id="@b">
+                                                                            @{
+                                                                                int countserial = 0;
+                                                                                countserial = 1 + @b;
+                                                                            }
+                                                                            <td><span id="SerialNo_@b" readonly="readonly" class="">@countserial </span></td>
+                                                                            <td> <input type="hidden" id="AllowanceId_@b" name="AllowanceID" value="@item.AllowanceDeductionID" />  <span id="ShortName_@b" value="@item.AllowanceDeductionTitle" class="">@item.AllowanceDeductionTitle</span> </td>
+                                                                            <td> <input type="text" onkeypress="return isNumber(event)" style="width:70px" id="AllowanceRate_@b" name="AllowanceRate" value="@Convert.ToInt32(item.Rate)" onkeyup="CalculteAmountOfAllowance(@b)" />    </td>
+                                                                            <td> <input type="hidden" id="AllowanceAmount_@b" name="AllowanceAmount" />  <span id="spAllowanceAmount_@b" class="">0  </span>  </td>
+
+                                                                            <td> <input type="checkbox" value="false" id="IsAllowanceCheck_@b" name="IsCheck" onclick="CalculteAmountOfAllowance(@b)" /> </td>
+                                                                        </tr>
+                                                                                    b++;
+                                                                                }
+                                                                                <tr>
+                                                                                    <td></td>
+                                                                                    <td><strong>Total</strong></td>
+                                                                                    <td><span id="TotalAllowanceRate" name="TotalAllowanceRate"> @Convert.ToInt32(result.Sum(x => x.Rate))  </span></td>
+
+                                                                                    <td><span id="TotalAllowanceAmount" name="TotalAllowanceAmount" class="">0  </span> </td>
+                                                                                    <td></td>
+                                                                                </tr>
+
+                                                                                }
+
+                                            }
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            @*--------------------------------Dedection--------------------*@
+                            <div class="col-md-6">
+                                <h3>Deduction Detail</h3>
+                                <div id="deductiondetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                    <table class="table table-bordered table-striped mb-none table-hover" id="datatablededuction">
+                                        @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                        <thead>
+                                            <tr>
+                                                <th> <strong>SR#</strong> </th>
+                                                <th> <strong>Deduction</strong></th>
+                                                <th><strong>Deduction Amount</strong></th>
+                                                <th><strong>Check</strong></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="deductionBodyID">
+                                            @{
+
+                                                if (Convert.ToBoolean(ViewData["Editmode"]))
+                                                {
+
+                                                    int a = 0;
+                                                    var resulteditdeduction = Model.getDeductionPlacementByID(Convert.ToInt32(Model.PlacementID), Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs));
+                                                    foreach (var item in resulteditdeduction)
+                                                    {
+                                                        <tr id="@a">
+                                                            @{
+                                                                int countserial = 0;
+                                                                countserial = 1 + @a;
+                                                            }
+
+                                                            <td><span id="SerialNo_@a" readonly="readonly" class="">@countserial </span></td>
+                                                            <td><input type="hidden" id="DeductionID_@a" name="DeductionID" value="@item.DeductionID " /> <span id="AllowanceDeductionTitle_@a" name="AllowanceDeductionTitle" class="">@item.AllowanceDeductionTitle</span> </td>
+                                                            <td><input type="hidden" name="DeductionAmount" id="DeductionAmount_@a" value="@item.DeductionAmount" /> <span id="spDeductionAmount_@a" name="DeductionAmount" class="">   @string.Format("{0:N0}", @item.DeductionAmount)   </span> </td>
+
+
+
+                                                            @if (Convert.ToBoolean(item.IsCheck))
+                                                            {
+                                                                <td> <input type="checkbox" value="@item.DeductionID" id="IsDeductionCheck_@a" checked onclick="Taxcalculate(@a)" name="deductionIsCheck" /> </td>
+
+                                                            }
+                                                            else
+                                                            {
+
+                                                                <td> <input type="checkbox" value="@item.DeductionID" id="IsDeductionCheck_@a" onclick="Taxcalculate(@a)" name="deductionIsCheck" /> </td>
+
+                                                            }
+
+                                                        </tr>
+                                                                    a++;
+                                                                }
+
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td><strong>Total</strong></td>
+                                                                    <td><span id="TotalDeductionAmount" name="TotalDeductionAmount" class="">   @string.Format("{0:N0}", resulteditdeduction.Where(x=>x.IsCheck==1) .Sum(x => x.DeductionAmount))    </span> </td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                }
+                                                                else
+                                                                {
+                                                                    int b = 0;
+                                                                    var resultdeduction = Model.getAllowancesDeduction(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs), true);
+                                                                    foreach (var item in resultdeduction)
+                                                                    {
+
+                                                                        <tr id="@b">
+                                                                            @{
+                                                                                int countserial = 0;
+                                                                                countserial = 1 + @b;
+                                                                            }
+                                                                            <td><span id="SerialNo_@b" readonly="readonly" class="">@countserial </span></td>
+                                                                            <td><input type="hidden" id="DeductionID_@b" name="DeductionID" value="@item.AllowanceDeductionID " /> <span id="AllowanceDeductionTitle_@b" name="AllowanceDeductionTitle" class="">@item.AllowanceDeductionTitle</span> </td>
+                                                                            <td><input type="hidden" name="DeductionAmount" id="DeductionAmount_@b" value="@item.Rate" /> <span id="spDeductionAmount_@b" name="DeductionAmount" class=""> @string.Format("{0:N0}", item.Rate)  </span> </td>
+                                                                            <td> <input type="checkbox" class="" value="false" id="IsDeductionCheck_@b" onclick="Taxcalculate(@b)" name="deductionIsCheck" /> </td>
+                                                                        </tr>
+                                                                                    b++;
+                                                                                }
+
+                                                                                <tr>
+                                                                                    <td></td>
+                                                                                    <td><strong>Total</strong></td>
+                                                                                    <td>    <span id="TotalDeductionAmount" name="TotalDeductionAmount"> @*@string.Format("{0:N0}", resultdeduction.Sum(x => x.Rate))*@ 0 </span> </td>
+                                                                                    <td></td>
+                                                                                </tr>
+
+                                                                                }
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+                                                                                }
+<script>
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+
+    debugger
+
+        $("#myform").validate();
+
+        if (  parseFloat( $('#TotalAllowanceRate').text()) != 100) {
+
+         
+            ReturnValue = false;
+            bootbox.alert("Allowance Percentage Must be 100% then save record ! ")
+        }
+
+        if (parseFloat( $('#NetSalary').val()) <0) {
+            ReturnValue = false;
+            bootbox.alert("Net Salary Not in negative ")
+        }
+
+        var Data = { Name: $('#EmployeeID').val(), ID: $("#PlacementID").val() }
+        $.ajax({
+            async: false,
+            url: "/EmployeePlacement/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c = JSON.parse(data);
+                if (c != "") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+        if (ReturnValue) {
+
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+
+
+
+                }
+            });
+        }
+
+    }
+    $(document).ready(function () {
+
+
+
+        $('.selectpicker').selectpicker('selectAll');
+
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+        calculateNetsalary();
+
+    });
+
+
+
+
+    function loadEmployee() {
+
+        if ($('#DepartmentID').val() == "0") {
+
+            var employee = $('#EmployeeID');
+            employee.empty();
+            employee.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmployeePlacement/loadEmployeeBydepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger;
+                    var employee = $('#EmployeeID');
+                    employee.empty();
+                    console.log(data)
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            employee.append(datafil);
+                        });
+
+                    employee.selectpicker('refresh');
+
+                    employee.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+    function loadDesignation() {
+
+        if ($('#DepartmentID').val() == "0") {
+
+            var Designation = $('#DesiginationID');
+            Designation.empty();
+            Designation.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Employee/loadDesigantionBydepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Designation = $('#DesiginationID');
+                    Designation.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Designation.append(datafil);
+                        });
+
+                    Designation.selectpicker('refresh');
+
+                    Designation.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+        loadEmployee();
+    }
+
+
+
+    function CalculteAmountOfAllowance(row) {
+
+        if ($('#IsAllowanceCheck_' + row).is(':checked')) {
+            var allowanceidrow = $('#AllowanceId_' + row).val()
+            $('#IsAllowanceCheck_' + row).val(allowanceidrow)
+            if ($('#GrossSalary').val() != '' && $('#GrossSalary').val() != '0') {
+
+
+
+                var GrosSalry = parseFloat($('#GrossSalary').val());
+                var RatePercent = parseFloat($('#AllowanceRate_' + row).val());
+
+                var basicSalry = (GrosSalry / 100) * RatePercent;
+                $('#AllowanceAmount_' + row).val(basicSalry)
+                $('#spAllowanceAmount_' + row).text(basicSalry.toLocaleString())
+
+
+
+
+
+            }
+            else {
+                bootbox.alert("Please Enter Gross Salary")
+
+            }
+
+        }
+        else {
+
+            $('#spAllowanceAmount_' + row).text(0)
+            $('#AllowanceAmount_' + row).val(0)
+
+            $('#IsAllowanceCheck_' + row).val(false)
+
+        }
+
+
+        var TotalAmountSalry = 0
+        var Percentage = 0
+
+        for (var i = 0; i < $('#AllowanceBodyID tr').length - 1; i++) {
+
+            TotalAmountSalry += parseFloat(0 + $('#AllowanceAmount_' + i).val())
+            Percentage += parseFloat(0 + $('#AllowanceRate_' + i).val())
+
+        }
+        $('#TotalAllowanceAmount').text(TotalAmountSalry.toLocaleString())
+        $('#TotalAllowanceRate').text(Percentage)
+
+        calculateNetsalary()
+
+    }
+
+
+
+    function Taxcalculate(row) {
+
+
+        if ($('#IsDeductionCheck_' + row).is(':checked')) {
+            $('#IsDeductionCheck_' + row).val($('#DeductionID_' + row).val())
+
+            if ($('#GrossSalary').val() != '' && $('#GrossSalary').val() != '0') {
+
+
+
+
+                var Data = { id: $('#DeductionID_' + row).val(), salary: $('#GrossSalary').val() }
+
+                $.ajax({
+                    async: false,
+                    url: "/EmployeePlacement/GetTaxCalculate",
+                    data: Data,
+                    success: function (data) {
+
+                        if (data != null) {
+
+                            if (parseFloat(data) > 0) {
+                                $('#spDeductionAmount_' + row).text(data.toLocaleString())
+                                $('#DeductionAmount_' + row).val(data)
+
+
+
+                            }
+
+
+                        }
+                    },
+                    error: function () {
+                        ReturnValue = false;
+
+                    }
+                })
+
+
+
+            }
+            else {
+                bootbox.alert("Please Enter Gross Salary")
+
+
+            }
+
+
+       
+
+
+
+        }
+        else {
+
+
+            $('#IsDeductionCheck_' + row).val(false)
+
+           
+
+        }
+
+        var TotalAmountSalry = 0
+
+
+        for (var i = 0; i < $('#deductionBodyID tr').length - 1; i++) {
+
+            if ($('#IsDeductionCheck_' + i).is(':checked')) {
+
+                TotalAmountSalry += parseFloat(0 + $('#DeductionAmount_' + i).val())
+            }
+
+        }
+        $('#TotalDeductionAmount').text(TotalAmountSalry.toLocaleString())
+       
+        calculateNetsalary();
+
+
+
+    }
+
+
+
+
+
+    function isNumber(evt, ROW) {
+        debugger
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+
+
+
+
+        return true;
+    }
+
+    function calculateNetsalary()
+    {
+
+        debugger;
+
+       
+        var TotalDeductionAmount = parseFloat($('#TotalDeductionAmount').text().replace(",", ""))
+        var TotalAllowanceAmount = parseFloat($('#TotalAllowanceAmount').text().replace(",", ""))
+
+  
+        var Netsalry =TotalAllowanceAmount - TotalDeductionAmount;
+        $('#NetSalary').val(Netsalry.toLocaleString());
+    }
+
+
+</script>

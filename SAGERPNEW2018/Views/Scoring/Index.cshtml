@@ -1,0 +1,433 @@
+﻿@model HRandPayrollSystemModel.DBModel.GLUser
+
+@{
+    ViewBag.Title = "Top Users";
+}
+
+@using (@Html.BeginForm("Save", "Scoring", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    <input type="hidden" id="checkedUserScore" name="checkedUserScore" />
+    <div id="modals"></div>
+
+
+
+
+
+    <header class="page-header">
+        <h2 id="headtitle">@ViewBag.Title</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color: chartreuse;" href="/Eminute/create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                <a href="#" class="fa fa-times"></a>
+            </div>
+
+            <h2 class="panel-title">All @ViewBag.Title Data</h2>
+        </header>
+        <div class="panel-body">
+
+            @if (TempData["ActionMessage"] != null)
+            {
+                if (Convert.ToBoolean(TempData["ActionMessage"]))
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-success">
+                                <strong>Success!</strong> Record Save Successfully .
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger">
+                                <strong>Error!</strong> Record Save Error .
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+
+            @if (TempData["St"].ToString() == "0")
+            {
+                <h3><strong style="color:#137324;">Top Users Form</strong>  </h3>
+            }
+
+            <table class="table table-bordered mb-none table-hover" id="UserTable">
+                <thead>
+                    <tr  class="bg-primary">
+                        <th>S/N </th>
+                        <th>Employee ID </th>
+                        <th>Employee Name </th>
+                        <th>Department </th>
+                        <th>Designation </th>
+                        <th>Employee Score </th>
+
+                        <th width="100px">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ProductTableID"></tbody>
+            </table>
+
+
+            <footer class="panel-footer">
+                <br />
+                <div class="row">
+                    <div class="col-sm-9">
+
+
+
+                        <button type="button" onclick="postform()" class="btn btn-primary">Save <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+
+
+                        @*<button type="button" id="cancelll" class="btn btn-default" onclick="location.href = '../../Eminute/ViewList/@Session["MinuteList"]'">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>*@
+
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+
+    </section>
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        var a = '@TempData["St"]'
+        if (a == "0") {
+
+            loadUsersList();
+        }
+
+     //<strong> <input type="checkbox" class="checkbox" onclick="myFunction()" id="ShowTop' + i + '" />  <strong>'
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }
+                  ],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [
+                      {
+                          extend: 'copy',
+                          text: '<span class="glyphicon glyphicon-floppy-disk"></span><span><strong> Copy</strong></span>',
+                          className: 'btn btn-primary  btn-sm',
+                          title: '@ViewBag.Title',
+                          exportOptions: {
+                              columns: ':visible'
+                          }
+
+                      },
+
+                            {
+                                extend: 'pdf',
+                                text: '  <span class="glyphicon glyphicon-file"></span><span> PDF</strong></span>',
+                                className: 'btn btn-primary  btn-sm',
+                                title: '@ViewBag.Title',
+                                orientation: 'portrait',
+                                pageSize: 'A4',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+
+                                customize: function (doc) {
+
+                                    doc.styles.title = {
+                                        color: 'red',
+                                        fontSize: '40',
+                                        // background: 'blue',
+                                        alignment: 'center'
+                                    }
+                                },
+
+
+
+                            },
+
+                             {
+
+                                 title: '@ViewBag.Title',
+                                 text: '<span class="glyphicon glyphicon-th"></span><span><strong> Excel</strong></span>',
+                                 className: 'btn btn-primary  btn-sm',
+                                 orientation: 'portrait',
+                                 pageSize: 'A4',
+                                 extend: 'excel',
+                                 footer: true,
+                                 exportOptions: {
+                                     columns: ':visible'
+                                 }
+                             },
+
+
+                           {
+                               extend: 'csv',
+
+                               title: '@ViewBag.Title',
+                               text: '<span class="	glyphicon glyphicon-list-alt"></span><span><strong> CSV</strong></span>',
+                               className: 'btn btn-primary  btn-sm',
+                               exportOptions: {
+                                   columns: ':visible'
+                               }
+
+                           },
+                         {
+                             extend: 'print',
+                             title: '@ViewBag.Title',
+                             text: '<span class="glyphicon glyphicon-print"></span><span><strong> Print</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             exportOptions: { columns: ':visible' }
+
+                         },
+                         {
+
+                             extend: 'colvis',
+                             text: '<span class="glyphicon glyphicon-blackboard"></span><span><strong> Column visibility</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             //  'colvis'
+                         }
+                 ],
+                 columnDefs: [{ targets: -1, visible: true }]
+                 ,paging: false,
+                 bInfo: false,
+                 bPaginate: false,
+                 lengthChange: false
+
+             })
+    })
+
+    function myFunction() {
+
+        var sum1 = 0;
+        var count = 0;
+        var resultIDs = '';
+        var pc = '';
+
+
+
+        for (var i = 0; i < $('#UserTable tr').length ; i++) {
+
+
+            if ($('#ShowTop' + i).is(":checked")) {
+
+                count += 1;
+                resultIDs += $('#Empid_' + i).val() + ','
+               
+
+            }
+
+
+
+        }
+
+    
+        $('#checkedUserScore').val(resultIDs)
+
+
+
+    }
+
+
+
+    function loadUsersList() {
+
+
+
+        try {
+            $('#loadingid').show();
+
+            var Data = { DaySearch: 0 }
+            $.ajax({
+                async: true,
+                url: "/Scoring/loadRanking",
+                data: Data,
+                type: "POST",
+                success: function (Response) {
+
+                    if (Response != null) {
+                        console.log(Response)
+                        var data = Response;
+                        if (data != '') {
+                            $("#UserTable").DataTable().clear();
+                            var html = '';
+                            for (var i = 0; i < data.length; i++) {
+
+
+
+
+                                $('#UserTable').DataTable().row.add
+                                ([
+
+                                    (i + 1),
+
+                                 data[i].EmployeeID,
+                                   data[i].Name,
+                                    data[i].Department,
+                                     data[i].Designation,
+                                          data[i].Score,
+                                              '<input type="hidden"  value=' + data[i].EmployeeID + ' id="Empid_' + i + '"  id="Empid_' + i + '" />  <strong> <input type="checkbox" class="checkbox" onclick="myFunction()" id="ShowTop' + i + '" />  <strong>'
+
+
+
+                                ]).draw();
+
+                            }
+
+
+                        }
+                    }
+                },
+                complete: function () {
+                    $('#loadingid').hide();
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+
+
+
+
+
+    }
+
+
+    function postform(count1) {
+        var ReturnValue = true
+
+        var countCheckBox = 0;
+        for (var i = 0; i < $('#UserTable tr').length ; i++) {
+
+
+            if ($('#ShowTop' + i).is(":checked")) {
+                countCheckBox++;
+            }
+        }
+
+      
+        if (countCheckBox > 3 || countCheckBox <3) {
+
+
+            bootbox.alert({
+                title: "<b>Note</b>",
+                message: "<strong style='color:red;' >Kindly!</strong> Select Only <b> 3 Users </b> for Top List.",
+
+
+            })
+            ReturnValue = false;
+        }
+
+     
+        
+
+
+
+
+            $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+            if (ReturnValue) {
+
+                bootbox.confirm("Are you sure to process these Employees for Top 3 list!", function (result) {
+
+                    if (result) {
+
+                        try {
+
+
+
+                            //if (typeof $('#IsTech').prop("checked") == 'undefined') {
+
+                            @*if ('@Model.TopUsers.Count()' < 2) {
+                                    bootbox.alert("This is the default alert!");*@
+
+
+                            $("#myform").submit();
+
+
+
+                            //}
+
+                            //}
+
+                        } catch (e) {
+                            //$("#myform").submit();
+
+                        }
+
+
+
+
+
+                    }
+
+
+                });
+            }
+        
+        }
+
+
+
+
+
+
+</script>
+
+
+
+
+
+

@@ -1,0 +1,407 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEmployeeLoan
+
+@{
+    ViewBag.Title = "Payment";
+}
+
+
+<style>
+    .datepickerAssign {
+    }
+
+    .FormatNomieCnic {
+    }
+
+    .FormatNomieMobile {
+    }
+</style>
+
+
+
+@using (@Html.BeginForm("SavePayment", "Loan", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    <input type="hidden" id="TotDetailRowNo" />
+
+    @Html.HiddenFor(model => model.LoanID)
+    if (Model.LoanID > 0)
+    {
+        if (Model.IsView)
+        {
+            ViewBag.Title = ViewBag.Title + " View";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " Edit";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">Employee loan</h2>
+                        <p class="panel-subtitle">
+                            Form control for input Employee Loan data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @if (TempData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(TempData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> Record Save Successfully .
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <label class="control-label">Department <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.fromDepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required" , @disabled = "disabled" })
+                            </div>
+                            <div class="col-md-2">
+                                
+                                <label class="control-label">Designation  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.fromDesignation, new HRandPayrollSystemModel.DBModel.tblEmployee().LoadDesignation(0), new { @class = "form-control selectpicker ",  @disabled = "disabled" })
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Employee  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.EmployeeId, Model.loadEmployee(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @disabled = "disabled" })
+
+                            </div>
+                          
+                            <div class="col-md-2">
+                                
+                                @Html.Label("Loan", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.RequestedAmount, new { @class = "form-control number", @required = "required", @readonly= "readonly"})
+
+                            </div>
+                            <div class="col-md-2">
+
+                                @Html.Label("Total", new { @class = "control-label " })
+                                @Html.TextBoxFor(model => model.Total, new { @class = "form-control number", @required = "required", @readonly = "readonly" })
+
+
+                                
+                            </div>
+
+                        </div>
+                  
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Payment Entry Detail</h3>
+                                <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                    <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                        <thead>
+                                            <tr>
+                                                <th> <strong>No#</strong> </th>
+                                                <th> <strong>Amount</strong></th>
+                                                <th><strong>Date</strong></th>
+                                                
+                                                <th style="width:80px"><strong>Action</strong>  </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DocmentBodyID">
+                                            @{
+
+                                              
+
+                                                    int a = 0;
+                                                    foreach (var item in Model.detailistDetail)
+                                                    {
+                                                        <tr id="@a">
+                                                            @{
+                                                                int countserial = 0;
+                                                                countserial = 1 + @a;
+                                                            }
+                                                            <td><span id="SerialNo_@a" readonly="readonly" class="form-control">@countserial </span></td>
+                                                            <td> <input type="text" class="form-control" value="@item.Amount" id="Amount_@a" name="Amount" /> </td>
+                                                            <td> <input type="text" class="form-control" value="@item.LoanDetailDate" id="LoanDetailDate_@a" name="LoanDetailDate" /> </td>
+
+                                                           
+                                                           
+                                                            <td>
+                                                                <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDataAdd_@a" value="+" onclick="AddTOTdetailData($(this).parent().parent().attr('id'), false)" title="Add">
+                                                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span>
+                                                                </button>
+                                                                <button type="button" style="" id="detailDataDelete_@a" title="Remove" value="-" onclick="DeleteDetailData(this)" class="btn btn-danger  btn-xs btn-circle">
+                                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                                        a++;
+                                                                    }
+                                                                }
+
+
+
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                
+
+
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+        if ('@Model.detailistDetail.Count()'<1) {
+            AddTOTdetailData(0, true)
+
+        }
+
+
+    });
+
+
+
+
+    function AddTOTdetailData(ThisRowID, FromDocumentDotReady) {
+
+
+
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("Amount_" + ThisRowID).value == 0) {
+
+
+
+                return false;
+            }
+        }
+
+        ////TotDetailRowNo
+        $("#DocmentBodyID tr").each(function () {
+
+            if (document.getElementById("Amount_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("TotDetailRowNo").value = $('#DocmentBodyID tr:last').attr('id');
+                document.getElementById("TotDetailRowNo").value++;
+            }
+            else {
+                document.getElementById("TotDetailRowNo").value = 0
+            }
+
+
+            var q = document.getElementById("TotDetailRowNo").value;
+
+            var i = parseFloat(q) + 1;
+
+            //  <input   id="File_' + document.getElementById("TotDetailRowNo").value + '"  multiple = "true"   type="file"  name="Chdate_Name[]"  />
+            //
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + q + '">';
+            dtProductDetailInfoHtml += '<td   class="input"> <span class="form-control"  readonly="readonly"   id="SerialNo_' + q + '">' + i + '</span></td>';
+
+
+            dtProductDetailInfoHtml += '<td   >  <input  type="text"  onkeypress="return isNumber(event)" class="form-control" id="Amount_' + q + '" name="Amount" /> </td>';
+
+
+            dtProductDetailInfoHtml += '<td   >  <input  type="text"  class="form-control datepickerAssign" id="LoanDetailDate_' + q + '" name="LoanDetailDate" /> </td>';
+
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="VoucherdetailDataAdd_' + document.getElementById("TotDetailRowNo").value +
+            '" value="+" onclick="AddTOTdetailData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="ProductdetailDataDelete'
+            + document.getElementById("TotDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocmentBodyID").append(dtProductDetailInfoHtml);
+
+
+            $(".datepickerAssign").datepicker({
+                format: "dd-M-yyyy",
+                autoclose: true,
+
+                orientation: 'top'
+
+
+            });
+            $('.datepickerAssign').datepicker('setDate', new Date());
+
+
+            calculte()
+
+
+
+
+        }
+    }
+
+
+    function calculte() {
+
+
+        var TotalAmount = 0
+
+
+        for (var i = 0; i < $('#DocmentBodyID tr').length - 1; i++) {
+
+
+
+            TotalAmount += parseFloat(0 + $('#Amount_' + i).val())
+
+
+        }
+        $('#Total').val(TotalAmount)
+    }
+
+    function DeleteDetailData(element, rowid) {
+
+        calculte()
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+
+        }
+        else {
+            $("#DocmentBodyID tr").remove();
+            AddTOTdetailData(0, true);
+
+        }
+
+    }
+
+    function isNumber(evt) {
+
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+
+
+
+    function postform() {
+        var ReturnValue = true
+
+
+        if (parseFloat( 0+ $('#Total').val()) >= parseFloat(0+ $('#RequestedAmount').val())) {
+
+
+
+            bootbox.alert("Total and Loan Amount equal !")
+            ReturnValue= false;
+        }
+
+        $("#myform").validate();
+
+
+
+        var Data = { Name: $('#BankName').val(), ID: $("#BankID").val() }
+        $.ajax({
+            async: false,
+            url: "/Bank/Duplicate",
+            data: Data,
+            success: function (data) {
+
+                var c = JSON.parse(data);
+                if (c != "") {
+                    bootbox.alert(c)
+                    ReturnValue = false;
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+                bootbox.alert("Error")
+            }
+        })
+
+        if (ReturnValue) {
+            bootbox.confirm("Are sure to save data!", function (result) {
+                if (result) {
+
+                    $("#myform").submit();
+
+
+
+                }
+            });
+        }
+
+    }
+
+</script>

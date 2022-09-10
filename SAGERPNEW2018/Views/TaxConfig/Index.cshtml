@@ -1,0 +1,251 @@
+﻿@model HRandPayrollSystemModel.DBModel.TaxConfiguration
+
+@{
+    ViewBag.Title = " Tax Configuration";
+}
+@using (@Html.BeginForm("Save", "TaxConfig", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Setup</span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        @*<button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>*@
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Deduction <span class="required">*</span></label>
+            <div class="col-sm-9 ">
+
+
+                @Html.DropDownListFor(model => model.AllowanceDeductionID, Model.FillDeduction(), new { @class = "form-control selectpicker", required = "required" })
+
+            </div>
+        </div>
+        <table class="table table-bordered table-striped mb-none table-hover" id="UserTable">
+            <thead>
+                <tr>
+                    <th>Serial No</th>
+                    <th>Anual Salary From </th>
+                    <th>Anual Salary To</th>
+                    <th>Fixed Amount </th>
+                    <th>Addtional Percentage </th>
+                    
+                </tr>
+            </thead>
+
+            <tbody id="ProductTableID">
+                @{int a = 0; }
+                @foreach (var item in Model.getAlltaxConfigdata())
+                {
+                    <tr id="@a">
+                        @{
+                            int countserial = 0;
+                            countserial = 1 + a;
+                        }
+                        <td> <input type="text" class="form-control" readonly value="@countserial" id="DetailID_@a" name="DetailID" /> </td>
+                        <td><input type="text" class="form-control" value="@item.AnualSalaryFrom" id="AnualSalaryFrom_@a" name="AnualSalaryFrom" />  </td>
+                        <td><input type="text" class="form-control" value="@item.AnualSalaryTo" id="AnualSalaryTo_@a" name="AnualSalaryTo" />  </td>
+                        <td><input type="text" class="form-control" value="@item.FixedAmount" id="FixedAmount_@a" name="FixedAmount" />  </td>
+                        <td><input type="text" class="form-control" value="@item.Percentage" id="Percentage_@a" name="Percentage" /> </td>
+                     </tr>
+                                a++;
+                            }
+            </tbody>
+
+        </table>
+    </div>
+    <footer class="panel-footer">
+        <div class="row">
+            <div class="col-sm-9">
+                <button type="button" onclick="postform()" class="btn btn-primary">Save</button>
+                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+            </div>
+        </div>
+    </footer>
+</section>
+
+
+<script>
+    function postform() {
+        
+            $("#myform").submit();
+
+        
+
+    }
+    $(document).ready(function () {
+        //$('#btnTriggerEdit').click();
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+
+            $("#UserTable").dataTable(
+               {
+                   "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+                       { "bSearchable": false }],
+                   "bSort": true,
+
+                   dom: 'Bfrtip',
+                   buttons: [
+                              {
+                                  extend: 'copy',
+                                  text: '<span class="glyphicon glyphicon-floppy-disk"></span><span><strong> Copy</strong></span>',
+                                  className: 'btn btn-primary  btn-sm',
+                                  title: ' Tax Configuration',
+                                  exportOptions: {
+                                      columns: ':visible'
+                                  }
+
+                              },
+
+                            {
+                                extend: 'pdf',
+                                text: '  <span class="glyphicon glyphicon-file"></span><span> PDF</strong></span>',
+                                className: 'btn btn-primary  btn-sm',
+                                title: ' Allowances and Deductions',
+                                orientation: 'portrait',
+                                pageSize: 'A4',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+
+                                customize: function (doc) {
+
+                                    doc.styles.title = {
+                                        color: 'red',
+                                        fontSize: '40',
+                                        // background: 'blue',
+                                        alignment: 'center'
+                                    }
+                                },
+
+
+
+                            },
+
+                             {
+
+                                 title: 'Allowances and Deduction',
+                                 text: '<span class="glyphicon glyphicon-th"></span><span><strong> Excel</strong></span>',
+                                 className: 'btn btn-primary  btn-sm',
+                                 orientation: 'portrait',
+                                 pageSize: 'A4',
+                                 extend: 'excel',
+                                 footer: true,
+                                 exportOptions: {
+                                     columns: ':visible'
+                                 }
+                             },
+
+
+                           {
+                               extend: 'csv',
+
+                               title: ' Allowances and Deductions',
+                               text: '<span class="	glyphicon glyphicon-list-alt"></span><span><strong> CSV</strong></span>',
+                               className: 'btn btn-primary  btn-sm',
+                               exportOptions: {
+                                   columns: ':visible'
+                               }
+
+                           },
+                         {
+                             extend: 'print',
+                             title: ' Allowances and Deductions',
+                             text: '<span class="glyphicon glyphicon-print"></span><span><strong> Print</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             exportOptions: { columns: ':visible' }
+
+                         },
+                         {
+
+                             extend: 'colvis',
+                             text: '<span class="glyphicon glyphicon-blackboard"></span><span><strong> Column visibility</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             //  'colvis'
+                         }
+
+                   ],
+                   columnDefs: [{ targets: -1, visible: true }]
+                   //paging: false
+               })
+            var a = '@TempData["Dependancy"]'
+            if (a != "") {
+                $("#basicDendent").modal('show');
+            }
+        })
+
+        function add() {
+            window.location.href = "/AllowancesDeductions/create/"
+        }
+
+        var EditID = 0;
+        var DeleteID = 0;
+        function confirmPopupEdit()
+        {
+            window.location.href = "/AllowancesDeductions/Edit/" + EditID + "|1"
+        }
+
+        function Edit(id) {
+            EditID=id
+        }
+
+        function confirmPopupDelete() {
+            window.location.href = "/AllowancesDeductions/delete/" + DeleteID
+
+        }
+        function Del(id) {
+            DeleteID = id
+        }
+
+        function view(id) {
+            window.location.href = "/AllowancesDeductions/Edit/" + id + "|0"
+
+        }
+
+</script>
+                            }
+
+
+
+
+
+

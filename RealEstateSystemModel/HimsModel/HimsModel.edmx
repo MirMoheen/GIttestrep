@@ -1,0 +1,865 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="webserverModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'webserver.dbo.cl_ClinicName' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="cl_ClinicName">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Clid" Type="int" />
+          <Property Name="ClinicName" Type="varchar" MaxLength="200" />
+          <Property Name="is_show" Type="bit" />
+          <Property Name="type" Type="char" MaxLength="1" />
+          <Property Name="OrderNo" Type="int" />
+          <Property Name="FinDeptID" Type="int" />
+          <Property Name="RevnueGroup" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Doctors">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Doctor_Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="SName" Type="nvarchar" MaxLength="50" />
+          <Property Name="designation_id" Type="int" />
+          <Property Name="division_id" Type="int" />
+          <Property Name="Consultation_Fee" Type="int" />
+          <Property Name="Registration_Fee" Type="int" />
+          <Property Name="date" Type="smalldatetime" />
+          <Property Name="dstatus" Type="int" Nullable="false" />
+          <Property Name="GROUP" Type="char" MaxLength="4" />
+          <Property Name="cGroup" Type="char" MaxLength="4" />
+          <Property Name="fororder" Type="bigint" />
+          <Property Name="dGroup" Type="char" MaxLength="1" />
+          <Property Name="IsAllowPvt" Type="bit" />
+          <Property Name="sLevel" Type="int" />
+          <Property Name="iTtax" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="isZakDeduct" Type="bit" Nullable="false" />
+          <Property Name="CNIC" Type="nvarchar" MaxLength="50" />
+          <Property Name="ExcludeformPvtShare" Type="bit" Nullable="false" />
+          <Property Name="FinDeptID" Type="int" />
+          <Property Name="Deductions" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="FinAccountNo" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="patient_registration">
+          <Key>
+            <PropertyRef Name="Patient_no" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Patient_no" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="first_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="mid_name" Type="char" MaxLength="255" />
+          <Property Name="last_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="relative_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="sex" Type="char" MaxLength="1" />
+          <Property Name="address" Type="nvarchar" MaxLength="255" />
+          <Property Name="date_of_birth" Type="datetime" />
+          <Property Name="date_of_registration" Type="datetime" />
+          <Property Name="visit_date_time" Type="datetime" />
+          <Property Name="NIC" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone_No" Type="varchar" MaxLength="20" />
+          <Property Name="Mobile_No" Type="char" MaxLength="15" />
+          <Property Name="registration_fee" Type="float" />
+          <Property Name="consultation_fee" Type="float" />
+          <Property Name="total_balance" Type="float" />
+          <Property Name="Room_No" Type="bigint" />
+          <Property Name="relation_ship" Type="nvarchar" MaxLength="50" />
+          <Property Name="city" Type="bigint" />
+          <Property Name="date" Type="datetime" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="ch_cat" Type="bit" />
+          <Property Name="patient_type" Type="int" />
+          <Property Name="category_id" Type="bigint" />
+          <Property Name="LetterNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="doctor_id" Type="bigint" />
+          <Property Name="isb" Type="bit" />
+          <Property Name="bit" Type="int" Nullable="false" />
+          <Property Name="status" Type="int" />
+          <Property Name="UserCityId" Type="bigint" />
+          <Property Name="uid" Type="bigint" />
+          <Property Name="change_cat" Type="bit" />
+          <Property Name="ip" Type="nvarchar" MaxLength="50" />
+          <Property Name="Companyid" Type="int" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Refund" Type="varchar" MaxLength="20" />
+          <Property Name="is_fetched" Type="bit" />
+          <Property Name="pMode" Type="int" />
+          <Property Name="bankCharges" Type="float" />
+          <Property Name="countryid" Type="int" />
+          <Property Name="passportno" Type="varchar" MaxLength="50" />
+          <Property Name="VISIT_STATUS" Type="tinyint" />
+          <Property Name="DiscountAMT" Type="float" />
+          <Property Name="tempCityId" Type="int" />
+          <Property Name="designation_id" Type="int" />
+          <Property Name="dGroup" Type="char" MaxLength="1" />
+          <Property Name="RefundType" Type="char" MaxLength="1" />
+          <Property Name="RelNic" Type="nvarchar" MaxLength="50" />
+          <Property Name="PanelNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="PanelDesignationID" Type="int" />
+          <Property Name="EmployeeName" Type="nvarchar" MaxLength="50" />
+          <Property Name="PanelBillingID" Type="bigint" />
+          <Property Name="IsPanelClear" Type="bit" />
+          <Property Name="PanelReceviedAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IsConfirm" Type="bit" />
+          <Property Name="IPDBillNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImagePath" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsInfection" Type="bit" />
+          <Property Name="ISNewReg" Type="bit" />
+          <Property Name="IsCnic" Type="bit" />
+          <Property Name="SecContactName" Type="nvarchar" MaxLength="50" />
+          <Property Name="SecContactPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="CDocID" Type="int" />
+          <Property Name="IsBlackList" Type="bit" />
+          <Property Name="Initcategory_id" Type="int" />
+          <Property Name="CClinicID" Type="int" />
+          <Property Name="IsDead" Type="bit" />
+        </EntityType>
+        <EntityType Name="tblAppUser">
+          <Key>
+            <PropertyRef Name="Userid" />
+          </Key>
+          <Property Name="Userid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNIC" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Entrydate" Type="datetime" />
+          <Property Name="EntryIp" Type="nvarchar" MaxLength="50" />
+          <Property Name="Mac" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="Forgetcode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblRosterforAppointment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryDate" Type="datetime" />
+          <Property Name="Entryid" Type="int" />
+          <Property Name="EntryIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+          <Property Name="Cancelid" Type="int" />
+          <Property Name="Cancelip" Type="nvarchar" MaxLength="50" />
+          <Property Name="CancelDate" Type="datetime" />
+          <Property Name="Hospno" Type="nvarchar" MaxLength="10" />
+          <Property Name="City" Type="int" />
+          <Property Name="Clinicid" Type="int" />
+          <Property Name="Docid" Type="int" />
+          <Property Name="StartTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalPatient" Type="int" />
+          <Property Name="MinutePerPatient" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'webserver.dbo.tblRosterforAppointmentDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="tblRosterforAppointmentDetail">
+          <Key>
+            <PropertyRef Name="detailid" />
+            <PropertyRef Name="Iscancel" />
+            <PropertyRef Name="isBooked" />
+          </Key>
+          <Property Name="detailid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Masterid" Type="int" />
+          <Property Name="DoctorID" Type="int" />
+          <Property Name="EntryDate" Type="datetime" />
+          <Property Name="RosterDate" Type="datetime" />
+          <Property Name="Rostertime" Type="nvarchar" MaxLength="50" />
+          <Property Name="Iscancel" Type="bit" Nullable="false" />
+          <Property Name="isBooked" Type="bit" Nullable="false" />
+          <Property Name="PatientName" Type="nvarchar" MaxLength="500" />
+          <Property Name="PhoneNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sourceq" Type="nvarchar" MaxLength="50" />
+          <Property Name="City" Type="int" />
+          <Property Name="Cancelid" Type="int" />
+          <Property Name="Cancelip" Type="nvarchar" MaxLength="50" />
+          <Property Name="CancelDate" Type="datetime" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="entryid" Type="int" />
+          <Property Name="entryip" Type="nvarchar" MaxLength="50" />
+          <Property Name="Patient_no" Type="nvarchar" MaxLength="50" />
+          <Property Name="CancelidRe" Type="int" />
+          <Property Name="CancelipRe" Type="nvarchar" MaxLength="50" />
+          <Property Name="CancelDateRe" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblVaccineRegistration">
+          <Key>
+            <PropertyRef Name="VaccineID" />
+          </Key>
+          <Property Name="VaccineID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Relation" Type="nvarchar" MaxLength="50" />
+          <Property Name="RelativeName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Gender" Type="bit" Nullable="false" />
+          <Property Name="DOB" Type="date" />
+          <Property Name="Cnic" Type="nvarchar" MaxLength="50" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="200" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Passport" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryID" Type="int" />
+          <Property Name="ProvinceID" Type="int" />
+          <Property Name="DistrictID" Type="int" />
+          <Property Name="CityID" Type="int" />
+          <Property Name="EntryDate" Type="datetime" />
+          <Property Name="EntryUserID" Type="int" />
+          <Property Name="EntryIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsConfim" Type="bit" Nullable="false" />
+          <Property Name="VaccineType" Type="nvarchar" MaxLength="500" />
+          <Property Name="isCancel" Type="bit" Nullable="false" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="500" />
+          <Property Name="Datevacc" Type="datetime" />
+          <Property Name="Slot" Type="int" />
+        </EntityType>
+        <EntityType Name="VaccineStock">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NewStock" Type="int" />
+          <Property Name="AvaliableforPatient" Type="int" />
+          <Property Name="Used" Type="int" />
+          <Property Name="Date" Type="datetime" />
+        </EntityType>
+        <Function Name="AddDoctorRoasterDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Masterid" Type="int" Mode="In" />
+          <Parameter Name="Enterydate" Type="datetime" Mode="In" />
+          <Parameter Name="Roastertime" Type="nvarchar" Mode="In" />
+          <Parameter Name="Roasterdate" Type="datetime" Mode="In" />
+          <Parameter Name="Enteryid" Type="int" Mode="In" />
+          <Parameter Name="EnteryIp" Type="nvarchar" Mode="In" />
+          <Parameter Name="Cancelid" Type="int" Mode="In" />
+          <Parameter Name="Cancelip" Type="nvarchar" Mode="In" />
+          <Parameter Name="CancelDate" Type="datetime" Mode="In" />
+          <Parameter Name="City" Type="int" Mode="In" />
+          <Parameter Name="Docid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Insert_Patient_Record" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Hid" Type="int" Mode="In" />
+          <Parameter Name="Cid" Type="int" Mode="In" />
+          <Parameter Name="ddate" Type="datetime" Mode="In" />
+          <Parameter Name="male" Type="bigint" Mode="In" />
+          <Parameter Name="female" Type="bigint" Mode="In" />
+          <Parameter Name="chlidmale" Type="bigint" Mode="In" />
+          <Parameter Name="chlidfemale" Type="bigint" Mode="In" />
+          <Parameter Name="operations" Type="bigint" Mode="In" />
+          <Parameter Name="medicines" Type="bigint" Mode="In" />
+          <Parameter Name="glasses" Type="bigint" Mode="In" />
+          <Parameter Name="uid" Type="bigint" Mode="In" />
+          <Parameter Name="Notes" Type="varchar" Mode="In" />
+          <Parameter Name="OperAF" Type="bigint" Mode="In" />
+          <Parameter Name="OperCM" Type="bigint" Mode="In" />
+          <Parameter Name="OperCF" Type="bigint" Mode="In" />
+          <Parameter Name="IsSchoolScreening" Type="bit" Mode="In" />
+          <Parameter Name="ProvinceId" Type="int" Mode="In" />
+          <Parameter Name="DistrictId" Type="int" Mode="In" />
+          <Parameter Name="CityId" Type="int" Mode="In" />
+          <Parameter Name="maleCataract" Type="bigint" Mode="In" />
+          <Parameter Name="FemaleCataract" Type="bigint" Mode="In" />
+          <Parameter Name="ChildMaleCataract" Type="bigint" Mode="In" />
+          <Parameter Name="ChildFemaleCataract" Type="bigint" Mode="In" />
+          <Parameter Name="MaleOtherC" Type="bigint" Mode="In" />
+          <Parameter Name="FemaleOtherC" Type="bigint" Mode="In" />
+          <Parameter Name="MChildOtherC" Type="bigint" Mode="In" />
+          <Parameter Name="FChildOtherC" Type="bigint" Mode="In" />
+          <Parameter Name="campSponsor" Type="varchar" Mode="In" />
+          <Parameter Name="RegAMT" Type="bigint" Mode="In" />
+          <Parameter Name="DonationAMT" Type="bigint" Mode="In" />
+          <Parameter Name="Conjunctivitis" Type="bigint" Mode="In" />
+          <Parameter Name="Opacity" Type="bigint" Mode="In" />
+          <Parameter Name="Pterygium" Type="bigint" Mode="In" />
+          <Parameter Name="Squint" Type="bigint" Mode="In" />
+          <Parameter Name="Glaucoma" Type="bigint" Mode="In" />
+          <Parameter Name="others" Type="bigint" Mode="In" />
+        </Function>
+        <EntityContainer Name="webserverModelStoreContainer">
+          <EntitySet Name="Doctors" EntityType="Self.Doctors" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="patient_registration" EntityType="Self.patient_registration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblAppUser" EntityType="Self.tblAppUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblRosterforAppointment" EntityType="Self.tblRosterforAppointment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblVaccineRegistration" EntityType="Self.tblVaccineRegistration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VaccineStock" EntityType="Self.VaccineStock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cl_ClinicName" EntityType="Self.cl_ClinicName" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [cl_ClinicName].[Id] AS [Id], 
+    [cl_ClinicName].[Clid] AS [Clid], 
+    [cl_ClinicName].[ClinicName] AS [ClinicName], 
+    [cl_ClinicName].[is_show] AS [is_show], 
+    [cl_ClinicName].[type] AS [type], 
+    [cl_ClinicName].[OrderNo] AS [OrderNo], 
+    [cl_ClinicName].[FinDeptID] AS [FinDeptID], 
+    [cl_ClinicName].[RevnueGroup] AS [RevnueGroup]
+    FROM [dbo].[cl_ClinicName] AS [cl_ClinicName]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="tblRosterforAppointmentDetail" EntityType="Self.tblRosterforAppointmentDetail" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [tblRosterforAppointmentDetail].[detailid] AS [detailid], 
+    [tblRosterforAppointmentDetail].[Masterid] AS [Masterid], 
+    [tblRosterforAppointmentDetail].[DoctorID] AS [DoctorID], 
+    [tblRosterforAppointmentDetail].[EntryDate] AS [EntryDate], 
+    [tblRosterforAppointmentDetail].[RosterDate] AS [RosterDate], 
+    [tblRosterforAppointmentDetail].[Rostertime] AS [Rostertime], 
+    [tblRosterforAppointmentDetail].[Iscancel] AS [Iscancel], 
+    [tblRosterforAppointmentDetail].[isBooked] AS [isBooked], 
+    [tblRosterforAppointmentDetail].[PatientName] AS [PatientName], 
+    [tblRosterforAppointmentDetail].[PhoneNo] AS [PhoneNo], 
+    [tblRosterforAppointmentDetail].[Sourceq] AS [Sourceq], 
+    [tblRosterforAppointmentDetail].[City] AS [City], 
+    [tblRosterforAppointmentDetail].[Cancelid] AS [Cancelid], 
+    [tblRosterforAppointmentDetail].[Cancelip] AS [Cancelip], 
+    [tblRosterforAppointmentDetail].[CancelDate] AS [CancelDate], 
+    [tblRosterforAppointmentDetail].[Remarks] AS [Remarks], 
+    [tblRosterforAppointmentDetail].[entryid] AS [entryid], 
+    [tblRosterforAppointmentDetail].[entryip] AS [entryip], 
+    [tblRosterforAppointmentDetail].[Patient_no] AS [Patient_no], 
+    [tblRosterforAppointmentDetail].[CancelidRe] AS [CancelidRe], 
+    [tblRosterforAppointmentDetail].[CancelipRe] AS [CancelipRe], 
+    [tblRosterforAppointmentDetail].[CancelDateRe] AS [CancelDateRe]
+    FROM [dbo].[tblRosterforAppointmentDetail] AS [tblRosterforAppointmentDetail]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="webserverModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblVaccineRegistration">
+          <Key>
+            <PropertyRef Name="VaccineID" />
+          </Key>
+          <Property Name="VaccineID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Relation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RelativeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="Boolean" Nullable="false" />
+          <Property Name="DOB" Type="DateTime" Precision="0" />
+          <Property Name="Cnic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Passport" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryID" Type="Int32" />
+          <Property Name="ProvinceID" Type="Int32" />
+          <Property Name="DistrictID" Type="Int32" />
+          <Property Name="CityID" Type="Int32" />
+          <Property Name="EntryDate" Type="DateTime" Precision="3" />
+          <Property Name="EntryUserID" Type="Int32" />
+          <Property Name="EntryIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsConfim" Type="Boolean" Nullable="false" />
+          <Property Name="VaccineType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="isCancel" Type="Boolean" Nullable="false" />
+          <Property Name="Remarks" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Datevacc" Type="DateTime" Precision="3" />
+          <Property Name="Slot" Type="Int32" />
+        </EntityType>
+        <EntityContainer Name="webserverEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblVaccineRegistrations" EntityType="Self.tblVaccineRegistration" />
+          <EntitySet Name="VaccineStocks" EntityType="webserverModel.VaccineStock" />
+          <EntitySet Name="tblAppUsers" EntityType="webserverModel.tblAppUser" />
+          <FunctionImport Name="Insert_Patient_Record" ReturnType="Collection(Decimal)">
+            <Parameter Name="Hid" Mode="In" Type="Int32" />
+            <Parameter Name="Cid" Mode="In" Type="Int32" />
+            <Parameter Name="ddate" Mode="In" Type="DateTime" />
+            <Parameter Name="male" Mode="In" Type="Int64" />
+            <Parameter Name="female" Mode="In" Type="Int64" />
+            <Parameter Name="chlidmale" Mode="In" Type="Int64" />
+            <Parameter Name="chlidfemale" Mode="In" Type="Int64" />
+            <Parameter Name="operations" Mode="In" Type="Int64" />
+            <Parameter Name="medicines" Mode="In" Type="Int64" />
+            <Parameter Name="glasses" Mode="In" Type="Int64" />
+            <Parameter Name="uid" Mode="In" Type="Int64" />
+            <Parameter Name="Notes" Mode="In" Type="String" />
+            <Parameter Name="OperAF" Mode="In" Type="Int64" />
+            <Parameter Name="OperCM" Mode="In" Type="Int64" />
+            <Parameter Name="OperCF" Mode="In" Type="Int64" />
+            <Parameter Name="IsSchoolScreening" Mode="In" Type="Boolean" />
+            <Parameter Name="ProvinceId" Mode="In" Type="Int32" />
+            <Parameter Name="DistrictId" Mode="In" Type="Int32" />
+            <Parameter Name="CityId" Mode="In" Type="Int32" />
+            <Parameter Name="maleCataract" Mode="In" Type="Int64" />
+            <Parameter Name="FemaleCataract" Mode="In" Type="Int64" />
+            <Parameter Name="ChildMaleCataract" Mode="In" Type="Int64" />
+            <Parameter Name="ChildFemaleCataract" Mode="In" Type="Int64" />
+            <Parameter Name="MaleOtherC" Mode="In" Type="Int64" />
+            <Parameter Name="FemaleOtherC" Mode="In" Type="Int64" />
+            <Parameter Name="MChildOtherC" Mode="In" Type="Int64" />
+            <Parameter Name="FChildOtherC" Mode="In" Type="Int64" />
+            <Parameter Name="campSponsor" Mode="In" Type="String" />
+            <Parameter Name="RegAMT" Mode="In" Type="Int64" />
+            <Parameter Name="DonationAMT" Mode="In" Type="Int64" />
+            <Parameter Name="Conjunctivitis" Mode="In" Type="Int64" />
+            <Parameter Name="Opacity" Mode="In" Type="Int64" />
+            <Parameter Name="Pterygium" Mode="In" Type="Int64" />
+            <Parameter Name="Squint" Mode="In" Type="Int64" />
+            <Parameter Name="Glaucoma" Mode="In" Type="Int64" />
+            <Parameter Name="others" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <EntitySet Name="tblRosterforAppointments" EntityType="webserverModel.tblRosterforAppointment" />
+          <EntitySet Name="Doctors" EntityType="webserverModel.Doctor" />
+          <EntitySet Name="patient_registration" EntityType="webserverModel.patient_registration" />
+          <EntitySet Name="cl_ClinicName" EntityType="webserverModel.cl_ClinicName" />
+          <EntitySet Name="tblRosterforAppointmentDetails" EntityType="webserverModel.tblRosterforAppointmentDetail" />
+          <FunctionImport Name="AddDoctorRoasterDetail">
+            <Parameter Name="Masterid" Mode="In" Type="Int32" />
+            <Parameter Name="Enterydate" Mode="In" Type="DateTime" />
+            <Parameter Name="Roastertime" Mode="In" Type="String" />
+            <Parameter Name="Roasterdate" Mode="In" Type="DateTime" />
+            <Parameter Name="Enteryid" Mode="In" Type="Int32" />
+            <Parameter Name="EnteryIp" Mode="In" Type="String" />
+            <Parameter Name="Cancelid" Mode="In" Type="Int32" />
+            <Parameter Name="Cancelip" Mode="In" Type="String" />
+            <Parameter Name="CancelDate" Mode="In" Type="DateTime" />
+            <Parameter Name="City" Mode="In" Type="Int32" />
+            <Parameter Name="Docid" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="VaccineStock">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NewStock" Type="Int32" />
+          <Property Name="AvaliableforPatient" Type="Int32" />
+          <Property Name="Used" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tblAppUser">
+          <Key>
+            <PropertyRef Name="Userid" />
+          </Key>
+          <Property Name="Userid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Entrydate" Type="DateTime" Precision="3" />
+          <Property Name="EntryIp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Mac" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="Forgetcode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tblRosterforAppointment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryDate" Type="DateTime" Precision="3" />
+          <Property Name="Entryid" Type="Int32" />
+          <Property Name="EntryIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <Property Name="Cancelid" Type="Int32" />
+          <Property Name="Cancelip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CancelDate" Type="DateTime" Precision="3" />
+          <Property Name="Hospno" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="Int32" />
+          <Property Name="Clinicid" Type="Int32" />
+          <Property Name="Docid" Type="Int32" />
+          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPatient" Type="Int32" />
+          <Property Name="MinutePerPatient" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Doctor">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Doctor_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="designation_id" Type="Int32" />
+          <Property Name="division_id" Type="Int32" />
+          <Property Name="Consultation_Fee" Type="Int32" />
+          <Property Name="Registration_Fee" Type="Int32" />
+          <Property Name="date" Type="DateTime" Precision="0" />
+          <Property Name="dstatus" Type="Int32" Nullable="false" />
+          <Property Name="GROUP" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="cGroup" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="fororder" Type="Int64" />
+          <Property Name="dGroup" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="IsAllowPvt" Type="Boolean" />
+          <Property Name="sLevel" Type="Int32" />
+          <Property Name="iTtax" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="isZakDeduct" Type="Boolean" Nullable="false" />
+          <Property Name="CNIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ExcludeformPvtShare" Type="Boolean" Nullable="false" />
+          <Property Name="FinDeptID" Type="Int32" />
+          <Property Name="Deductions" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="FinAccountNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="patient_registration">
+          <Key>
+            <PropertyRef Name="Patient_no" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Patient_no" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="first_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="mid_name" Type="String" MaxLength="255" FixedLength="true" Unicode="false" />
+          <Property Name="last_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="relative_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="sex" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="date_of_birth" Type="DateTime" Precision="3" />
+          <Property Name="date_of_registration" Type="DateTime" Precision="3" />
+          <Property Name="visit_date_time" Type="DateTime" Precision="3" />
+          <Property Name="NIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone_No" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile_No" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="registration_fee" Type="Double" />
+          <Property Name="consultation_fee" Type="Double" />
+          <Property Name="total_balance" Type="Double" />
+          <Property Name="Room_No" Type="Int64" />
+          <Property Name="relation_ship" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="city" Type="Int64" />
+          <Property Name="date" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Computed" Precision="3" />
+          <Property Name="ch_cat" Type="Boolean" />
+          <Property Name="patient_type" Type="Int32" />
+          <Property Name="category_id" Type="Int64" />
+          <Property Name="LetterNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="doctor_id" Type="Int64" />
+          <Property Name="isb" Type="Boolean" />
+          <Property Name="bit" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="Int32" />
+          <Property Name="UserCityId" Type="Int64" />
+          <Property Name="uid" Type="Int64" />
+          <Property Name="change_cat" Type="Boolean" />
+          <Property Name="ip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Companyid" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Refund" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="is_fetched" Type="Boolean" />
+          <Property Name="pMode" Type="Int32" />
+          <Property Name="bankCharges" Type="Double" />
+          <Property Name="countryid" Type="Int32" />
+          <Property Name="passportno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="VISIT_STATUS" Type="Byte" />
+          <Property Name="DiscountAMT" Type="Double" />
+          <Property Name="tempCityId" Type="Int32" />
+          <Property Name="designation_id" Type="Int32" />
+          <Property Name="dGroup" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="RefundType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="RelNic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PanelNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PanelDesignationID" Type="Int32" />
+          <Property Name="EmployeeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PanelBillingID" Type="Int64" />
+          <Property Name="IsPanelClear" Type="Boolean" />
+          <Property Name="PanelReceviedAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsConfirm" Type="Boolean" />
+          <Property Name="IPDBillNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImagePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsInfection" Type="Boolean" />
+          <Property Name="ISNewReg" Type="Boolean" />
+          <Property Name="IsCnic" Type="Boolean" />
+          <Property Name="SecContactName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SecContactPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CDocID" Type="Int32" />
+          <Property Name="IsBlackList" Type="Boolean" />
+          <Property Name="Initcategory_id" Type="Int32" />
+          <Property Name="CClinicID" Type="Int32" />
+          <Property Name="IsDead" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="cl_ClinicName">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Clid" Type="Int32" />
+          <Property Name="ClinicName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="is_show" Type="Boolean" />
+          <Property Name="type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="OrderNo" Type="Int32" />
+          <Property Name="FinDeptID" Type="Int32" />
+          <Property Name="RevnueGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tblRosterforAppointmentDetail">
+          <Key>
+            <PropertyRef Name="detailid" />
+            <PropertyRef Name="Iscancel" />
+            <PropertyRef Name="isBooked" />
+          </Key>
+          <Property Name="detailid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Masterid" Type="Int32" />
+          <Property Name="DoctorID" Type="Int32" />
+          <Property Name="EntryDate" Type="DateTime" Precision="3" />
+          <Property Name="RosterDate" Type="DateTime" Precision="3" />
+          <Property Name="Rostertime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Iscancel" Type="Boolean" Nullable="false" />
+          <Property Name="isBooked" Type="Boolean" Nullable="false" />
+          <Property Name="PatientName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sourceq" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="Int32" />
+          <Property Name="Cancelid" Type="Int32" />
+          <Property Name="Cancelip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CancelDate" Type="DateTime" Precision="3" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="entryid" Type="Int32" />
+          <Property Name="entryip" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Patient_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CancelidRe" Type="Int32" />
+          <Property Name="CancelipRe" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CancelDateRe" Type="DateTime" Precision="3" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="webserverModelStoreContainer" CdmEntityContainer="webserverEntities">
+          <EntitySetMapping Name="tblVaccineRegistrations">
+            <EntityTypeMapping TypeName="webserverModel.tblVaccineRegistration">
+              <MappingFragment StoreEntitySet="tblVaccineRegistration">
+                <ScalarProperty Name="Slot" ColumnName="Slot" />
+                <ScalarProperty Name="Datevacc" ColumnName="Datevacc" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="isCancel" ColumnName="isCancel" />
+                <ScalarProperty Name="VaccineType" ColumnName="VaccineType" />
+                <ScalarProperty Name="VaccineID" ColumnName="VaccineID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Relation" ColumnName="Relation" />
+                <ScalarProperty Name="RelativeName" ColumnName="RelativeName" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Cnic" ColumnName="Cnic" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Passport" ColumnName="Passport" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="ProvinceID" ColumnName="ProvinceID" />
+                <ScalarProperty Name="DistrictID" ColumnName="DistrictID" />
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="EntryDate" ColumnName="EntryDate" />
+                <ScalarProperty Name="EntryUserID" ColumnName="EntryUserID" />
+                <ScalarProperty Name="EntryIP" ColumnName="EntryIP" />
+                <ScalarProperty Name="IsConfim" ColumnName="IsConfim" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VaccineStocks">
+            <EntityTypeMapping TypeName="webserverModel.VaccineStock">
+              <MappingFragment StoreEntitySet="VaccineStock">
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Used" ColumnName="Used" />
+                <ScalarProperty Name="AvaliableforPatient" ColumnName="AvaliableforPatient" />
+                <ScalarProperty Name="NewStock" ColumnName="NewStock" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblAppUsers">
+            <EntityTypeMapping TypeName="webserverModel.tblAppUser">
+              <MappingFragment StoreEntitySet="tblAppUser">
+                <ScalarProperty Name="Forgetcode" ColumnName="Forgetcode" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Mac" ColumnName="Mac" />
+                <ScalarProperty Name="EntryIp" ColumnName="EntryIp" />
+                <ScalarProperty Name="Entrydate" ColumnName="Entrydate" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
+                <ScalarProperty Name="Userid" ColumnName="Userid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Insert_Patient_Record" FunctionName="webserverModel.Store.Insert_Patient_Record" />
+          <EntitySetMapping Name="tblRosterforAppointments">
+            <EntityTypeMapping TypeName="webserverModel.tblRosterforAppointment">
+              <MappingFragment StoreEntitySet="tblRosterforAppointment">
+                <ScalarProperty Name="MinutePerPatient" ColumnName="MinutePerPatient" />
+                <ScalarProperty Name="TotalPatient" ColumnName="TotalPatient" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Docid" ColumnName="Docid" />
+                <ScalarProperty Name="Clinicid" ColumnName="Clinicid" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Hospno" ColumnName="Hospno" />
+                <ScalarProperty Name="CancelDate" ColumnName="CancelDate" />
+                <ScalarProperty Name="Cancelip" ColumnName="Cancelip" />
+                <ScalarProperty Name="Cancelid" ColumnName="Cancelid" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="EntryIP" ColumnName="EntryIP" />
+                <ScalarProperty Name="Entryid" ColumnName="Entryid" />
+                <ScalarProperty Name="EntryDate" ColumnName="EntryDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Doctors">
+            <EntityTypeMapping TypeName="webserverModel.Doctor">
+              <MappingFragment StoreEntitySet="Doctors">
+                <ScalarProperty Name="FinAccountNo" ColumnName="FinAccountNo" />
+                <ScalarProperty Name="Deductions" ColumnName="Deductions" />
+                <ScalarProperty Name="FinDeptID" ColumnName="FinDeptID" />
+                <ScalarProperty Name="ExcludeformPvtShare" ColumnName="ExcludeformPvtShare" />
+                <ScalarProperty Name="CNIC" ColumnName="CNIC" />
+                <ScalarProperty Name="isZakDeduct" ColumnName="isZakDeduct" />
+                <ScalarProperty Name="iTtax" ColumnName="iTtax" />
+                <ScalarProperty Name="sLevel" ColumnName="sLevel" />
+                <ScalarProperty Name="IsAllowPvt" ColumnName="IsAllowPvt" />
+                <ScalarProperty Name="dGroup" ColumnName="dGroup" />
+                <ScalarProperty Name="fororder" ColumnName="fororder" />
+                <ScalarProperty Name="cGroup" ColumnName="cGroup" />
+                <ScalarProperty Name="GROUP" ColumnName="GROUP" />
+                <ScalarProperty Name="dstatus" ColumnName="dstatus" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="Registration_Fee" ColumnName="Registration_Fee" />
+                <ScalarProperty Name="Consultation_Fee" ColumnName="Consultation_Fee" />
+                <ScalarProperty Name="division_id" ColumnName="division_id" />
+                <ScalarProperty Name="designation_id" ColumnName="designation_id" />
+                <ScalarProperty Name="SName" ColumnName="SName" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="patient_registration">
+            <EntityTypeMapping TypeName="webserverModel.patient_registration">
+              <MappingFragment StoreEntitySet="patient_registration">
+                <ScalarProperty Name="IsDead" ColumnName="IsDead" />
+                <ScalarProperty Name="CClinicID" ColumnName="CClinicID" />
+                <ScalarProperty Name="Initcategory_id" ColumnName="Initcategory_id" />
+                <ScalarProperty Name="IsBlackList" ColumnName="IsBlackList" />
+                <ScalarProperty Name="CDocID" ColumnName="CDocID" />
+                <ScalarProperty Name="SecContactPhone" ColumnName="SecContactPhone" />
+                <ScalarProperty Name="SecContactName" ColumnName="SecContactName" />
+                <ScalarProperty Name="IsCnic" ColumnName="IsCnic" />
+                <ScalarProperty Name="ISNewReg" ColumnName="ISNewReg" />
+                <ScalarProperty Name="IsInfection" ColumnName="IsInfection" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="IPDBillNo" ColumnName="IPDBillNo" />
+                <ScalarProperty Name="IsConfirm" ColumnName="IsConfirm" />
+                <ScalarProperty Name="PanelReceviedAmount" ColumnName="PanelReceviedAmount" />
+                <ScalarProperty Name="IsPanelClear" ColumnName="IsPanelClear" />
+                <ScalarProperty Name="PanelBillingID" ColumnName="PanelBillingID" />
+                <ScalarProperty Name="EmployeeName" ColumnName="EmployeeName" />
+                <ScalarProperty Name="PanelDesignationID" ColumnName="PanelDesignationID" />
+                <ScalarProperty Name="PanelNo" ColumnName="PanelNo" />
+                <ScalarProperty Name="RelNic" ColumnName="RelNic" />
+                <ScalarProperty Name="RefundType" ColumnName="RefundType" />
+                <ScalarProperty Name="dGroup" ColumnName="dGroup" />
+                <ScalarProperty Name="designation_id" ColumnName="designation_id" />
+                <ScalarProperty Name="tempCityId" ColumnName="tempCityId" />
+                <ScalarProperty Name="DiscountAMT" ColumnName="DiscountAMT" />
+                <ScalarProperty Name="VISIT_STATUS" ColumnName="VISIT_STATUS" />
+                <ScalarProperty Name="passportno" ColumnName="passportno" />
+                <ScalarProperty Name="countryid" ColumnName="countryid" />
+                <ScalarProperty Name="bankCharges" ColumnName="bankCharges" />
+                <ScalarProperty Name="pMode" ColumnName="pMode" />
+                <ScalarProperty Name="is_fetched" ColumnName="is_fetched" />
+                <ScalarProperty Name="Refund" ColumnName="Refund" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Companyid" ColumnName="Companyid" />
+                <ScalarProperty Name="ip" ColumnName="ip" />
+                <ScalarProperty Name="change_cat" ColumnName="change_cat" />
+                <ScalarProperty Name="uid" ColumnName="uid" />
+                <ScalarProperty Name="UserCityId" ColumnName="UserCityId" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="bit" ColumnName="bit" />
+                <ScalarProperty Name="isb" ColumnName="isb" />
+                <ScalarProperty Name="doctor_id" ColumnName="doctor_id" />
+                <ScalarProperty Name="LetterNo" ColumnName="LetterNo" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="patient_type" ColumnName="patient_type" />
+                <ScalarProperty Name="ch_cat" ColumnName="ch_cat" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="relation_ship" ColumnName="relation_ship" />
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="total_balance" ColumnName="total_balance" />
+                <ScalarProperty Name="consultation_fee" ColumnName="consultation_fee" />
+                <ScalarProperty Name="registration_fee" ColumnName="registration_fee" />
+                <ScalarProperty Name="Mobile_No" ColumnName="Mobile_No" />
+                <ScalarProperty Name="Phone_No" ColumnName="Phone_No" />
+                <ScalarProperty Name="NIC" ColumnName="NIC" />
+                <ScalarProperty Name="visit_date_time" ColumnName="visit_date_time" />
+                <ScalarProperty Name="date_of_registration" ColumnName="date_of_registration" />
+                <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="relative_name" ColumnName="relative_name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="mid_name" ColumnName="mid_name" />
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="Patient_no" ColumnName="Patient_no" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cl_ClinicName">
+            <EntityTypeMapping TypeName="webserverModel.cl_ClinicName">
+              <MappingFragment StoreEntitySet="cl_ClinicName">
+                <ScalarProperty Name="RevnueGroup" ColumnName="RevnueGroup" />
+                <ScalarProperty Name="FinDeptID" ColumnName="FinDeptID" />
+                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="is_show" ColumnName="is_show" />
+                <ScalarProperty Name="ClinicName" ColumnName="ClinicName" />
+                <ScalarProperty Name="Clid" ColumnName="Clid" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblRosterforAppointmentDetails">
+            <EntityTypeMapping TypeName="webserverModel.tblRosterforAppointmentDetail">
+              <MappingFragment StoreEntitySet="tblRosterforAppointmentDetail">
+                <ScalarProperty Name="CancelDateRe" ColumnName="CancelDateRe" />
+                <ScalarProperty Name="CancelipRe" ColumnName="CancelipRe" />
+                <ScalarProperty Name="CancelidRe" ColumnName="CancelidRe" />
+                <ScalarProperty Name="Patient_no" ColumnName="Patient_no" />
+                <ScalarProperty Name="entryip" ColumnName="entryip" />
+                <ScalarProperty Name="entryid" ColumnName="entryid" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="CancelDate" ColumnName="CancelDate" />
+                <ScalarProperty Name="Cancelip" ColumnName="Cancelip" />
+                <ScalarProperty Name="Cancelid" ColumnName="Cancelid" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Sourceq" ColumnName="Sourceq" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="PatientName" ColumnName="PatientName" />
+                <ScalarProperty Name="isBooked" ColumnName="isBooked" />
+                <ScalarProperty Name="Iscancel" ColumnName="Iscancel" />
+                <ScalarProperty Name="Rostertime" ColumnName="Rostertime" />
+                <ScalarProperty Name="RosterDate" ColumnName="RosterDate" />
+                <ScalarProperty Name="EntryDate" ColumnName="EntryDate" />
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="Masterid" ColumnName="Masterid" />
+                <ScalarProperty Name="detailid" ColumnName="detailid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AddDoctorRoasterDetail" FunctionName="webserverModel.Store.AddDoctorRoasterDetail" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,720 @@
+﻿@model HRandPayrollSystemModel.DBModel.ProjectActivityLog
+
+
+
+@{
+    ViewBag.Title = "Report Service";
+}
+
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+        </ol>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="form-group">
+
+            <div class="col-sm-2 ">
+                <strong> From Date</strong>
+                <input type="text" id="fromdate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+            </div>
+            <div class="col-sm-2 ">
+                <strong> To Date</strong>
+                <input type="text" id="Todate" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+            </div>
+
+
+            <div class="col-sm-2 ">
+                <strong>Project</strong>
+                <select class="form-control selectpicker" id="Type" name="Type" style="font-size: small;padding: 1px;" onchange="loadDepartment()">
+                    @{
+                        var typeminute = new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject().ToList();
+
+                        foreach (var item in typeminute)
+                        {
+
+                            <option value="@item.Value" name="">@item.Text</option>
+                        }
+
+                    }
+                </select>
+            </div>
+            <div class="col-sm-2 ">
+                <strong>Department</strong>
+                <select class="form-control selectpicker" id="Department" name="Department" style="font-size: small;padding: 1px;">
+                    @{
+                        //var department = new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x => x.Text).ToList();
+                        var department = new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x => x.Text).ToList();
+
+                        foreach (var item in department)
+                        {
+
+                            <option value="@item.Value" name="">@item.Text</option>
+
+
+
+                        }
+
+
+                    }
+
+                </select>
+            </div>
+
+            <div class="col-sm-2 ">
+                <strong>Type</strong>
+                <select class="form-control selectpicker" id="statsuid" name="statsuid" style="font-size: small;padding: 1px;">
+                    @{
+                        var tyu = new HRandPayrollSystemModel.DBModel.ProjectActivityLog().GetRelatedTo().ToList();
+
+                        foreach (var item in tyu)
+                        {
+
+                            <option value="@item.Value" name="">@item.Text</option>
+
+
+
+                        }
+
+
+                    }
+
+                </select>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="col-md-2 " style="top: -5px;">
+                <a type="button" class="btn btn-success btn-sm" style="margin-top:28px" onclick="loadminutes()"> View Report </a>
+            </div>
+            @* <button type="button" class="btn btn-info btn-sm" style="width: 100%;height: 148px;"></button>*@
+
+        </div>
+
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        @*addTable Here*@
+        <table class="table table-bordered mb-none table-hover" id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:20px">S/N</th>
+
+                    <th style="width:80px">Service </th>
+                    <th style="width:200px">Type </th>
+                    <th style="width:200px">Location </th>
+                    <th style="width:80px">Reported By </th>
+                    <th style="width:75px">Resolved In </th>
+                    <th style="width:40px">Elapsed Time </th>
+                    <th style="width:30px">Status </th>
+
+
+
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+    @*<div class="row">
+        <br /><br /><br />
+        <div class="col-lg-6 col-md-6">
+            <section class="panel">
+                <div class="panel-body">
+                    <canvas id="doughnutChart" height="140"></canvas>
+                </div>
+            </section>
+        </div>
+    </div>*@
+
+   
+
+
+
+        </section>
+
+<div class="col-lg-12 col-md-12">
+
+    <table class="table table-bordered" style="width:%">
+        <thead>
+            <tr class="bg-primary">
+                <th align="center" class="col-md-2" scope="col">
+
+                    <label style="font-size: small;margin-top: 5px;">From<span class="required"></span></label>
+                    <div style="padding: unset;">
+                        <input type="text" id="fromdateChart" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+                    </div>
+
+                </th>
+
+                <th class="col-md-2">
+                    <label style="font-size: small;margin-top: 5px;">To<span class="required"></span></label>
+                    <div style="padding: unset;">
+                        <input type="text" id="TodateChart" class="form-control uneditable-input" style="font-size: small;padding: 8px;" />
+                    </div>
+
+                </th>
+                <th class="col-md-2">
+                    <label control-label" style="font-size: small;margin-top: 5px;">Project<span class="required"></span></label>
+                    <div style="padding: unset;">
+                        <select class="form-control selectpicker" id="ProjectChart" name="ProjectChart" onchange="LoadDepartmentforChart()" style="font-size: small;padding: 1px;">
+                            @{
+                                var varproject = new HRandPayrollSystemModel.DBModel.ProjectActivityLog().loadProject();
+                                @*<option value="0" name="">--All--</option>*@
+                            foreach (var item in varproject)
+                            {
+                                <option value="@item.Value" name="">@item.Text</option>
+
+                            }
+                            }
+
+                        </select>
+
+                    </div>
+
+                </th>
+
+                <th class="col-md-2">
+                    <label control-label" style="font-size: small;margin-top: 5px;">Department<span class="required"></span></label>
+                    <div style="padding: unset;">
+                        <select class="form-control selectpicker" id="DepartmentChart" name="DepartmentChart" onchange="makedountenmit()" style="font-size: small;padding: 1px;">
+                            @{
+                                var alldept = new HRandPayrollSystemModel.DBModel.ProjectActivityLog().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)).OrderBy(x => x.Text);
+                                @*<option value="0" name="">--All--</option>*@
+                            foreach (var item in alldept)
+                            {
+                                <option value="@item.Value" name="">@item.Text</option>
+
+                            }
+                            }
+
+                        </select>
+
+                    </div>
+
+                </th>
+
+                <th class="col-md-2">
+                    <label control-label" style="font-size: small;margin-top: 5px;">Status<span class="required"></span></label>
+                    <div style="padding: unset;">
+                        <select class="form-control selectpicker" id="TypeStatus" name="TypeStatus" onchange="makedountenmit()" style="font-size: small;padding: 1px;">
+
+
+                            <option value="Inactive" name="">Inactive</option>
+                            <option value="No" name="No">No</option>
+
+
+
+
+                        </select>
+
+                    </div>
+
+                </th>
+
+                <th class="col-md-2">
+                    <label control-label" style="font-size: small;margin-top: 5px;">Status<span class="required"></span></label>
+                    <div style="padding: unset;">
+                        <select class="form-control selectpicker" id="TypeRelated" name="TypeRelated" onchange="makedountenmit()" style="font-size: small;padding: 1px;">
+
+
+                            <option value="Support" name="Support">Support</option>
+                            <option value="Software" name="Software">Software</option>
+
+
+
+
+                        </select>
+
+                    </div>
+
+                </th>
+            </tr>
+        </thead>
+
+    </table>
+
+
+    <div class="col-md-6">
+        <section class="panel">
+            <div class="panel-body">
+                <canvas id="doughnutChart2" height="120"></canvas>
+            </div>
+        </section>
+    </div>
+
+
+</div>
+
+        <script src="~/Scripts/chartJs/Chart.min.js"></script>
+        <script>
+
+            $(document).ready(function () {
+
+                setInterval(function () {
+
+
+                    makedountenmit();
+                   
+
+                }, 20000);
+
+
+                $("#fromdateChart").datepicker({
+                    format: "dd-M-yyyy",
+                    autoclose: true,
+                    todayBtn: true,
+
+
+                });
+                var DateofP = '01' + '/' + new Date().getMonth() + '/' + new Date().getFullYear();
+                $('#fromdateChart').datepicker('setDate', DateofP);
+
+                $("#TodateChart").datepicker({
+                    format: "dd-M-yyyy",
+                    autoclose: true,
+                    todayBtn: true,
+
+
+                });
+                // var DateofP2 = this.getDate().toString() + '/' + '05' + '/' + '2020';
+                $('#TodateChart').datepicker('setDate', new Date());
+
+              
+
+
+                $("#fromdate").datepicker({
+                    format: "dd-M-yyyy",
+                    autoclose: true,
+                    todayBtn: true,
+
+
+                });
+
+                var DateofP = '01' + '/' + new Date().getMonth() + '/' + new Date().getFullYear();
+
+                $('#fromdate').datepicker('setDate', DateofP);
+                $("#Todate").datepicker({
+                    format: "dd-M-yyyy",
+                    autoclose: true,
+                    todayBtn: true,
+
+
+                });
+
+                $('#Todate').datepicker('setDate', new Date());
+
+                //makedountenmit();
+
+                $("#modals").load('/CustomClasses/IndexModaling.html')
+
+                $("#UserTable").dataTable(
+                     {
+                         "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }],
+                         "bSort": true,
+
+                         dom: 'Bfrtip',
+                         pageLength: 50,
+                         buttons: []
+
+
+                     })
+
+               
+
+
+
+            })
+
+            function loadminutes() {
+                $('#loadingid').show();
+                debugger
+                var Data = { TypeSS: $('#statsuid').val(), fromdate: $('#fromdate').val(), todate: $("#Todate").val(), deptid: $("#Department").val(), projectidd: $("#Type").val() }
+                $.ajax({
+                    async: true,
+
+                    url: "/ActivityLog/StatusCheckWise",
+                    data: Data,
+                    success: function (Response) {
+
+                        if (Response != null) {
+
+                            console.log(Response)
+
+
+                            var data = JSON.parse(Response)
+
+
+
+                            if (data != '') {
+
+
+                                $("#UserTable").DataTable().clear();
+
+                                var html = '';
+                                for (var i = 0; i < data.length; i++) {
+                                    var html = '';
+                                    if (data[i].ServiceActive == "Active") {
+                                        html = '<button type="button" class="btn btn-success btn-xs"> ACTIVE</button>'
+
+                                    }
+                                    else if (data[i].ServiceActive == "Yes") {
+                                        html = '<button type="button" class="btn btn-success btn-xs"> Yes</button>'
+
+                                    }
+                                    else if (data[i].ServiceActive == "Inactive") {
+                                        html = ' <button type="button" class="btn btn-danger  btn-xs"> INACTIVE</button>'
+
+                                    }
+                                    else
+                                        //if (data[i].ServiceActive.ToUpper() == "No")
+                                    {
+                                        html = '<button type="button" class="btn btn-danger  btn-xs"> No</button>'
+
+                                    }
+
+                                    $('#UserTable').DataTable(
+
+                                        ).row.add([
+                                         (i + 1),
+                                         data[i]["ServiceDetail"],
+                                         data[i]["RelatedTo"],
+                                         data[i]["ProjectName"],
+                                         //data[i]["EmployeeName"],
+                                            data[i]["reslovedemployee"],
+                                       data[i]["EmployeeName"],
+
+                                         data[i]["hourss"],
+
+                                        html]).draw();
+
+                                }
+                            }
+
+                            else {
+
+                                $('#ProductTableID').html('');
+                            }
+
+                        }
+                    },
+                    complete: function () {
+                        $('#loadingid').hide();
+                    },
+                    error: function () {
+                        ReturnValue = false;
+
+                    }
+                })
+
+
+
+            }
+
+            function ViewMinute(elment0) {
+
+
+                //  window.location.href = "/Eminute/pendminuteLoadEdit/" + elment0
+
+
+                window.open('/Eminute/pendminuteLoadEdit/' + elment0, '_blank');
+            }
+
+
+
+
+            function loadDepartment() {
+                debugger
+
+                if ($('#Type').val() == "0") {
+
+                    var TypeSub = $('#Department');
+                    TypeSub.empty();
+
+
+                    TypeSub.selectpicker('refresh');
+
+                    return;
+                }
+
+
+                var Data = { type: $('#Type').val() }
+
+                $.ajax({
+                    async: false,
+                    url: "/ActivityLog/getDepartment",
+                    data: Data,
+                    success: function (data) {
+
+                        if (data != null) {
+
+                            var TypeSub = $('#Department');
+                            TypeSub.empty();
+
+
+                            $.each(data,
+                                function (index, item) {
+                                    var datafil = new Option(item.Text, item.Value);
+                                    TypeSub.append(datafil);
+                                });
+
+                            TypeSub.selectpicker('refresh');
+
+                            TypeSub.selectpicker({
+                                liveSearch: true,
+                                size: 10,
+
+                                // width: 'auto',
+                                container: "body"
+                            });
+
+
+
+                        }
+                    },
+                    error: function () {
+                        ReturnValue = false;
+
+                    }
+                })
+
+
+
+            }
+
+
+            function showInstruction() {
+
+
+                $('#myModal').modal();
+            }
+            function makedountenmit() {
+
+                var Data = { ProjectChart: $('#ProjectChart').val(), DepartmentChart: $('#DepartmentChart').val(), fdate: $('#fromdateChart').val(), tdate: $("#TodateChart").val(), TypeStatus: $("#TypeStatus").val(), TypeRelated: $("#TypeRelated").val() }
+                $.ajax({
+                    async: true,
+                    url: "/ActivityLog/LoadMinuteChart",
+                    data: Data,
+                    success: function (Response) {
+
+                        if (Response != null) {
+
+                            var LableEmp = Response.map(g =>[g.ServiceActive])
+                            var valueEmp = Response.map(g =>[g.NumberofService])
+                            var color = Response.map(g =>[g.color])
+
+
+
+                             var color = '';
+                            for (var i = 0; i < Response.length; i++) {
+
+                                color += '"' + Response[i].color + '"' + ','
+
+                            }
+                            var grphColor = "[" + color.slice(0, -1) + "]"
+
+
+                            var objaaa = JSON.parse(grphColor);
+                            var doughnutData = {
+                                labels: LableEmp,
+                                datasets: [{
+                                    data: valueEmp,
+                                    backgroundColor: objaaa
+
+                                }]
+
+                            };
+
+
+
+                            var doughnutOptions = {
+                                responsive: true,
+                                position: 'left',
+
+
+                            };
+
+
+                            console.log(doughnutData)
+
+
+
+
+                            var ctx4 = document.getElementById("doughnutChart2").getContext("2d");
+                            new Chart(ctx4, { type: 'doughnut', data: doughnutData, options: { legend: { position: 'left' } } });
+
+                        }
+                    },
+                    error: function () {
+                        ReturnValue = false;
+
+                    }
+                })
+
+
+
+
+            }
+
+            function LoadDepartmentforChart() {
+                debugger
+
+                if ($('#ProjectChart').val() == "0") {
+
+                    var TypeSub = $('#DepartmentChart');
+                    TypeSub.empty();
+
+
+                    TypeSub.selectpicker('refresh');
+
+                    return;
+                }
+
+
+                var Data = { type: $('#ProjectChart').val() }
+
+                $.ajax({
+                    async: false,
+                    url: "/ActivityLog/DepartmentforChart",
+                    data: Data,
+                    success: function (data) {
+
+                        if (data != null) {
+
+                            var TypeSub = $('#DepartmentChart');
+                            TypeSub.empty();
+
+
+                            $.each(data,
+                                function (index, item) {
+                                    var datafil = new Option(item.Text, item.Value);
+                                    TypeSub.append(datafil);
+                                });
+
+                            TypeSub.selectpicker('refresh');
+
+                            TypeSub.selectpicker({
+                                liveSearch: true,
+                                size: 10,
+
+                                // width: 'auto',
+                                container: "body"
+                            });
+
+
+
+                        }
+                    },
+                    error: function () {
+                        ReturnValue = false;
+
+                    }
+                })
+
+
+
+            }
+
+        </script>
+
+
+
+
+
+

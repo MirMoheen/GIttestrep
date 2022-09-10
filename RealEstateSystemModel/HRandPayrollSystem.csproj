@@ -1,0 +1,1094 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6B2DD338-5995-4FB5-B2F8-1C02E1F0DD05}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HRandPayrollSystemModel</RootNamespace>
+    <AssemblyName>HRandPayrollSystemModel</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.4\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AttendanceModel\Attendance.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\AttendanceDeviceConfiguration.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\AttendanceGeneral\Attendance.cs" />
+    <Compile Include="AttendanceModel\AttendanceModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AttendanceModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\AttendanceModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\AttendanceModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AttendanceModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\GetEmployeesAttendanceCurrentDateStatusApi_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\GetNewEmployeesAttendanceDateWiseApi_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\Registration.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\SP_ApiCheckInOutAttendance_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\SP_Apihistory_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\SP_Apitofetchdata_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\SP_Apitofetchdays_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\Sp_getallspeciltyAppDoctorall_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\Sp_getallspeciltyAppDoctor_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\Sp_getallspeciltyApp_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\sp_getDepartmentforApi_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AttendanceModel\sp_getemployeebyID_Result.cs">
+      <DependentUpon>AttendanceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\AllowancesDeduction.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\BankInformation.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\CityInformtion.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\Employeearrier.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeearrierDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeeDocumentDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeeEducationDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeeExprienceDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeeNomineeDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeePlacement.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeePlacementAllowancesDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeePlacementDeductionDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\EmployeeType.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\General\AllowancesDeductions.cs" />
+    <Compile Include="DBModel\General\BankInformation.cs" />
+    <Compile Include="DBModel\General\CityInformtion.cs" />
+    <Compile Include="DBModel\General\EmployeePlacement.cs" />
+    <Compile Include="DBModel\General\EmployeeType.cs" />
+    <Compile Include="DBModel\General\Gen_CompanyInfo.cs" />
+    <Compile Include="DBModel\General\GLUserGroup.cs" />
+    <Compile Include="DBModel\General\GLUser.cs" />
+    <Compile Include="DBModel\General\GradeEmployee.cs" />
+    <Compile Include="DBModel\General\Employeearrier.cs" />
+    <Compile Include="DBModel\General\MonthlyDeduction.cs" />
+    <Compile Include="DBModel\General\ProjectActivityLog.cs" />
+    <Compile Include="DBModel\General\TaxConfiguration.cs" />
+    <Compile Include="DBModel\General\tblDepartment.cs" />
+    <Compile Include="DBModel\General\tblDesignation.cs" />
+    <Compile Include="DBModel\General\tblEminuteInfo.cs" />
+    <Compile Include="DBModel\General\tblEminuteSubType.cs" />
+    <Compile Include="DBModel\General\tblEminuteType.cs" />
+    <Compile Include="DBModel\General\tblEmployee.cs" />
+    <Compile Include="DBModel\General\tblEmployeeLoan.cs" />
+    <Compile Include="DBModel\General\tblEmployeeSalary.cs" />
+    <Compile Include="DBModel\General\tblEmployeeTransfer.cs" />
+    <Compile Include="DBModel\General\tblFavorite.cs" />
+    <Compile Include="DBModel\General\tblIonInfo.cs" />
+    <Compile Include="DBModel\General\tblProject.cs" />
+    <Compile Include="DBModel\General\tblProjectService.cs" />
+    <Compile Include="DBModel\General\tblSalaryGeneration.cs" />
+    <Compile Include="DBModel\General\tbl_BoardProceeding.cs" />
+    <Compile Include="DBModel\General\tbl_kplinfo.cs" />
+    <Compile Include="DBModel\GLUser.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\GLUserGroup.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\GLUserGroupDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\GradeEmployee.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\HRandPayrollDBModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRandPayrollDBModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\HRandPayrollDBModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\HRandPayrollDBModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRandPayrollDBModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\LogEmployeePlacementAllowancesDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\LogEmployeePlacementDeductionDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\MonthlyDeduction.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\MonthlyDeductionDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\ProjectActivityLog.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_AllBoardPerson_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_allServices_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_CheckForEditForiNFo2_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_CheckForEditForION_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_departmentWiseSalariesMontly_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_EditForBoard_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_EminuteTodayactivitylog_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_EmployeeAllForward_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_EmployeeForwardFormint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_EmployeeName_Board_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllApprovedMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllBoardMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllBoardToEdit_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllButtonnewStatus_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllButtonStatus_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCancelMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompApproved_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompButtonnewStatus_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompButtonStatus_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompCancel_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompCompleted_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompletedMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompNew_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllCompPending_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllDepartments_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllDesiginationnew_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllDesigination_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllEmployeeData_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllEmployeeforTransferSet_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetAllemployeeSalaries_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllEmployeewithDesignation_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllForInfoMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllHoldMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllIONMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllIonToEdit_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllION_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllkpitoEdit_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllkplData_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllkpl_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllMinutetoedit2_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllMinutetoedit_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllNewMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllowancesEmployeePlacement_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllPendingMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllReadedION_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllTaxConfig_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAllUsersData_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAssetbyDepartmentID_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAssetbyMinuteSubTypeID_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAssetbyMinuteTypeandSubwise_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getAssetbyMinuteTypeID_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getBoardOwner_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetBoardSheet_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getDayWisePendingMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getDeductionEmployeePlacement_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getDepartmentDaysWisePendingMinutes_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getDepartmentWiseMinteType_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getEmployeeLoandataClass_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getemployeePlacement_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getFiedAssetitems_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getFixedAssitlistMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphCompDatanew2_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphCompDatanew3_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphComplaintDatanew3_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphEmployeeData_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphMinuteDatanew2_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphMinuteDatanew3_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphMinuteDatanew_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getGrphMinuteData_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getheckforMinOwner_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getIonOwner_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getkpiOwner_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetMinuteEmployeeCCC_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetMinuteEmployeeCC_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetMinuteEmployee_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getminuteSubtype_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getMonthSalary_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllApprovedComptaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllApprovedMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllCancelComptaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllCancelMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllCompletedComptaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllCompletedMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllForInfoComptaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllForInfoMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllIONMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllNewComptaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllNewMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllPendingComptaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllPendingMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getnewAllPurchaseMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getPresidentnewAllMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getPrintPresidentnewAllMinute_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getRanking_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetReadedBoardSheet_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetRelatedMinutePerson_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getReportComplaint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getReportMinutes_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getSalaryExist_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getSerivelogdetailviewlist_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_getSerivelogdetail_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetServiceGraph_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GetUserRightByUser_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_GLUserGroupDetail_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_helpdiagrams_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_minutePrint_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_MinutesPettyCash_View_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_PettyCashMinutes_EditView_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_PoAllowedMinuteReport_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_RelatedPerson_OrderWIse_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_RemaingLoancheck_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_ReportService_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_searchMinuteReport_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sp_TopRanking10_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\sysdiagram.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\TaxConfiguration.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\TaxConfigurationDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblCompany.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblDepartment.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblDesignation.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteBudgetDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteBudgetDetail_old.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteDocDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteEditlog.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteInfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminutePettyCashDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteSubType.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEminuteType.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEmployee.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEmployeeLoan.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEmployeeLoanCashDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEmployeeSalary.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblEmployeeTransfer.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblFavorite.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblIONDocDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblIonInfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblProject.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblProjectService.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblSalaryGeneration.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblSalaryGenerationDetail.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tblTypeLoan.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tbl_BoardProceeding.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tbl_BoardProceedingDOC.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tbl_kplinfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tbl_PettyCashInfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tempBoardSheetInfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tempEminuteInfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\tempIonInfo.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\UDFSplit_Result.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel\UserForm.cs">
+      <DependentUpon>HRandPayrollDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\AssetDocDetail.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\Asset_no.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\Department.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\FixedAssetEmployee.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\FixedAssetModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FixedAssetModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\FixedAssetModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\FixedAssetModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FixedAssetModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\Fixed_Asset_Category.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\Fixed_Asset_SubCategory.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\Fixgeneral\tblAssetService.cs" />
+    <Compile Include="FixedModel\Fixgeneral\tblUsersLogins.cs" />
+    <Compile Include="FixedModel\Hospital.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\ServiceConfiguration.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_AnnualReport1111_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_Calculate_Depreciation_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_DepricationYearWiseReport_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_getdataforandroid_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_getDataRoomWise_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_getFixedAssitlistMinuteApi_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_LoadAllJobsByMachineNo_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\sp_LoadAllMachineDetail_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblAsset.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblAssetLedger.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblAssetService.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblcurrency.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblDisposal.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblFinancialYear.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblMachine_Detail.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblMachine_Master.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblMachine_Master_log.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblmenuName.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblMovement.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblRight.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblRoleDetail.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblRoom.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblSection.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblSupplier.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblUnprintedTag.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\TblUserRole.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tblUsersLogin.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tbl_EngineerDetail.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tbl_FixedAssetAttachment.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\tbl_MachineJob.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FixedModel\verify_logins_Result.cs">
+      <DependentUpon>FixedAssetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\cl_ClinicName.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\Doctor.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\HimsConfig\tblAppUser.cs" />
+    <Compile Include="HimsModel\HimsConfig\tblVaccineRegistration.cs" />
+    <Compile Include="HimsModel\HimsModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HimsModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\HimsModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\HimsModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HimsModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\patient_registration.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\tblAppUser.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\tblRosterforAppointment.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\tblRosterforAppointmentDetail.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\tblVaccineRegistration.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HimsModel\VaccineStock.cs">
+      <DependentUpon>HimsModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\Alshifa_jv_Desc_Fill2_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\Alshifa_jv_Desc_Fill_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\budgetHeadLedger_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\getBudgetProvisionamount_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\Get_BudgetFinYears_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\Get_FinYears_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\Inventrygeneral\tbl_Head.cs" />
+    <Compile Include="InventryModel\InventryModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InventryModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\InventryModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\InventryModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InventryModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\projecttbl.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\sp_budgetSummryForEminute_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\sp_getAllfinyearForEminute_Result.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\tblpo.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\tbl_AddBudget.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\tbl_Costcenter.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\tbl_Costcenterbudgetheadamount.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventryModel\tbl_Costcenterbudgetheads.cs">
+      <DependentUpon>InventryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EntityDeploy Include="AttendanceModel\AttendanceModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AttendanceModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="AttendanceModel\AttendanceModel.edmx.diagram">
+      <DependentUpon>AttendanceModel.edmx</DependentUpon>
+    </None>
+    <EntityDeploy Include="FixedModel\FixedAssetModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>FixedAssetModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="DBModel\HRandPayrollDBModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HRandPayrollDBModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DBModel\HRandPayrollDBModel.edmx.diagram">
+      <DependentUpon>HRandPayrollDBModel.edmx</DependentUpon>
+    </None>
+    <None Include="FixedModel\FixedAssetModel.edmx.diagram">
+      <DependentUpon>FixedAssetModel.edmx</DependentUpon>
+    </None>
+    <EntityDeploy Include="InventryModel\InventryModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>InventryModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="HimsModel\HimsModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HimsModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="HimsModel\HimsModel.edmx.diagram">
+      <DependentUpon>HimsModel.edmx</DependentUpon>
+    </None>
+    <None Include="InventryModel\InventryModel.edmx.diagram">
+      <DependentUpon>InventryModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AttendanceModel\AttendanceModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AttendanceModel.edmx</DependentUpon>
+      <LastGenOutput>AttendanceModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="AttendanceModel\AttendanceModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AttendanceModel.edmx</DependentUpon>
+      <LastGenOutput>AttendanceModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="DBModel\HRandPayrollDBModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HRandPayrollDBModel.edmx</DependentUpon>
+      <LastGenOutput>HRandPayrollDBModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DBModel\HRandPayrollDBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HRandPayrollDBModel.edmx</DependentUpon>
+      <LastGenOutput>HRandPayrollDBModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="FixedModel\FixedAssetModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>FixedAssetModel.edmx</DependentUpon>
+      <LastGenOutput>FixedAssetModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="FixedModel\FixedAssetModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>FixedAssetModel.edmx</DependentUpon>
+      <LastGenOutput>FixedAssetModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="HimsModel\HimsModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HimsModel.edmx</DependentUpon>
+      <LastGenOutput>HimsModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="HimsModel\HimsModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HimsModel.edmx</DependentUpon>
+      <LastGenOutput>HimsModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="InventryModel\InventryModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>InventryModel.edmx</DependentUpon>
+      <LastGenOutput>InventryModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="InventryModel\InventryModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>InventryModel.edmx</DependentUpon>
+      <LastGenOutput>InventryModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,429 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEmployee
+
+@{
+    ViewBag.Title = "Employee Status";
+}
+
+
+
+
+@using (@Html.BeginForm("Save", "EmpStatus", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+
+
+   <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="~/home/index">
+
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <div class="panel">
+
+      
+        
+        <!-- start: page -->
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+                        <h2 class="panel-title">@ViewBag.Title</h2>
+                        <p class="panel-subtitle">
+                            Form control for input @ViewBag.Title data .
+                        </p>
+                    </header>
+                    <div class="panel-body">
+                        @if (TempData["ActionMessage"] != null)
+                        {
+                            if (Convert.ToBoolean(TempData["ActionMessage"]))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success">
+                                            <strong>Success!</strong> Record Save Successfully .
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">
+                                            <strong>Error!</strong> Record Save Error .
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="control-label">Department  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.DepartmentID, new HRandPayrollSystemModel.DBModel.tblEmployee().loadDepartment(Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @required = "required", @onchange = "loadDesignation()" })
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Designation  <span class="required">*</span></label>
+                              <select id="DesignationID" name="DesignationID" class="form-control selectpicker" onchange="loadEmployee()">
+                                  <option value="0">--Select Department--</option>
+                              </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="control-label">Employee  <span class="required">*</span></label>
+                              
+                                <select id="EmployeeID" name="EmployeeID" class="form-control selectpicker" onchange="getemployedetail()">
+
+                                    <option value="0">--Select Designation--</option>
+                                </select>
+
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label">Employee Status  <span class="required">*</span></label>
+                                @Html.DropDownListFor(model => model.EmployeetypeID, new HRandPayrollSystemModel.DBModel.tblEmployee().LoadEmployeetype(), new { @class = "form-control selectpicker ", @required = "required", @onchange = "" })
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div class="row">
+                        
+                            <div class="col-md-2">
+                                @Html.Label("Probation End Date", new { @class = "control-label" })<br />
+                                @Html.TextBoxFor(model => model.ProbationEnd, new { @class = "form-control" })
+                            </div>
+                        
+                            <div class="col-md-2"> 
+                             <label for="IsConfirm">IsConfirm </label>
+                            @Html.CheckBoxFor(model => model.IsConfirm)
+                            </div>
+
+                                <div class="col-sm-2 control-label">
+                                    @Html.Label("Terminate Date", new { @class = "control-label" })<br />
+                                    @Html.TextBoxFor(model => model.TerminateDate, new { @class = "form-control" })
+                                </div>
+
+                            <div class="col-md-2">
+                                <label for="IsTerminate">IsTerminate </label>
+                                @Html.CheckBoxFor(model => model.IsTerminate)
+                                </div>
+
+
+                            <div class="col-md-2">
+                                @Html.Label("Left Date", new { @class = "control-label" })<br />
+                                @Html.TextBoxFor(model => model.LeftDate, new { @class = "form-control" })
+                            </div>
+
+                            
+                                <div class="col-sm-2 ">
+                                    <label  for="IsLeft">IsLeft </label>
+                                    @Html.CheckBoxFor(model => model.IsLeft)
+                                    @*<input id="Inactive" name="Inactive" type="checkbox" value="@Model.Inactive" />*@
+
+                                </div>
+                          
+
+                            </div>
+                        <br />
+                        <div class="row">
+
+                         
+                        </div>
+                        <br />
+                       
+              
+                    </div>
+                    <footer class="panel-footer">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <button type="button" onclick="postform()"  class="btn btn-primary">Save</button>
+                                <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel</button>
+                            </div>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+        </div>
+    </div>
+
+}
+ 
+
+<script>
+
+
+
+
+    $(document).ready(function () {
+
+
+        $("#ProbationEnd").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            orientation: "top"
+
+
+        });
+        $("#TerminateDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            orientation: "top"
+
+
+        });
+    
+        $("#LeftDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+           
+            orientation:"top"
+
+
+        });
+
+
+        @*var ProbationEnddate = '@Model.ProbationEnd.Value.Day' + '/' + '@Model.ProbationEnd.Value.Month' + '/' + '@Model.ProbationEnd.Value.Year';
+        
+
+        $('#ProbationEnd').datepicker('setDate', ProbationEnddate);*@
+
+
+
+
+
+
+   
+    });
+    
+
+
+
+    function loadDesignation() {
+
+        if ($('#DepartmentID').val() == "0") {
+
+            var Designation = $('#DesignationID');
+            Designation.empty();
+            Designation.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DepartmentID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadDesginationbyDepartment",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var Designation = $('#DesignationID');
+                    Designation.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            Designation.append(datafil);
+                        });
+
+                    Designation.selectpicker('refresh');
+
+                    Designation.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+        ///  loadEmployee();
+    }
+
+    function loadEmployee() {
+
+        if ($('#DesignationID').val() == "0") {
+
+            var employee = $('#EmployeeID');
+            employee.empty();
+            employee.selectpicker('refresh');
+            return;
+        }
+
+
+        var Data = { id: $('#DesignationID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/EmpTransfer/loadEmployeebyDesgination",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+                    var employee = $('#EmployeeID');
+                    employee.empty();
+
+                    
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            employee.append(datafil);
+                        });
+
+                    employee.selectpicker('refresh');
+
+                    employee.selectpicker({
+                        liveSearch: true,
+                        size: 5 ,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+    function getemployedetail() {
+        if ($('#EmployeeID').val() != "0") {
+
+
+            var Data = { id: $('#EmployeeID').val() }
+
+            $.ajax({
+                async: false,
+                url: "/EmpStatus/getemployeedata",
+                data: Data,
+                success: function (data) {
+
+                    if (data != null) {
+
+                        debugger;
+                        $('#EmployeetypeID').val(data.EmployeetypeID)
+                        $('#EmployeetypeID').selectpicker('refresh');
+
+                        if (data.FormatProbationEnddate != '' && data.FormatProbationEnddate != null) {
+                            $('#ProbationEnd').val(data.FormatProbationEnddate);
+                            $("#IsConfirm").prop("checked", data.IsConfirm);
+                            $("#ProbationEnd").attr("disabled", "disabled");
+                        }
+                        else {
+
+                            $('#ProbationEnd').val('');
+                            $("#IsConfirm").prop("checked", false);
+                            $("#ProbationEnd").prop("disabled", false);
+
+                        }
+
+                    
+                        if (data.FormatTerminatedate != '' && data.FormatTerminatedate != null) {
+                            $('#TerminateDate').val(data.FormatTerminatedate);
+                            $("#IsTerminate").prop("checked", data.IsTerminate);
+                            $("#TerminateDate").attr("disabled", "disabled");
+                        }
+                        else {
+                            $('#TerminateDate').val('');
+                            $("#IsTerminate").prop("checked", false);
+                            $("#TerminateDate").prop("disabled", false);
+
+                        }
+
+
+
+
+                        if (data.FormatLeftdate != '' && data.FormatLeftdate != null) {
+                            $('#LeftDate').val(data.FormatLeftdate);
+                            $("#IsLeft").prop("checked", data.IsLeft);
+                            $("#LeftDate").attr("disabled", "disabled");
+                        }
+                        else {
+                            $('#LeftDate').val('');
+                            $("#IsLeft").prop("checked", false);
+                            $("#LeftDate").prop("disabled", false);
+
+
+                        }
+
+
+
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+
+        }
+   
+    }
+
+
+
+    function postform() {
+        var ReturnValue = true
+
+        if ( $('#EmployeeID').val()=='0') {
+            bootbox.alert("Please Select Employee ")
+            ReturnValue = false;
+        }
+
+        $("#myform").validate();
+
+
+
+
+
+        bootbox.confirm("Are sure to save data!", function (result) {
+            if (result) {
+                if (ReturnValue) {
+                    $("#myform").submit();
+
+                }
+
+            }
+        });
+
+
+    }
+
+
+    
+</script>

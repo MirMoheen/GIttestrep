@@ -1,0 +1,1030 @@
+﻿@model HRandPayrollSystemModel.FixedModel.tblAssetService
+
+@{
+    ViewBag.Title = "Fixed Asset List";
+}
+
+@using (@Html.BeginForm("Save", "AssetService", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model => model.ServiceID)
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+    hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+
+</style>
+
+@*@Html.Partial("_minuteGudie")*@
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <strong> Asset Detail</strong>
+            </div>
+            <div class="modal-body">
+
+              
+
+                <table class="table table-striped" id="modaltable">
+                       <thead>
+                        <tr>
+                            <th>Asset Manufacturer</th>
+                            <th>Asset Name</th>
+                            <th>Asset Description</th>
+                        </tr>
+                    </thead>             
+                    <tbody id="BodyModal"></tbody>
+
+                </table>
+             
+            </div>
+         
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<input type="hidden" id="AssetRowNo" />
+<input type="hidden" id="DocDetailRowNo" />
+<input type="hidden" id="htmlboxValue" name="htmlboxValue" value="rem" />
+<!-- start: page -->
+
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+        <label class="">   <span><strong style="color:red">Note:</strong> <strong> For recommendations and updates please contact to IT department.</strong>  </span> </label>
+
+        <div class="tabs tabs-primary">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-inbox"></i> Services Fixed Asset</a>
+                </li>
+
+                <li>
+                    <a href="#ItemsMinuteDoc" data-toggle="tab"><i class="fa fa-building-o"></i> Attach File  <span style="background-color:red" class="badge badge-danger"></span></a>
+                </li>
+
+                <li>
+                    <a href="#AssetHistory" data-toggle="tab"><i class="fa fa-history"></i> Asset LOG  <span style="background-color:red" class="badge badge-danger"></span></a>
+                </li>
+            </ul>
+
+
+            <div class="tab-content">
+                <div id="ItemsInfo" class="tab-pane active ">
+                
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12 ">
+                                <button type="button" id="modbutton" style="float:right" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal">View</button>
+                            </div>
+                        </div>
+                        <br />
+                       
+                     
+
+                        <label class="col-sm-1 control-label"><strong> Type:</strong> </label>
+                        <div class="col-sm-3 ">
+                                @Html.DropDownListFor(model => model.AssetTypeID, Model.loadType(Model.AssetTypeID), new { @class = "form-control selectpicker", @required = "required",onchange = "loadSubtype()" })
+                        </div>
+
+                       
+            
+
+
+                        <label class="col-sm-1 control-label"><strong> Sub Type:</strong> </label>
+
+                        <div class="col-sm-3 ">
+                           
+                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                            {
+                                @Html.DropDownListFor(model => model.AssetSubTypeID, Model.loadSubtypebyTypeID(Model.AssetTypeID), new { @class = "form-control selectpicker ", @required = "required", })
+                            }
+
+                            else
+                            {
+
+                            <select class="form-control selectpicker" id="Subtype" required="required" name="Subtype" style="font-size: small;padding: 1px;" onchange="LoadTag()">
+
+                                <option value="0" name="">-- None --</option>
+
+                            </select>
+                            }
+
+
+                        </div>
+                      
+
+
+                            <label class="col-sm-1 control-label"><strong> Tag No:</strong> </label>
+                            <div class="col-sm-3 ">
+                                @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                {
+                                    @Html.DropDownListFor(model => model.AssetTagNoID, Model.loadTagID(Model.AssetSubTypeID), new { @class = "form-control selectpicker required",id= "AssetTagNoID", @required = "required" })
+
+                                }
+                                else
+                                {
+                                    <select class="form-control selectpicker" id="tagID" onchange="LoadAssetLog()" name="tagID" required="required" style="font-size: small;padding: 1px; ">
+
+                                        <option value="0" name="">-- None --</option>
+
+
+                                    </select>
+                                }
+                                      </div>
+                       
+                        </div>
+
+                    <hr />
+
+                    <div >
+
+                       
+                            <h3>Service Details</h3>
+                         
+                        </div>
+                            <div class="alert alert-info">
+
+                                <div class="row">
+
+
+                                    <label class="col-sm-1 control-label"><strong> Date:</strong> </label>
+                                    <div class="col-sm-3 ">
+                                        @Html.TextBoxFor(model => model.MaintenanceDate, new { @class = "form-control uneditable-input ", id = "MaintenanceDate", required = "required" })
+
+                                    </div>
+
+
+                                    <label class="col-sm-1 control-label"><strong> Service Type:</strong> </label>
+
+                                    <div class="col-sm-2 ">
+
+                                        <select class="form-control selectpicker" id="ServiceType" name="Type" style="font-size: small;padding: 1px;">
+
+                                            @{
+                                                var SerType = new HRandPayrollSystemModel.FixedModel.tblAssetService().loadServiceType().OrderBy(x => x.Value).ToList();
+
+                                                foreach (var item in SerType)
+                                                {
+                                                    <option value="@item.Value" name="">@item.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+
+                                   
+
+                                    <label class="col-sm-1 control-label"><strong> Remarks:</strong> </label>
+
+                                    <div class="col-sm-3 ">
+                                        <input type="text" id="rem" name="Remarks" class="form-control" onclick="myFunction()" />
+                                    </div>
+
+                                    
+
+                             
+                                    <div class="col-sm-1 ">
+                                        <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_" value="+" onclick="generateTableRow()" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> Add</button>
+
+                                         </div>
+                                </div>
+                            </div>
+                    <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                      <thead>
+                            <tr class="bg-primary">
+                                <th width="50px">Sr.</th>
+                                <th width="200px">Maintenance Date</th>
+                                <th width="200px">Service Type</th>
+                               
+                                <th width="700px"> Remarks </th>
+                                <th> Action </th>
+                            </tr>
+                        </thead>
+                        <tbody id="DocBodyID99">
+                            @{ if (Convert.ToBoolean(ViewData["Editmode"]))
+                                {
+                                    var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                    //  string host = Request.Url.Authority;
+                                    int a = 1;
+                                    foreach (var item in Model.tas)
+                                    {
+                                        <tr id="@a">
+                                            <td> @a </td>
+
+                                            <td class="input"> <input id="ServiceType_@a" style="color:black; font-weight: normal;" readonly="readonly" type="text" value="@item.ServiceType" class="form-control" name="lisdescription" /> </td>
+
+
+                                            <td class="input"> <input id="rem_@a" style="color:forestgreen; font-weight: normal;" readonly="readonly" type="text" value="@item.ServiceRemarks" class="form-control" name="lisdescription" /> </td>
+                                       
+                                            <td> 
+                                            <input type="button" value="Delete" class="btn btn-danger  btn-xs btn-circle userDellbtn">
+
+                                                @*<button type="button" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-ms btn-circle"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>*@
+                                            </td>
+                                        </tr>
+                                        a++;
+                                    }
+                                }
+
+                            }
+                      
+                        </tbody>
+                    </table>
+                        </div>
+                <div id="ItemsMinuteDoc" class="tab-pane">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                <h3>Asset Attachment</h3>
+                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                    <thead>
+                                        <tr>
+                                            <th width="750px">Description</th>
+                                            <th width="400px">Attached File</th>
+                                            <th width="150px"> Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DocBodyID11">
+                                        @{ if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                                //  string host = Request.Url.Authority;
+                                                int a = 0;
+                                                foreach (var item in Model.detailistDoc)
+                                                {
+                                                    <tr id="@a">
+                                                        @*<td > <input  id="lisdescription_@a" style="color:red; font-weight: bold;" readonly="readonly" type="text" value="@item.AssetDescription" class="form-control" name="lisdescription" /> </td>*@
+                                                        <td> <a id="lisdescription_@a" style="font-weight: bold;" readonly="readonly" value="@item.AssetDescription"  name="lisdescription" ></a> </td>
+                                                        
+                                                        <td>  <a target="_blank" href="@host@item.PathDoc.TrimStart('~')">   <img class="newimg" src="@host@item.PathDoc.TrimStart('~')" alt="&nbsp; View File" style="width:35px"></a> <input type="hidden" value="@item.PathDoc" id="listdocpath_@a" name="listdocpath" /> </td>
+
+                                                        <td>
+                                                         
+                                                                <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> Add</button>
+
+                                                              
+                                                             
+                                                           @* <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> Add</button>*@
+
+                                                            <button type="button" style="display:none" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-ms btn-circle userDellbtn"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>
+                                                        </td>
+                                                    </tr>
+                                                    a++;
+                                                }
+                                            }
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="AssetHistory" class="tab-pane ">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                <h3>Asset Attachment (LOG)</h3>
+                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                    <thead>
+                                        <tr class="bg-primary">
+                                            <th width="750px">Description</th>
+                                            <th width="400px">Attached File</th>
+                                            @*<th width="150px"> Action </th>*@
+                                        </tr>
+                                    </thead>
+                                    @*ASSET HISTORY*@ 
+                                    <tbody id="DocBodyID1">
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <hr />
+                   
+                    <div>
+
+
+                        <h3>Service Details (LOG)</h3>
+
+                    </div>
+                 
+                    <table class="table table-bordered table-striped mb-none" id="datatable2">
+                        <thead>
+                            <tr class="bg-primary">
+                                <th width="50px">Sr.</th>
+                                <th width="200px">Maintenance Date</th>
+                                <th width="200px">Service Type</th>
+
+                                <th width="700px"> Remarks </th>
+                                @*<th> Action </th>*@
+                            </tr>
+                        </thead>
+                        <tbody id="DocBodyID">
+                           
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <br />
+                  
+            </div>
+
+                    <a type="button" class="btn btn-success btn-sm" style="margin-top:28px" onclick="SaveForm()"> Save </a>
+            </div>
+                
+         
+
+                <div id="loadingid" style="display:none" class="se-pre-con"></div>
+                <div class="row" style="display:none">
+                    <div class="col-sm-6">
+                        <div class="mb-md">
+                            @if (Model.IsNew)
+                            {
+                                <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                               
+ 
+                                      }
+
+                        </div>
+                    </div>
+                </div>
+
+}
+
+<script>
+
+
+    $('table').on('click', 'input[type="button"]', function (e) {
+        $(this).closest('tr').remove()
+    })
+
+    $(document).ready(function () {
+
+        document.getElementById("modbutton").style.display = "none";
+
+        document.getElementById("AssetRowNo").value = $('#DocBodyID tr:last').attr('id');
+
+
+        $("#MaintenanceDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+           todayBtn: true,
+
+
+        });
+
+            var ServiceDate = '@Model.MaintenanceDate.Value.Day' + '/' + '@Model.MaintenanceDate.Value.Month' + '/' + '@Model.MaintenanceDate.Value.Year';
+            $('#MaintenanceDate').datepicker('setDate', ServiceDate);
+
+
+//_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+        $("#CompletionDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+        var ServiceDate = '@Model.CompletionDate.Value.Day' + '/' + '@Model.CompletionDate.Value.Month' + '/' + '@Model.CompletionDate.Value.Year';
+        $('#CompletionDate').datepicker('setDate', ServiceDate);
+
+        if ('@Model.detailistDoc.Count()' < 1) {
+
+            AddDocumentData(0, true)
+        }
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+      
+    })
+
+
+     function generateTableRow()
+    {
+
+
+           //FOR Service Type
+         var SerType = document.getElementById("ServiceType");
+         var cat = $("#ServiceType").val();
+           var result = SerType.options[SerType.selectedIndex].text;
+           var ddvalue = SerType.options[SerType.selectedIndex].value;
+
+
+           //For Remarks
+           var Remark = document.getElementById("rem");
+
+           var date = document.getElementById("MaintenanceDate").value;
+           if (ddvalue == '0') {
+               bootbox.alert("Please Select Service Type")
+               return
+
+           }
+
+
+           if (Remark.value === "") {
+               bootbox.alert("Please Enter Remarks")
+               return
+
+           }
+
+
+
+         
+
+           var table = document.getElementById("DocBodyID99");
+           var rowCount = table.rows.length;
+           var date1 = document.getElementById("MaintenanceDate").value;
+           var typee = SerType.options[SerType.selectedIndex].text;
+    
+
+
+           if ($('#DocBodyID99 tr:has(td:contains(" ' + date1 + '"))').length > 0 && $('#DocBodyID99 tr:has(td:contains(" ' + result + '"))').length > 0 ) {
+               alert("Found duplicate values");
+           }
+        else 
+              {
+              var trrow;
+              trrow = '';
+              trrow = '<tr id="' + rowCount + '"> ';
+              trrow += '<td> ' + (rowCount + 1) + ' </td>'
+
+              trrow += '<td class="input"> <input  type="hidden"  data-date="" data-date-format="DD MMMM YYYY" value="' + date + '" id="MaintenanceDate_' + rowCount + '"  name="MaintenanceDate"    />' + date + ' </td>';
+
+              trrow += '<td class="input"> <input  type="hidden" value="' + result + '" id="EServiceType_' + rowCount + '"  name="EServiceType"    />' + result + ' </td>';
+
+              trrow += '<td class="input"> <input  type="hidden" value="' + Remark.value + '"  id="ERemarks_' + rowCount + '"  name="ERemarks"   />' + Remark.value + ' </td>';
+              trrow += '<td> <input type="button" value="Delete" class="btn btn-danger  btn-xs btn-circle userDellbtn" ></td> ';
+              trrow += '</tr>';
+              $("#DocBodyID99").append(trrow);
+
+       
+          }
+
+        
+
+     }
+
+
+
+    function AddDocumentData(ThisRowID, FromDocumentDotReady) {
+        debugger
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("lisdescription_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Kindly Add Description");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#DocBodyID11 tr").each(function () {
+
+            if (document.getElementById("lisdescription_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("DocDetailRowNo").value = $('#DocBodyID11 tr:last').attr('id');
+                document.getElementById("DocDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("DocDetailRowNo").value = 0
+            }
+
+
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + document.getElementById("DocDetailRowNo").value + '">';
+            dtProductDetailInfoHtml += '<td class="input"> <input   class="form-control"  id="lisdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="lisdescription" onclick="myFunction()"   /> </td>';
+            dtProductDetailInfoHtml += '<td ><input type="file" class="form-control" id="DocFile_' + document.getElementById("DocDetailRowNo").value + '" name="DocFile" />   </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+            '" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_'
+            + document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocBodyID11").append(dtProductDetailInfoHtml);
+
+            document.getElementById("DocImagePath_" + document.getElementById("DocDetailRowNo").value);
+
+        }
+    }
+
+    function myFunction() {
+        $("#DocBodyID1").empty();
+        $("#DocBodyID").empty();
+    }
+
+    function DeleteDocDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocBodyID1 tr").remove();
+            AddDocumentData(0, true);
+        }
+    }
+
+    function LoadAssetLog() {
+
+
+
+        try {
+            $("#DocBodyID").empty();
+            $("#DocBodyID1").empty();
+
+         
+
+            var Data = { AssetTag: $('#tagID').val() }
+            $.ajax({
+                async: true,
+                url: "/AssetService/loadFixedAssetLog",
+                data: Data,
+                success: function (Response) {
+
+                    if (Response != null) {
+                        console.log(Response)
+                        var data = Response;
+                        if (data != '') {
+
+
+                            var tblrow;
+
+                            var table = document.getElementById("DocBodyID");
+
+                            for (var i = 0; i < data.length; i++) {
+
+                             
+                               
+                                //alert(date);
+                                tblrow = '';
+                                tblrow = '<tr>';
+                                tblrow += '<td>' + (i + 1) + '</td>';
+                                tblrow += '<td>' + data[i].dateformat + '</td>';
+                               // tblrow += '<td> ' + '<span style="display:none" >' + data[i].MaintenanceDate.split('/')[2] + data[i].MaintenanceDate.split('/')[1] + data[i].MaintenanceDate.split('/')[0] + '</span>' + data[i].MaintenanceDate + '</td>';
+
+                                tblrow += '<td>' + data[i].ServiceType + '</td>';
+                                //tblrow += '<td>' + data[i].MaintenanceDate + '</td>';
+                                tblrow += '<td>' + data[i].ServiceRemarks + '</td>';
+                                //tblrow += '<td><input type="button" value="Delete" class="btn btn-danger  btn-xs btn-circle userDellbtn" aria-disabled="true" ></td>';
+
+
+                                tblrow += '</tr>'
+
+                                $("#DocBodyID").append(tblrow);
+
+
+                            }
+
+
+
+
+
+                        }
+                    }
+                },
+                complete: function ()
+                 {
+                    $('#loadingid').hide();
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+
+            LoadAssetDocDetail();
+            LoadBootModal();
+            document.getElementById("modbutton").style.display = "block";
+
+
+
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+
+
+
+
+
+    }
+
+
+    function LoadAssetDocDetail() {
+
+
+
+        try {
+            //$("#DocBodyID1").empty();
+
+
+
+
+            var Data = { AssetTag: $('#tagID').val() }
+            $.ajax({
+                async: true,
+                url: "/AssetService/loadFixedAssetLog1",
+                data: Data,
+                success: function (Response) {
+
+                    if (Response != null) {
+                        console.log(Response)
+                        var data = Response;
+                        if (data != '') {
+
+
+
+
+                            var table = document.getElementById("DocBodyID1");
+
+                            for (var i = 0; i < data.length; i++) {
+
+
+
+
+
+
+
+                                var tblrow1 = '';
+                                tblrow1 = '<tr>';
+                               // tblrow1 += '<td class="input"> <input   class="form-control"  id="lisdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="lisdescription"    />' + data[i].AssetDescription + ' </td>';
+
+                                //tblrow1 += '<td class="input" style="font-weight: bold;"> ' + data[i].AssetDescription + ' </td>';
+                                tblrow1 += '<td class="input"> <a class="form-control input" style="color:#0088cc; font-weight: bold;" value=' + data[i].AssetDescription + ' > ' + data[i].AssetDescription + '</a> </td>';
+
+                                 tblrow1 += '<td><a href="" download="Doc-">View File</a> <input type="hidden" value="" id="listdocpath_" name="listdocpath" /> </td>';
+                                //  tblrow1 += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+                                //'" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span><strong>Add</strong></span></button> </td>';
+
+
+                                //  tblrow1 += '<td > <button type="button" style="" class="btn btn-info  btn-xs btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+                                //'" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span></button> <button type="button" style="" id="detailDocDataDelete_'
+                                //+ document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-xs btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+                                tblrow1 += '</tr>'
+
+                                $("#DocBodyID1").append(tblrow1);
+
+
+                            }
+
+
+
+
+
+                        }
+                    }
+                },
+                complete: function () {
+                    $('#loadingid').hide();
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+
+
+
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+
+
+
+
+
+    }
+
+
+    //Load Subtype
+    function loadSubtype() {
+        debugger
+
+        if ($('#AssetTypeID').val() == "0") {
+
+            var TypeSub = $('#Subtype');
+            TypeSub.empty();
+            //TypeSub.append(new Option("-- Please Select--", ""));
+
+            TypeSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { type: $('#AssetTypeID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/AssetService/getSubtype",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var TypeSub = $('#Subtype');
+                    TypeSub.empty();
+
+                    //$('#Subtype').append(new Option("-- All--", ""));
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            TypeSub.append(datafil);
+                        });
+
+                    TypeSub.selectpicker('refresh');
+
+                    TypeSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    //Load Tag numberss
+    function LoadTag() {
+        debugger
+
+        if ($('#Subtype').val() == "0") {
+
+            var TypeSub = $('#tagID');
+            TypeSub.empty();
+            TypeSub.append(new Option("-- Please Select--", "0"));
+
+            TypeSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { type: $('#Subtype').val() }
+
+        $.ajax({
+            async: false,
+            url: "/AssetService/getTagNo",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var TypeSub = $('#tagID');
+                    TypeSub.empty();
+
+                    //$('#tagID').append(new Option("--Kindly Select--", "0"));
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            TypeSub.append(datafil);
+                        });
+
+                    TypeSub.selectpicker('refresh');
+
+                    TypeSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+   function SaveForm() {
+
+
+
+
+       var ReturnValue = true
+       debugger
+
+
+
+
+
+       $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+       if (ReturnValue) {
+
+           bootbox.confirm("Are you sure to process this!", function (result) {
+
+               if (result) {
+                   $("#myform").submit();
+
+               }
+
+
+           });
+       }
+
+   }
+
+    //Red Button for details against tag number
+   function LoadBootModal() {
+
+
+
+       try {
+
+           $("#BodyModal").empty();
+
+           var Data = { AssetTag1: $('#tagID').val() }
+           $.ajax({
+               async: true,
+               url: "/AssetService/loadModalData",
+               data: Data,
+               success: function (Response) {
+
+                   if (Response != null) {
+                       console.log(Response)
+                       var data = Response;
+                       if (data != '') {
+
+                           var table = document.getElementById("BodyModal");
+
+                           for (var i = 0; i < data.length; i++) {
+
+                               var tablrow = '';
+                               tablrow = '<tr>';
+                               tablrow += '<td class="input"> <a value=' + data[i].AssetManufacturer + ' > ' + data[i].AssetManufacturer + '</a> </td>';
+
+                               tablrow += '<td class="input"> <a value=' + data[i].AssetName + ' > ' + data[i].AssetName + '</a> </td>';
+
+                               tablrow += '<td class="input"> <a value=' + data[i].AssetDesc + ' > ' + data[i].AssetDesc + '</a> </td>';
+
+
+                               tablrow += '</tr>'
+
+                               $("#BodyModal").append(tablrow);
+
+
+                           }
+
+
+
+
+
+                       }
+                   }
+               },
+               complete: function () {
+                   $('#loadingid').hide();
+               },
+               error: function () {
+                   ReturnValue = false;
+
+               }
+           })
+
+
+
+
+       }
+       catch (err) {
+           console.log(err.message);
+       }
+
+
+
+
+
+   }
+
+
+
+</script>
+
+
+
+
+
+

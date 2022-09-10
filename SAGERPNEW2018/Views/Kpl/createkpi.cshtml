@@ -1,0 +1,443 @@
+﻿@model HRandPayrollSystemModel.DBModel.tbl_kplinfo
+@{
+    ViewBag.Title = "KPL";
+}
+
+@using (@Html.BeginForm("Save", "Kpl", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+
+
+    <div id="loadingid" style="display:none" class="se-pre-con"></div>
+
+
+    <input type="hidden" id="htmlboxValue" name="htmlboxValue" value="@Model.HtmlBox" />
+    <div class="modal fade" id="basicEdit" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Speech to text  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Speech to text service</h3>
+                    <div class="input-single">
+                        <textarea id="note-textarea" class="form-control" placeholder="Create a new note by typing or using voice recognition." rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" id="pause-record-btn" >Stop</button>*@
+
+                    <button type="button" id="pause-record-btn" onclick="assignDatatextToHtmlbox()" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    if (Model.KPI_ID > 0)
+    {
+        if (Model.fldStatus != null)
+        {
+            ViewBag.Title = ViewBag.Title + " ( Read Only )";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " ( New )";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+
+
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+
+
+
+            </ol>
+            <a class="sidebar-right-toggle" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+    @Html.HiddenFor(model => model.KPI_ID)
+    @Html.HiddenFor(model => model.KPI_Code)
+
+
+
+
+
+    <input type="hidden" id="divdata" name="divdata" value="@Model.HtmlBox" />
+
+
+    <br />
+    <br />
+
+    <br />
+    <div class="panel">
+
+        <!-- start: page -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <section class="panel">
+
+              
+                    <div class="panel-body">
+
+                        <label class="">   <span><strong style="color:red">Note:</strong> <strong> You can initiate this only once in a month.</strong>  </span> </label>
+
+                        <a class="sidebar-right-toggle" style="float:right;" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i><strong> BACK</strong> </a>
+                        <div class="tabs tabs-primary">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> KPI </a>
+                                </li>
+                            
+
+
+
+                            </ul>
+                            <div class="tab-content">
+                                <div id="ItemsInfo" class="tab-pane active ">
+                                    <br />
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> KPI No :</strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.KPI_Code, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                        <label class="col-sm-1 control-label"><strong> Date :</strong> </label>
+                                        <div class="col-sm-2">
+                                            @Html.TextBoxFor(model => model.EntryDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-1 control-label"><strong>Location:</strong> </label>
+                                        <div class="col-sm-2 ">
+                                            @Html.TextBoxFor(model => model.LocationProject, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong>  Department: </strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.InitiatedDepartment, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                        <label class="col-sm-1 control-label" style="padding-right: 0px;"><strong> Created by: </strong> </label>
+                                        <div class="col-sm-5">
+                                            @Html.TextBoxFor(model => model.Initiatedby, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+                                   
+                                    </div>
+
+                                    <div class="form-group">
+
+
+
+                                        <label class="col-sm-2 control-label"><strong> For the Month :</strong> </label>
+                                        <div class="col-sm-3">
+                                            @Html.TextBoxFor(model => model.KPIMMYY, new { @class = "form-control ", required = "required", @type = "month" })
+                                        </div>
+
+
+
+                                      
+
+
+
+                                    </div>
+ 
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong>Details:</strong>  </label>
+                                        <div class="col-sm-9 ">
+
+                                            <label class=""><span class="required"><strong> Short Keys:</strong> ( Select All = Ctrl+A )  ( Copy = Ctrl+C )       ( Cut = Ctrl+X )        ( Paste = Ctrl+V )</span> </label>
+
+                                          
+
+                                            @*@if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                <a id="start-record-btn" data-toggle="tooltip" title="" data-original-title="Speak Here" href="#" onclick="StartMic()" style="color:green;margin-top:5px;float:right;display:block">
+                                                    <i class="fa fa-microphone fa-2x"></i>
+                                                </a>
+                                            }*@
+
+
+
+                                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                <div id="divhtmlbox" style="height:500px; overflow: auto;background-color:#deeef3;padding: 10px;"></div>
+
+                                            }
+                                            else
+                                            {
+                                                @Html.TextAreaFor(model => model.HtmlBox, new { @id = "HtmlBox", @name = "HtmlBox", @class = "form-control uneditable-input " })
+
+
+                                            }
+
+
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                 
+
+
+
+                                    <br />
+                             
+
+
+
+                                </div>
+
+                            </div>
+
+                          
+                        </div>
+                        <footer class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-9">
+
+
+                                    @if (string.IsNullOrWhiteSpace(Model.fldStatus) && !Convert.ToBoolean(ViewData["Editmode"]))
+                                    {
+
+                                        <button type="button" onclick="postform()" class="btn btn-primary">Process <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                    }
+                                    @if ( Convert.ToBoolean(ViewData["Editmode"]))
+                                    {
+                                        <button type="button" onclick="print()" class="btn btn-success">Preview <i class="fa fa-search" aria-hidden="true"></i></button>
+                                     } 
+
+                                   
+
+                                    <button type="button" id="cancelll" class="btn btn-default" onclick="location.href = '../../Eminute/ViewList/@Session["MinuteList"]'">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+
+                                    @*<button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>*@
+                                </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+                                                                                    }
+
+<script src="~/assets/vendor/jquery-cookie/jquery.cookie.js"></script>
+<script src="~/ckeditor/ckeditor.js"></script>
+<script src="~/Scripts/AutoType/script.js"></script>
+
+
+<script>
+
+
+    $("#EntryDate").datepicker({
+        format: "dd-M-yyyy",
+        autoclose: true,
+        todayBtn: true,
+
+
+    });
+    var DateOfB = '@Model.EntryDate.Value.Day' + '/' + '@Model.EntryDate.Value.Month' + '/' + '@Model.EntryDate.Value.Year';
+
+
+
+
+    $('#EntryDate').datepicker('setDate', DateOfB);
+
+
+    if ('@ViewData["Editmode"]' == 'False') {
+
+        CKEDITOR.replace('HtmlBox', {
+            toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+            uiColor: '#c5fff0',
+            height: 500,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            allowedContent: true,
+            //EnterMode:"BR",
+            //ShiftEnterMode:"DIV",
+            removeButtons: 'Save,Print,Preview,Find,About',
+
+
+        });
+    }
+
+        function postform1() {
+            var ReturnValue = true
+
+
+
+
+            $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+
+
+            bootbox.confirm("Are sure to process!", function (result) {
+                if (result) {
+
+                        $("#myform").submit();
+
+
+
+                }
+            });
+
+
+        }
+
+        function postform() {
+            debugger;
+            var ReturnValue = true
+
+            $("#myform").validate();
+
+
+
+            var Data = { date: $('#KPIMMYY').val(), proj: $('#LocationProject').val() }
+            $.ajax({
+                async: false,
+                url: "/kpl/Duplicate",
+                data: Data,
+                success: function (data) {
+
+                    var c = JSON.parse(data);
+                    if (c != "") {
+                        bootbox.alert(c)
+                        ReturnValue = false;
+                    }
+                },
+                error: function () {
+                    ReturnValue = false;
+                    bootbox.alert("Error")
+                }
+            })
+            if (ReturnValue) {
+                bootbox.confirm("Are you sure to process this minute!", function (result) {
+
+                    if (result) {
+                        $("#myform").submit();
+                    }
+                });
+
+            }
+
+        }
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+
+
+            $('#KPIMMYY').prop('readonly', true);
+
+            $('#HtmlBox').prop('readonly', true);
+            $('#estimatedcost').prop('readonly', true);
+
+            var htmlboxdata = $('#divdata').val();
+            $('#divhtmlbox').html(htmlboxdata.replace('&lt', '<').replace('&gt', '>'));
+
+            $('#divhtmlbox').scrollTop($('#divhtmlbox')[0].scrollHeight);
+
+        }
+
+    function StartMic() {
+
+        $('#basicEdit').modal();
+    }
+
+    function print() {
+        debugger
+
+        var currentdate = new Date();
+        var datetime = "Now: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth() + 1) + "/"
+                    + currentdate.getFullYear() + " Time: "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
+
+        var origin = window.location.origin;
+
+
+        let popupWin = window.open('', '_blank', 'top=0,left=0,height=200%,width=auto');
+        popupWin.document.open();
+
+        var form = '';
+        form += '<!DOCTYPE html>';
+        form += '<html><head><title>Minute -Al-Shifa Trust Eye Hospitals</title><meta http-equiv=content-type content="text/html;charset=UTF-8">';
+        form += '<link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class ="img-rounded" type="image/x-icon"> <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon"></head>';
+        form += '<body   style="overflow-y:auto"><table><tbody>';
+        form += '<tr><td><img src="' + origin + '/AppFiles/Images/logo.png" height="100" width="100"></td>'
+        form += '<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td>'
+        form += '<td><center  > <h2>Al-Shifa Trust Eye Hospital</h2></center><br /><h3 style="margin-top:-24px;">KPI Sheet</h3></td>'
+        form += '</tr></tbody></table> <hr />';
+        form += '<table> <tbody> <tr>';
+        form += '<td><label><strong>KPI No: </strong></label></td>';
+        form += '<td><label ><strong style="color: red;"> ' + $('#KPI_Code').val() + '  </strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Location: </strong></label></td>';
+        form += '<td><label><strong >' + $('#LocationProject').val() + '</strong></la.combel></td> </tr><tr>';
+        form += '<td><label><strong>Department: </strong></label></td><td><label><strong >' + $('#InitiatedDepartment').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Date: </strong></label></td><td><label><strong> ' + $('#KPIMMYY').val() + '</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Initiated By: </strong></label></td><td><label><strong>' + $('#Initiatedby').val() + '</strong></label></td>';
+        //form += '<td style="padding-left: 100px;"><label><strong>Priority: </strong></label></td><td><label><strong>' + $("#Priority option:selected").text(); +'</strong></label></td>';
+        //form += '</tr><tr><td><label><strong>Type: </strong></label></td><td><label><strong>' + $("#Type option:selected").text(); +'</strong></label></td>';
+        //form += '<td style="padding-left: 100px;"><label><strong></strong></label></td><td><label><strong></strong></label></td>';
+        //form += '</tr><tr><td><label><strong>Subject/Title: </strong></label></td><td><label><strong>' + $('#Subject').val() + ' </strong></label></td>';
+        //form += '<td style="padding-left: 100px;"><label><strong></strong></label></td><td><label><strong></strong></label></td>';
+        form += ' </tr><tr><td colspan="4"><hr /></td><td></td><td></td><td></td><td></td></tr>';
+        form += '<tr><td colspan="4">' + $('#htmlboxValue').val() + '</td><td></td><td ></td><td></td></tr></tbody>';
+        form += '</table><p>Printed By ' + $('#Activeuser').text() + ' ' + datetime + ' </p>  <button onclick="window.print();window.close()" >Print</button><br/><span id="abcid" style="color:Green;font-weight:bold;"><span style="font-size:large;">P</span>lease consider the environment before printing this document. <span style="font-size:large;">D</span>on\'t print this unless you really need to.</span></body></html>';
+        console.log(form)
+
+        popupWin.document.write(form);
+        popupWin.document.close();
+
+   
+
+    }
+</script>
+
+

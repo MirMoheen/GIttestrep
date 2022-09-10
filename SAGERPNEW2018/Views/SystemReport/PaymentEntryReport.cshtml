@@ -1,0 +1,279 @@
+﻿@model SAGERPNEW2018.Models.ReportModel
+
+@{
+    ViewBag.Title = "Payment Report";
+}
+
+
+
+<header class="page-header">
+    <h2> @ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="index">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Reports</span></li>
+            <li><span>@ViewBag.Title</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+
+<div class="panel">
+    <!-- start: page -->
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                        <a href="#" class="fa fa-times"></a>
+                    </div>
+
+                    <h2 class="panel-title">@ViewBag.Title</h2>
+                    <p class="panel-subtitle">
+                        Form control for @ViewBag.Title data .
+                    </p>
+                </header>
+                <div class="panel-body">
+
+
+
+                    <div class="row">
+
+                        <div class="col-md-2">
+
+                            <label>From Date <span class="required">*</span></label>
+
+                            @Html.TextBoxFor(model => model.DateFrom, new { @class = "form-control ", @required = "required" })
+
+                        </div>
+
+
+                        <div class="col-md-2">
+
+                            <label>TO Date <span class="required">*</span></label>
+
+                            @Html.TextBoxFor(model => model.DateTo, new { @class = "form-control ", @required = "required" })
+
+
+                        </div>
+
+
+
+
+                        <div class="col-md-3">
+
+                            <button style="margin-top: 24px;" type="button" id="Show" onclick="loaddata()" class="btn  btn-primary"> <span class="glyphicon glyphicon-search"></span> Show</button>
+
+                            @if (Model.IsPrint)
+                            {
+                                <button style="margin-top: 24px;" type="submit" id="Add" onclick="viewpdf()" class="btn  btn-success"> <span class="glyphicon glyphicon-print"></span>   Print</button>
+                            }
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+
+
+
+
+
+
+                        <div class="col-md-12">
+
+                            <h3>@ViewBag.Title</h3>
+
+                            <div id="docdetail" style="height: auto;overflow-y:auto;overflow-x:auto;">
+                                <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+
+                                    @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                    <thead>
+                                        <tr>
+                                            <th> <strong>Payment No#</strong> </th>
+                                            <th width="200"> <strong>Name</strong></th>
+                                            <th><strong>Payment Date</strong></th>
+                                            <th><strong>Payment Mode </strong></th>
+                                            <th width="270"><strong>Note </strong></th>
+                                            <th><strong>Amount</strong></th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DocmentBodyID">
+
+                                        @{
+
+
+
+                                        }
+
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <footer class="panel-footer"></footer>
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<style>
+    tr.group,
+    tr.group:hover {
+        background-color: #ddd !important;
+    }
+</style>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        //$("input[type=text]").focus(function () {
+        //    $(this).select();
+        //});
+
+
+        $("#DateFrom").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+        $("#DateTo").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+        $('#DateFrom').datepicker('setDate', new Date());
+        $('#DateTo').datepicker('setDate', new Date());
+
+
+    });
+
+
+    function loaddata() {
+
+
+        var Data = { DateFrom: $('#DateFrom').val(), DateTo: $("#DateTo").val() }
+        $.ajax({
+            async: false,
+            url: "/SystemReport/LoadPaymentEntry",
+            data: Data,
+            success: function (data) {
+
+
+                console.log(data)
+
+                if (data != '') {
+
+
+
+                    var total = 0;
+                    var name = '';
+
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+
+                        html += '<tr>'
+
+                        if (name == '') {
+                            html += '<td>' + data[i].PaymentNo + '</td>'
+                            name = data[i].PaymentNo;
+                        }
+                        else if (name != data[i].PaymentNo) {
+                            html += '<td>' + data[i].PaymentNo + '</td>'
+                            name = data[i].PaymentNo;
+
+                        }
+                        else {
+
+                            html += '<td></td>'
+                        }
+
+                  
+                        html += '<td>' + data[i].PName + '</td>'
+                        html += '<td>' + data[i].PaymentDate + '</td>'
+                        html += '<td>' + data[i].PaymentMode + '</td>'
+                        html += '<td>' + data[i].Note + '</td>'
+                        html += '<td>' + data[i].PAmount + '</td>'
+                        html += '</tr>'
+                        total = parseFloat(total) + parseFloat(data[i].PAmount)
+
+                    }
+                    html += '<tr><td></td><td></td><td></td><td></td><td>Total : </td><td>' + total + '</td></tr>'
+
+                    $('#DocmentBodyID').html(html);
+                }
+                else {
+
+                    bootbox.alert('Record Not Found')
+                }
+
+            },
+            error: function () {
+                ReturnValue = false;
+                alert("Error")
+            }
+        })
+
+
+
+
+    }
+
+
+
+
+    function viewpdf() {
+        var id = "" + $('#DateFrom').val() + "|" + $('#DateTo').val() + " "
+        //   window.open('/SystemReport/GetRecoveryReport/?data=' + id + '   ', '_blank');
+        window.location.href = '/SystemReport/GetPaymentEntryReport/?data=' + id + '';
+
+
+    }
+
+
+</script>
+
+
+

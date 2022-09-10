@@ -1,0 +1,361 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+@{
+    ViewBag.Title = "E-Minute Attachments";
+}
+
+@using (@Html.BeginForm("SaveAttachment", "Eminute", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))
+{
+    <style>
+        .newimg {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        img:hover {
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+    </style>
+
+
+    @Html.Partial("_minuteGudie")
+
+
+
+
+
+
+    <input type="hidden" id="DocDetailRowNo" />
+    <input type="hidden" id="BudgetDetailRowNo" />
+
+    <input type="hidden" id="htmlboxValue" name="htmlboxValue" value="@Model.HtmlBox" />
+
+
+
+
+    if (Model.MinuteID > 0)
+    {
+        if (Model.fldStatus != null)
+        {
+            ViewBag.Title = ViewBag.Title + " ( Read Only )";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " ( New )";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+
+
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute/create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute/AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+
+
+
+            </ol>
+            <a class="sidebar-right-toggle" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+    @Html.HiddenFor(model => model.MinuteID)
+    @Html.HiddenFor(model => model.MinuteCode)
+    @Html.HiddenFor(model => model.EntryID)
+    @Html.HiddenFor(model => model.ModifiedID)
+    @Html.HiddenFor(model => model.BillClear)
+    @Html.HiddenFor(model => model.ReminderMinute)
+
+    // @Html.HiddenFor(model => model.MinuteOpenStatus)
+    @Html.HiddenFor(model => model.Minuteopen)
+
+
+    <input type="hidden" id="minuteStatusPre" name="minuteStatusPre" value="@Model.Status" />
+
+
+    <input type="hidden" id="divdata" name="divdata" value="@Model.HtmlBox" />
+
+
+    <br />
+    <br />
+
+    <br />
+    <div class="panel">
+
+        <!-- start: page -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <section class="panel">
+
+                    <div class="panel-body">
+                        <label class="">   <span><strong style="color:red">Note:</strong> <strong> For recommendations and updates please contact to IT department.</strong>  </span> </label>
+
+                        <a class="sidebar-right-toggle" style="float:right;" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i><strong> BACK</strong> </a>
+                        <div class="tabs tabs-primary">
+                            <ul class="nav nav-tabs">
+                                @*<li class="active">
+                                        <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> Minute Sheet</a>
+                                    </li>*@
+                                <li>
+                                    <a href="#ItemsMinuteDoc" data-toggle="tab"><i class="fa fa-building-o"></i> Attach File  <span style="background-color:red" class="badge badge-danger"> @ViewData["NumberAttachment"] </span></a>
+                                </li>
+                            </ul>
+
+
+
+                            @*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*@
+                            <div id="ItemsMinuteDoc" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="docdetail" style="height:auto;overflow-y:auto;">
+                                            <h3>Minute Attachment</h3>
+
+                                            <table class="table table-bordered table-striped mb-none table-hover" id="datatable2">
+                                                @*<table style="margin-bottom:0px;" id="datatable2" cellpadding="0" cellspacing="0" border="0" class="datatable table table-hover table-responsive ">*@
+                                                <thead>
+                                                    <tr>
+                                                        <th width="750px">Description</th>
+                                                        <th width="400px">Attached File</th>
+                                                        <th width="150px"> Action </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="DocBodyID">
+
+                                                    @*<tr>
+                                                            <td> <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> Add</button> </td>
+                                                        </tr>*@
+                                                    @{ if (Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"]))
+                                                        {
+                                                            var host = new UriBuilder(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
+                                                            //  string host = Request.Url.Authority;
+                                                            int a = 0;
+                                                            foreach (var item in Model.detailistDoc)
+                                                            {
+                                                                <tr id="@a">
+                                                                    <td class="input"> <input id="lisdescription_@a" style="color:red; font-weight: bold;" readonly="readonly" type="text" value="@item.Description" class="form-control" name="lisdescription" /> </td>
+
+
+                                                                    <td>  <a target="_blank" href="@host@item.PathDoc.TrimStart('~')">   <img class="newimg" src="@host@item.PathDoc.TrimStart('~')" alt="&nbsp; View File" style="width:35px"></a> <input type="hidden" value="@item.PathDoc" id="listdocpath_@a" name="listdocpath" /> </td>
+                                                                    <td>
+                                                                        <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_@a" value="+" onclick="AddDocumentData($(this).parent().parent().attr('id'), false)" title="Add"><span class="btn-ms glyphicon glyphicon-plus" aria-hidden="true"></span><span><strong></strong></span> </button>
+
+                                                                        <button type="button" id="detailDocDataDelete_@a" title="Remove" value="-" onclick="DeleteDocDetailData(this)" class="btn btn-danger  btn-ms btn-circle"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>
+                                                                    </td>
+                                                                </tr>
+                                                                a++;
+                                                            }
+                                                        }
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                        <footer class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-9">
+
+                                    <button type="button" onclick="EditForm()" class="btn btn-success">Save Attachment</button>
+
+                                    <button type="button" id="cancelll" class="btn btn-default" onclick="window.history.back()">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+
+                                                        }   @*Begin Form ends here*@
+
+
+
+                                                        <script>
+
+
+
+        function AddDocumentData(ThisRowID, FromDocumentDotReady) {
+        debugger
+        var dtProductDetailInfoHtml;
+        var totalNullAccountsCount = 0;
+
+
+        if (FromDocumentDotReady != true) {
+            if (document.getElementById("lisdescription_" + ThisRowID).value == 0) {
+                //message empty
+                bootbox.alert("Please Attach file or image and description must be enter.");
+                return false;
+            }
+
+        }
+
+        ////TotDetailRowNo
+        $("#DocBodyID tr").each(function () {
+
+            if (document.getElementById("lisdescription_" + $(this).prop('id')).value == 0) {
+                totalNullAccountsCount++;
+            }
+        });
+        if (totalNullAccountsCount < 1) {
+            if (FromDocumentDotReady != true) {
+                document.getElementById("DocDetailRowNo").value = $('#DocBodyID tr:last').attr('id');
+                document.getElementById("DocDetailRowNo").value++;
+
+            }
+            else {
+                document.getElementById("DocDetailRowNo").value = 0
+            }
+
+
+            dtProductDetailInfoHtml = '';
+            dtProductDetailInfoHtml = '<tr id="' + document.getElementById("DocDetailRowNo").value + '">';
+            dtProductDetailInfoHtml += '<td class="input"> <input   class="form-control"  id="lisdescription_' + document.getElementById("DocDetailRowNo").value + '"   type="text"  name="lisdescription"    /> </td>';
+            dtProductDetailInfoHtml += '<td > @*@Html.TextBoxFor(x => x.File, new { type = "file", multiple = "true" })*@      <input type="file" class="form-control"   onchange="ValidateSize(this)"   id="DocFile_' + document.getElementById("DocDetailRowNo").value + '" name="DocFile" />   </td>';
+            dtProductDetailInfoHtml += '<td > <button type="button" style="" class="btn btn-info  btn-ms btn-circle" id="detailDocDataAdd_' + document.getElementById("DocDetailRowNo").value +
+            '" value="+" onclick="AddDocumentData($(this).parent().parent().attr(\'id\'),false)"  title="Add" ><span class="glyphicon glyphicon-plus" aria-hidden="true"> </span><span><strong></strong></span> </button> <button type="button"  id="detailDocDataDelete_'
+            + document.getElementById("DocDetailRowNo").value + '" title="Remove" value="-" onclick="DeleteDocDetailData(this,$(this).parent().parent().attr(\'id\'))"  class="btn btn-danger  btn-ms btn-circle "   ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span><strong></strong></span></button>  </td>';
+
+
+            dtProductDetailInfoHtml += '</tr>';
+            $("#DocBodyID").append(dtProductDetailInfoHtml);
+
+            document.getElementById("DocImagePath_" + document.getElementById("DocDetailRowNo").value);
+
+        }
+    }
+    function DeleteDocDetailData(element, rowid) {
+
+
+        var Next = $(element).parent().parent().next("tr").length;
+        var Prev = $(element).parent().parent().prev("tr").length;
+
+        if (parseInt(Next) > 0 || parseInt(Prev) > 0) {
+            $(element).parent().parent().remove();
+        }
+        else {
+            $("#DocBodyID tr").remove();
+            AddDocumentData(0, true);
+        }
+    }
+
+
+
+
+
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+
+
+
+    function EditForm() {
+
+        var ReturnValue = true
+        debugger
+
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are you sure to process this minute!", function (result) {
+
+                if (result) {
+                    $("#myform").submit();
+
+                }
+
+
+            });
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+    function ValidateSize(file) {
+   //     var FileSize = file.files[0].size / 1024 / 1024; // in MB
+
+        var FileSize = file.files[0].size / 1024 / 1024;
+
+        if (FileSize > 10) {
+            bootbox.alert('File size exceeds 10 MB');
+            $(file).val(''); //for clearing with Jquery
+        } else {
+
+        }
+    }
+
+
+
+
+
+
+
+    $(document).ready(function () {
+
+        if ('@Model.detailistDoc.Count()' < 1) {
+            AddDocumentData(0, true)
+
+        }
+
+    });
+
+
+
+
+  </script>

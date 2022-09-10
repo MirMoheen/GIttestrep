@@ -1,0 +1,2841 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+
+@{
+    ViewBag.Title = "E-Minute List";
+}
+
+
+<style>
+
+    .redz {
+        background-color: #f1d0d0;
+    }
+</style>
+
+<style>
+
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+
+
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<br />
+<br />
+
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      Minute Guideline
+                </a>
+            </li>
+
+            @*<li><span>@ViewBag.Title</span></li>*@
+        </ol>
+
+        <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+        @if (TempData["St"].ToString() == "0")
+        {
+            <h3><strong style="color:#137324;">New E-Minutes</strong>  </h3>
+        }
+        @if (TempData["St"].ToString() == "1")
+        {
+            <h3><strong style="color:#137324;">In Process E-Minutes</strong>  </h3>
+        }
+
+        @if (TempData["St"].ToString() == "2")
+        {
+            <h3><strong style="color:#137324;">Approved E-Minutes</strong>  </h3>
+        }
+
+
+        @if (TempData["St"].ToString() == "3")
+        {
+            <h3><strong style="color:#137324;">Completed E-Minutes</strong>  </h3>
+        }
+
+        @if (TempData["St"].ToString() == "4")
+        {
+            <h3><strong style="color:#137324;">Disapproved E-Minutes</strong>  </h3>
+        }
+        @if (TempData["St"].ToString() == "5")
+        {
+            <h3><strong style="color:#137324;">For-Info </strong>  </h3>
+        }
+        @if (TempData["St"].ToString() == "6")
+        {
+            <h3><strong style="color:#137324;">ION </strong>  </h3>
+        }
+
+
+        @if (TempData["St"].ToString() == "15")
+        {
+            <h3><strong style="color:#137324;">E-Minutes Hold </strong>  </h3>
+        }
+
+        @if (TempData["St"].ToString() == "16")
+        {
+            <div class="col-12" style=" margin: auto;
+  width: 50%;
+
+  padding: 10px;">
+                <h4 onclick="sp_getAllpurchasesMinute3()" style="cursor: pointer;display:none"><strong style="color:#137324;">Purchase Done: </strong> <strong id="totm3" style="color:#137324;"> </strong>    </h4>
+                <h4 onclick="sp_getAllpurchasesMinute()" style="cursor: pointer;display:none"><strong style="color:#137324;">Approved/Completed: </strong> <strong id="totm" style="color:#137324;"> </strong>    </h4>
+
+                <table border="1" style="margin-top: 11px;">
+                    <tr>
+                        <td colspan="1"><h3 style="margin:5px">Description</h3></td>
+                        <td colspan="1"><h3 style="margin:5px">Approved</h3></td>
+                        <td colspan="1"><h3 style="margin:5px">Completed</h3></td>
+                    </tr>
+
+                    <tr>
+                        <td style="width: 250px;">
+                            <h4><strong style="color:#137324;">PO Not Issued </strong>     </h4>
+                        </td>
+                        <td style="width: 60px;" align="center">
+                            <h4 onclick="sp_getAllpurchasesMinute1()" style="cursor: pointer;"><strong style="color:#137324;"></strong> <strong id="totm1" style="color:#137324;"> </strong>    </h4>
+                        </td>
+
+                        <td style="width: 60px;" align="center">
+                            <h4 onclick="sp_getAllpurchasesMinute11()" style="cursor: pointer;"><strong style="color:#137324;"></strong> <strong id="totm11" style="color:#137324;"> </strong>    </h4>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h4><strong style="color:#137324;">Stock Not Received </strong>    </h4>
+                        </td>
+                        <td style="width: 60px;" align="center">
+                            <h4 onclick="sp_getAllpurchasesMinute2()" style="cursor: pointer;"><strong style="color:#137324;"> </strong> <strong id="totm2" style="color:#137324;"> </strong>    </h4>
+                        </td>
+
+                        <td style="width: 60px;" align="center">
+                            <h4 onclick="sp_getAllpurchasesMinute21()" style="cursor: pointer;">
+                                <strong style="        color: #137324;
+"></strong> <strong id="totm22" style="color:#137324;"> </strong>
+                            </h4>
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </div>
+
+
+        }
+
+        @if (TempData["St"].ToString() == "0"@*|| TempData["St"].ToString() == "1"*@)
+{
+
+    <table>
+        <tr>
+            <td class="col-md-1" style="padding-left: 0px;">    <input type="text" id="DayFilter" class="form-control number" onchange="LoadMinutesAgeWise()" placeholder="Minute Age" /></td>
+            <td class="col-md-11" style="padding-left: 0px;">
+
+                <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and high priority rows are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+            </td>
+
+
+        </tr>
+
+    </table>
+
+    @*<div class="row">
+        <div class="col-md-1">
+            <h5>
+                <input type="text" id="DayFilter" class="form-control number"  onchange="LoadMinutesAgeWise()" placeholder="Minute Age" />
+            </h5>
+        </div>
+        <div class="col-md-11" style="padding-left:10px;top:11px;">
+            <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and high priority rows are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+        </div>
+    </div>*@
+
+}
+else
+
+{
+    if (TempData["St"].ToString() != "16")
+    {
+        <h5><p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and high priority rows are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+    }
+}
+
+        @{ var isdirect = new SAGERPNEW2018.Models.SystemLogin().GetUser().IsDirectApproval; }
+        <input type="hidden" id="isdirectaproval" name="isdirectaproval" value="@isdirect.ToString() " />
+
+
+
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        @*<div id="loadingid"   style="display:none"   class="row">
+            <div   class="col-md-5"></div>  <div class="col-md-4 loader"></div>
+        </div>*@
+        <h4 id="toview"></h4>
+        <div id="divtohide">
+            <table class="table table-bordered  mb-none  " id="UserTable">
+                <thead>
+                    <tr class="bg-primary">
+                        <th style="width:40px">S/N</th>
+                        <th style="width:80px"> <span id="na">EM-No</span></th>
+                        <th style="width:80px">Initiated Date </th>
+                        <th style="width:80px">Department</th>
+                        <th>Subject </th>
+                        <th>Forwarded Info </th>
+
+                        <th style="width:80px">Priority </th>
+                        @if (TempData["St"].ToString() == "16")
+                        {
+                            <th style="width:80px">Purchase Status </th>
+                        }
+                        else
+                        {
+
+                            <th style="width:80px">Days </th>
+                        }
+
+                        <th width="60px">Status</th>
+                        @*<th width="40px">View</th>*@
+                    </tr>
+                </thead>
+                <tbody id="ProductTableID"></tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+<script>
+
+
+
+
+    $(document).ready(function () {
+        //$("#UserTable").on("click", "tr", function (e) {
+        //    console.log($('td:second', $(this).parents('tr')).text());
+        //});
+        //$("#ProductTableID").on('click', 'tr', function (e) {
+        //    //console.log($(this).children().first().next().text());
+        //    if ($(this).children().first().next().text()!="") {
+        //        ViewMinute($(this).children().first().next().text());
+
+        //    }
+
+
+        //});
+
+
+
+
+
+        $('#ProductTableID').on('click', 'tr', function () {
+            debugger
+
+            var table = $('#UserTable').DataTable();
+            var data = table.row(this).data();
+
+
+
+            var bn = $(this).children().first().next().next().next().next().next().next().next().text();
+            var id = $(this).children().first().next().text();
+
+
+            //  alert($('#isdirectaproval').val().toLowerCase())
+            // alert(bn.toLowerCase().trim() )
+            var pathname = window.location.pathname;
+           var splitdata= pathname.split('/');
+
+
+
+            if ($('#isdirectaproval').val().toLowerCase().trim() == 'true' && bn.toLowerCase().trim() == 'in-process'.trim() && splitdata[3].trim() == '0') {
+
+
+
+
+
+                bootbox.confirm({
+                    title: "E-Minute",
+                    centerVertical: true,
+                    backdrop: true,
+                    closeButton: true,
+                    message: "Do you want to open or approve E-minute <b> (" + data[1] + ")</b> ? <br/> ",
+
+                    buttons: {
+                        confirm: {
+                            //label: 'Yes',
+                            className: 'btn-success',
+
+                            //className: 'btn btn-info alertInfo',
+                            label: 'Approve'
+
+                        },
+                        cancel: {
+                            //label: 'No',
+                            className: 'btn-danger',
+                            label: 'Open'
+                        }
+                    },
+                    backdrop: true,
+
+                    //data: id,
+                    callback: function (result) {
+
+                        if (result) {
+                            // window.location = e;
+                            ViewMinute(id + "~1");
+
+                        }
+
+                        else {
+
+                           ViewMinute(id + "~0");
+                        }
+
+                        // return RedirectToAction("ViewList", "Eminute", {id:0});
+
+
+                    }
+                });
+
+
+
+
+            }
+            else {
+
+
+            if (bn.toLowerCase().trim() != 'Approved.'.toLowerCase() && bn.toLowerCase().trim() != 'Completed.'.toLowerCase().trim()) {
+                ViewMinute($(this).children().first().next().text());
+
+            }
+
+            else {
+
+                bootbox.confirm({
+                    title: "E-Minute",
+                    centerVertical: true,
+                    backdrop: true,
+                    closeButton: false,
+                    message: "Do you want to view E-minute <b> (" + data[1] + ")</b> ? <br/> ",
+
+                    buttons: {
+                        confirm: {
+                            //label: 'Yes',
+                            className: 'btn-success',
+
+                            //className: 'btn btn-info alertInfo',
+                            label: 'Yes'
+
+                        },
+                        cancel: {
+                            //label: 'No',
+                            className: 'btn-danger',
+                            label: 'No '
+                        }
+                    },
+                    backdrop: true,
+
+                    //data: id,
+                    callback: function (result) {
+                        //data: { id: id }
+                        //   var e = "/Eminute/Edit";
+                        if (result) {
+
+                            // window.location = e;
+
+
+                            ViewMinute(id + "~1");
+
+                        }
+
+                        else {
+                            ViewMinute(id + "~0");
+                        }
+
+                        // return RedirectToAction("ViewList", "Eminute", {id:0});
+
+
+                    }
+                });
+
+
+
+
+
+            }
+        }
+        });
+
+
+
+        //$("UserTables").delegate("tr.rows", "click", function () {
+        //    alert("Click!");
+        //});
+
+
+        var a = '@TempData["St"]'
+        if (a == "0") {
+            $('#headtitle').text("List of Minutes")
+            loadnewminutes();
+        }
+        if (a == "1") {
+            $('#headtitle').text("List of Minutes")
+            loadPendigminutes();
+        }
+        if (a == "2") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllApprovedMinute();
+        }
+        if (a == "3") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllCompletedMinute();
+        }
+        if (a == "4") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllCancelMinute();
+        }
+        if (a == "5") {
+            $('#headtitle').text("List of Minutes")
+            sp_getAllForInfoMinute();
+        }
+        if (a == "6") {
+            $('#headtitle').text("List of ION")
+            sp_getAllIONMinute();
+        }
+
+        if (a == "10") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            loadnewminutes3();
+        }
+        if (a == "11") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            loadPendigminutes3();
+        }
+        if (a == "12") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            sp_getAllApprovedMinute3();
+        }
+        if (a == "13") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            sp_getAllCompletedMinute3();
+        }
+        if (a == "14") {
+            $('#headtitle').text("List of Complaints")
+            $('#na').text("Complaint-Code")
+            sp_getAllCancelMinute3();
+        }
+
+
+        if (a == "15") {
+            $('#headtitle').text("List of Hold Minutes")
+            loadHoldminutes();
+        }
+        if (a == "16") {
+            $('#headtitle').text("List of Pending Purchase")
+            sp_getAllpurchasesMinute();
+        }
+        
+
+        if (a == "7") {
+            $('#headtitle').text("List of Minutes")
+
+            loadActivities();
+        }
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+
+       
+        datatablecreation();
+
+
+        @*var a = '@TempData["Dependancy"]'
+        if (a != "") {
+            $("#basicDendent").modal('show');
+        }*@
+    })
+
+
+    function datatablecreation() {
+
+
+        $("#UserTable").dataTable(
+            {
+                "aoColumns": [{ "bSearchable": true }, { "bSearchable": true },
+
+
+                { "bSearchable": true }
+
+
+
+                    , { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }
+                ],
+                "bSort": true,
+
+                dom: 'Bfrtip',
+                pageLength: 50,
+                buttons: [],
+
+
+
+
+                "createdRow": function (row, data, dataIndex) {
+
+                    if (data[6] == "High") {
+                        $(row).addClass('redz');
+
+                    }
+
+
+                },
+                columnDefs: [{ targets: 6, visible: false }],
+
+            })
+    }
+
+
+    function loadPendigminutes() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/loadPendingMinutes",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+
+
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">Today</button></td>'
+
+
+                            }
+
+                            var holdminute = "";
+
+                            if (data[i].IsHold == "1") {
+
+                                holdminute = '<span style="background-color:#A833FF" data-toggle="tooltip" title="Hold" class="btn badge badge-danger">H</span>'
+                            }
+
+                            //    \''+post['itm_code']+'\'
+
+                            var splitedata = data[i].MinuteCode.split('-')
+                            ///        + splitedata[0] + ',' + splitedata[1] + ',' + splitedata[2]+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                    (i + 1)  +" "+ holdminute ,
+                                 data[i].MinuteCode,
+                                '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                 data[i].Subject.split('~')[0], '<strong>'+ data[i].Subject.split('~')[1] +'</strong>',
+                                   data[i]. Initiatedby+'  ' + data[i].ForwardTo,
+                                    data[i].Priority, htmlPendingDays, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+                                ]).draw();
+
+                        }
+                    }
+
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+
+    function LoadMinutesAgeWise() {
+
+
+        $('#loadingid').show();
+        var Data = { DaySearch: $('#DayFilter').val() }
+        $.ajax({
+            async: true,//statsuid
+            //url: "/MinuteReporting/loadMinutePendingDays",
+            url: "/Eminute/loadMinuteAge",
+
+
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+
+                            var flag = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else if (data[i].Statusofminute == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+
+                            }
+
+                            else if (data[i].Statusofminute == "Completed") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-primary btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Completed" data-original-title="Completed"  class="fa fa-check fa-2x" aria-hidden="true" style="color:#0088cc;" ></span>'
+
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+
+                            var reminder = "";
+
+                            if (data[i].IsReminder == "1") {
+
+                                reminder = '<span style="background-color:red" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span>'
+                            }
+
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">Today</button></td>'
+
+
+                            }
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                            ).row.add([
+                                reminder + ' ' + (i + 1),
+                                data[i].MinuteCode,
+                                '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                data[i].Subject.split('~')[0],
+                                '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                data[i].Initiatedby + '  ' + fwd,
+                                data[i].Priority, htmlPendingDays, htmlStatus
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                            ]).draw();
+
+                        }
+                    }
+
+                    else {
+
+                        $('#ProductTableID').html('');
+                    }
+
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+
+    function loadnewminutes() {
+
+
+
+        try {
+            $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/LoadNewMinutes",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+
+                    if (Response.length == 0) {
+                        bootbox.alert('No more E-minutes are available to process, Returning to main.');
+                    }
+
+
+
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var flag = '';
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else if (data[i].Statusofminute == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + '.</button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+
+                            }
+
+                            else if (data[i].Statusofminute == "Completed") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-primary btn-xs" style="width: 100%;"> ' + data[i].Statusofminute + '. </button>'
+                                flag = '<span  data-toggle="tooltip" title="Completed" data-original-title="Completed"  class="fa fa-check fa-2x" aria-hidden="true" style="color:#0088cc;" ></span>'
+
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+                            var reminder="";
+
+                            if (data[i].IsReminder == "1") {
+
+                                reminder = '<span style="background-color:#ed9c28" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span>'
+                            }
+
+
+                            var Discuss = "";
+
+                            if (data[i].IsDiscuss == "1") {
+
+                                Discuss = '<span style="background-color:#3e28ed" data-toggle="tooltip" title="Discuss" class="btn badge badge-danger">D</span>'
+                            }
+
+
+                            var holdminute = "";
+
+                            if (data[i].IsHold == "1") {
+
+                                holdminute = '<span style="background-color:#A833FF" data-toggle="tooltip" title="Hold" class="btn badge badge-danger">H</span>'
+                            }
+
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">Today</button></td>'
+
+
+                            }
+
+
+
+
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                    flag + (i + 1) + '</strong> ' + reminder + " " + holdminute + " " + Discuss  , data[i].MinuteCode,
+                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                    data[i].Subject.split('~')[0],
+                                    '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                               data[i]. Initiatedby +'  ' + fwd,
+                                    data[i].Priority,
+                                    htmlPendingDays,
+                                    htmlStatus
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+
+
+                    }
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+        }
+        catch (err) {
+         console.log( err.message);
+        }
+
+
+
+
+
+    }
+
+
+
+
+    function loadHoldminutes() {
+
+
+
+        try {
+            $('#loadingid').show();
+
+            var Data = { id: 0 }
+            $.ajax({
+                async: true,
+                url: "/Home/LoadholdMinutes",
+                data: Data,
+                success: function (Response) {
+
+                    if (Response != null) {
+                        console.log(Response)
+
+                        if (Response.length == 0) {
+                            bootbox.alert('No more E-minutes are available to process, Returning to main.');
+                        }
+
+
+
+                        var data = Response;
+                        if (data != '') {
+                            $("#UserTable").DataTable().clear();
+                            var html = '';
+                            for (var i = 0; i < data.length; i++) {
+
+                                var html = '';
+                                if (data[i].Priority == 'Normal') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                //if (data[i].Priority == 'High') {
+                                //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                                //}
+                                if (data[i].Priority == 'High') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                var flag = '';
+                                var htmlStatus = '';
+                                if (data[i].Statusofminute == 'For Info') {
+                                    htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                }
+                                else if (data[i].Statusofminute == "Approved") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+
+                                }
+
+                                else if (data[i].Statusofminute == "Completed") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-primary btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Completed" data-original-title="Completed"  class="fa fa-check fa-2x" aria-hidden="true" style="color:#0088cc;" ></span>'
+
+                                }
+                                else {
+                                    htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                                }
+                                var reminder = "";
+
+                                if (data[i].IsReminder == "1") {
+
+                                    reminder = '<span style="background-color:#ed9c28" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span>'
+                                }
+
+
+                                var holdminute = "";
+
+                                if (data[i].IsHold == "1") {
+
+                                    holdminute = '<span style="background-color:#A833FF" data-toggle="tooltip" title="Hold" class="btn badge badge-danger">H</span>'
+                                }
+
+
+
+
+
+                                var htmlPendingDays = '';
+                                if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                    htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                                }
+                                else if (data[i].totalDays == 1) {
+                                    htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                                }
+                                else {
+                                    htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">Today</button></td>'
+
+
+                                }
+
+
+
+
+
+
+
+                                var fwd = '';
+                                if (data[i].ForwardTo != null) {
+                                    fwd = data[i].ForwardTo
+                                }
+
+                                $('#UserTable').DataTable(
+
+                                ).row.add([
+                                    flag + (i + 1) + '</strong> ' + reminder + " " + holdminute, data[i].MinuteCode,
+                                    '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                    data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                    data[i].Initiatedby + '  ' + fwd,
+                                    data[i].Priority, htmlPendingDays,htmlStatus
+                                    //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                            }
+
+
+                        }
+                    }
+                },
+                complete: function () {
+                    $('#loadingid').hide();
+                },
+                error: function () {
+                    ReturnValue = false;
+
+                }
+            })
+
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+    //function loadActivities() {
+
+
+
+    //    try {
+    //        $('#loadingid').show();
+
+    //        var Data = { id: 0 }
+    //        $.ajax({
+    //            async: true,
+    //            url: "/Home/LoadActivity",
+    //            data: Data,
+    //            success: function (Response) {
+
+    //                if (Response != null) {
+    //                    console.log(Response)
+    //                    var data = Response;
+    //                    if (data != '') {
+    //                        $("#UserTable").DataTable().clear();
+    //                        var html = '';
+    //                        for (var i = 0; i < data.length; i++) {
+
+    //                            var html = '';
+    //                            if (data[i].Priority == 'Normal') {
+    //                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+    //                            }
+
+    //                            //if (data[i].Priority == 'High') {
+    //                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+    //                            //}
+    //                            if (data[i].Priority == 'High') {
+    //                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+    //                            }
+
+
+    //                            var htmlStatus = '';
+    //                            if (data[i].Statusofminute == 'For Info') {
+    //                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+    //                            }
+    //                            else {
+    //                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+    //                            }
+    //                            var reminder = "";
+
+    //                            if (data[i].IsReminder == "1") {
+
+    //                                reminder = '<span style="background-color:red" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span>'
+    //                            }
+
+
+
+
+
+    //                            var fwd = '';
+    //                            if (data[i].ForwardTo != null) {
+    //                                fwd = data[i].ForwardTo
+    //                            }
+
+    //                            $('#UserTable').DataTable(
+
+    //                                ).row.add([
+    //                                 reminder + ' ' + (i + 1), data[i].MinuteCode,
+    //                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+    //                                data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+    //                               data[i].Initiatedby + '  ' + fwd,
+    //                                   data[i].Priority, htmlStatus
+    //                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+    //                                ]).draw();
+
+    //                        }
+
+
+    //                    }
+    //                }
+    //            },
+    //            complete: function () {
+    //                $('#loadingid').hide();
+    //            },
+    //            error: function () {
+    //                ReturnValue = false;
+
+    //            }
+    //        })
+
+    //    }
+    //    catch (err) {
+    //        console.log(err.message);
+    //    }
+
+
+
+
+
+    //}
+
+
+
+
+
+    function loadActivities() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/LoadActivity",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var flag = '';
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            } else if (data[i].Statusofminute == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+
+
+
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">Today</button></td>'
+
+
+                            }
+
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                flag + (i + 1), data[i].MinuteCode,
+                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                     data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i].Initiatedby + '  ' + fwd,
+                                    data[i].Priority, htmlPendingDays, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+
+
+
+
+
+
+    function sp_getAllApprovedMinute() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllApprovedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var flag = '';
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            } else if (data[i].Statusofminute == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+
+
+                            var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+
+
+                            //$('#UserTable').DataTable(
+
+                            //    ).row.add([
+                            //    flag + (i + 1), data[i].MinuteCode,
+                            //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                            //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                            //       data[i]. Initiatedby +'  ' +fwd,
+                            //        data[i].Priority, htmlPendingDays, htmlStatus
+                            //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                            //    ]).draw();
+
+
+                            newh = newh +   '<tr>'+
+                                   '<td>'+ flag + (+i + 1) +'</td>'+
+                                   '<td>'+ data[i].MinuteCode +'</td>'+
+                                 '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate+ '</td>'+
+                                '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                '<td> <strong>' + data[i].Subject.split('~')[1] + '</strong> </td>'+
+                                '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                '<td>' + data[i].Priority + '</td>' +
+                                 htmlPendingDays +
+                                '<td>' + htmlStatus + '</td>' +
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ' </tr >';
+                         
+                        }
+                        
+
+                      var   tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+
+                        $("#ProductTableID").append(newh);
+
+                       
+                        datatablecreation();
+                    }
+                }
+               
+            },
+
+            complete: function(){
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function sp_getAllpurchasesMinute() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllPurchasedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+
+                        var totalm = 0;
+                        var pend = 0;
+                        var stock = 0;
+                        var pdone = 0;
+
+
+                        var pend1 = 0;
+                        var stock1 = 0;
+                        //let result = text.includes("world");
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            totalm = totalm + 1;
+                            if (data[i].Subject.includes("Purchase Pending") && data[i].Statusofminute.includes("Approved")) {
+                                pend = pend + 1;
+                            }
+                            if (data[i].Subject.includes("Purchase Pending") && data[i].Statusofminute.includes("Completed")) {
+                                pend1 = pend1 + 1;
+                            }
+                            if (data[i].Subject.includes("Stock Not Received") && data[i].Statusofminute.includes("Approved")) {
+                                stock = stock + 1;
+                            }
+                            if (data[i].Subject.includes("Stock Not Received") && data[i].Statusofminute.includes("Completed")) {
+                                stock1 = stock1 + 1;
+                            }
+                            if (data[i].Subject.includes("Purchase Done") && data[i].Statusofminute.includes("Approved")) {
+                                pdone = pdone + 1;
+                            }
+
+
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var flag = '';
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            } else if (data[i].Statusofminute == "Approved") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+
+
+                            var htmlPendingDays = '';
+
+                            htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+
+
+                            //$('#UserTable').DataTable(
+
+                            //    ).row.add([
+                            //    flag + (i + 1), data[i].MinuteCode,
+                            //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                            //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                            //       data[i]. Initiatedby +'  ' +fwd,
+                            //        data[i].Priority, htmlPendingDays, htmlStatus
+                            //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                            //    ]).draw();
+
+
+                            newh = newh + '<tr>' +
+                                '<td>' + flag + (+i + 1) + '</td>' +
+                                '<td>' + data[i].MinuteCode + '</td>' +
+                                '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate + '</td>' +
+                                '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[0] + '</strong> </td>' +
+                                '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                '<td>' + data[i].Priority + '</td>' +
+                                '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[1] + '</strong> </td>' +
+                                '<td>' + htmlStatus + '</td>' +
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ' </tr >';
+
+                        } 
+                        $("#totm").text(totalm);
+                        $("#totm1").text(pend);//pendig
+                        $("#totm2").text(stock);//stock
+                        $("#totm3").text(pdone); //done
+
+                        $("#totm11").text(pend1);//pendig
+                        $("#totm22").text(stock1);//stock
+
+                        var tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+                       // document.getElementById("UserTable").style.display = "none";
+                       // $("#ProductTableID").append(newh);
+                        document.getElementById("divtohide").style.display = "none";
+
+                       datatablecreation();
+                    }
+                }
+
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+
+    }
+
+
+    function sp_getAllpurchasesMinute3() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllPurchasedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+
+                        //let result = text.includes("world");
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            if (data[i].Subject.includes("Purchase Done") && data[i].Statusofminute.includes("Approved")) {
+
+
+                                var html = '';
+                                if (data[i].Priority == 'Normal') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                //if (data[i].Priority == 'High') {
+                                //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                                //}
+                                if (data[i].Priority == 'High') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                var flag = '';
+                                var htmlStatus = '';
+                                if (data[i].Statusofminute == 'For Info') {
+                                    htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                } else if (data[i].Statusofminute == "Approved") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                                }
+                                else {
+                                    htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                                }
+
+
+                                var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                                var fwd = '';
+                                if (data[i].ForwardTo != null) {
+                                    fwd = data[i].ForwardTo
+                                }
+
+
+
+                                //$('#UserTable').DataTable(
+
+                                //    ).row.add([
+                                //    flag + (i + 1), data[i].MinuteCode,
+                                //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                //       data[i]. Initiatedby +'  ' +fwd,
+                                //        data[i].Priority, htmlPendingDays, htmlStatus
+                                //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                //    ]).draw();
+
+
+                                newh = newh + '<tr>' +
+                                    '<td>' + flag + (+i + 1) + '</td>' +
+                                    '<td>' + data[i].MinuteCode + '</td>' +
+                                    '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate + '</td>' +
+                                    '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[0] + '</strong> </td>' +
+                                    '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                    '<td>' + data[i].Priority + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[1] + '</strong> </td>' +
+                                    '<td>' + htmlStatus + '</td>' +
+                                    //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                    ' </tr >';
+
+                            }
+                        }
+
+                        var tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+
+                        $("#ProductTableID").append(newh);
+                        document.getElementById("divtohide").style.display = "block";
+
+                        datatablecreation();
+                    }
+                }
+
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllpurchasesMinute2() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllPurchasedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+
+                        //let result = text.includes("world");
+                        var ic = 0;
+                        for (var i = 0; i < data.length; i++) {
+
+                            if (data[i].Subject.includes("Stock Not Received") && data[i].Statusofminute.includes("Approved")) {
+
+                                ic = ic + 1;
+                                var html = '';
+                                if (data[i].Priority == 'Normal') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                //if (data[i].Priority == 'High') {
+                                //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                                //}
+                                if (data[i].Priority == 'High') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                var flag = '';
+                                var htmlStatus = '';
+                                if (data[i].Statusofminute == 'For Info') {
+                                    htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                } else if (data[i].Statusofminute.split('~')[0] == "Approved") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                                }
+                                else {
+                                    htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+
+
+                                }
+
+
+                                var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                                var fwd = '';
+                                if (data[i].ForwardTo != null) {
+                                    fwd = data[i].ForwardTo
+                                }
+
+
+
+                                //$('#UserTable').DataTable(
+
+                                //    ).row.add([
+                                //    flag + (i + 1), data[i].MinuteCode,
+                                //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                //       data[i]. Initiatedby +'  ' +fwd,
+                                //        data[i].Priority, htmlPendingDays, htmlStatus
+                                //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                //    ]).draw();
+
+
+                                newh = newh + '<tr>' +
+                                    '<td>' + flag + (+i + 1) + '</td>' +
+                                    '<td>' + data[i].MinuteCode + '</td>' +
+                                    '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate + '</td>' +
+                                    '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[0] + '</strong> </td>' +
+                                    '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                    '<td>' + data[i].Priority + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[1] + '</strong> </td>' +
+                                    '<td aligen="center">' + htmlStatus + '<button type="button" class="btn btn-default btn-xs" style="width: 100%;  background-color: transparent;border: none;">  ' + data[i].Statusofminute.split('~')[1] + ' </button> </td>' +
+                                     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                    ' </tr >';
+
+                            }
+                        }
+
+                        var tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+
+                        $("#ProductTableID").append(newh);
+                        document.getElementById("divtohide").style.display = "block";
+
+                        document.getElementById("toview").innerHTML = "Approved > PO Issued.Stock Not Received >>" + ic;
+                        datatablecreation();
+                    }
+                }
+
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function sp_getAllpurchasesMinute1() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllPurchasedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+
+                        //let result = text.includes("world");
+                        var ic = 0;
+                        for (var i = 0; i < data.length; i++) {
+
+                            if (data[i].Subject.includes("Purchase Pending") && data[i].Statusofminute.includes("Approved")) {
+
+                                
+                                ic = ic + 1;
+                                var html = '';
+                                if (data[i].Priority == 'Normal') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                //if (data[i].Priority == 'High') {
+                                //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                                //}
+                                if (data[i].Priority == 'High') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                var flag = '';
+                                var htmlStatus = '';
+                                if (data[i].Statusofminute == 'For Info') {
+                                    htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                } else if (data[i].Statusofminute.split('~')[0] == "Approved") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                                }
+                                else {
+                                    htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+
+
+                                }
+
+
+                                var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                                var fwd = '';
+                                if (data[i].ForwardTo != null) {
+                                    fwd = data[i].ForwardTo
+                                }
+
+
+
+                                //$('#UserTable').DataTable(
+
+                                //    ).row.add([
+                                //    flag + (i + 1), data[i].MinuteCode,
+                                //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                //       data[i]. Initiatedby +'  ' +fwd,
+                                //        data[i].Priority, htmlPendingDays, htmlStatus
+                                //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                //    ]).draw(); 
+                              
+
+
+                                newh = newh + '<tr>' +
+                                    '<td>' + flag + (+i + 1) + '</td>' +
+                                    '<td>' + data[i].MinuteCode + '</td>' +
+                                    '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate + '</td>' +
+                                    '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[0] + '</strong> </td>' +
+                                    '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                    '<td>' + data[i].Priority + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[1] + '</strong> </td>' +
+                                    '<td aligen="center">' + htmlStatus + '<button type="button" class="btn btn-default btn-xs" style="width: 100%;  background-color: transparent;border: none;">  ' + data[i].Statusofminute.split('~')[1] + ' </button> </td>' +
+                                    //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                    ' </tr >';
+
+                            }
+                        }
+
+                        var tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+
+                        $("#ProductTableID").append(newh);
+
+                     
+                        document.getElementById("divtohide").style.display = "block";
+                        document.getElementById("toview").innerHTML = "Approved > PO Not Issued >>"+ic;
+                        
+                       datatablecreation();
+                    }
+                }
+
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+    function sp_getAllpurchasesMinute21() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllPurchasedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+                        var ic = 0;
+                        //let result = text.includes("world");
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            if (data[i].Subject.includes("Stock Not Received") && data[i].Statusofminute.includes("Completed")) {
+
+                                ic = ic + 1;
+                                var html = '';
+                                if (data[i].Priority == 'Normal') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                //if (data[i].Priority == 'High') {
+                                //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                                //}
+                                if (data[i].Priority == 'High') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                var flag = '';
+                                var htmlStatus = '';
+                                if (data[i].Statusofminute == 'For Info') {
+                                    htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                } else if (data[i].Statusofminute.split('~')[0] == "Approved") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                                }
+                                else {
+                                    htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+
+
+                                }
+
+
+                                var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                                var fwd = '';
+                                if (data[i].ForwardTo != null) {
+                                    fwd = data[i].ForwardTo
+                                }
+
+
+
+                                //$('#UserTable').DataTable(
+
+                                //    ).row.add([
+                                //    flag + (i + 1), data[i].MinuteCode,
+                                //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                //       data[i]. Initiatedby +'  ' +fwd,
+                                //        data[i].Priority, htmlPendingDays, htmlStatus
+                                //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                //    ]).draw();
+
+
+                                newh = newh + '<tr>' +
+                                    '<td>' + flag + (+i + 1) + '</td>' +
+                                    '<td>' + data[i].MinuteCode + '</td>' +
+                                    '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate + '</td>' +
+                                    '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[0] + '</strong> </td>' +
+                                    '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                    '<td>' + data[i].Priority + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[1] + '</strong> </td>' +
+                                    '<td aligen="center">' + htmlStatus + '<button type="button" class="btn btn-default btn-xs" style="width: 100%;  background-color: transparent;border: none;">  ' + data[i].Statusofminute.split('~')[1] + ' </button> </td>' +
+                                    //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                    ' </tr >';
+
+                            }
+                        }
+
+                        var tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+
+                        $("#ProductTableID").append(newh);
+
+                        document.getElementById("divtohide").style.display = "block";
+                        document.getElementById("toview").innerHTML = "Completed > PO Issued.Stock Not Received >>"+ ic;
+                        datatablecreation();
+                    }
+                }
+
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function sp_getAllpurchasesMinute11() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllPurchasedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = ''; var newh = '';
+                        var ic = 0;
+                        //let result = text.includes("world");
+
+                        for (var i = 0; i < data.length; i++) {
+
+                            if (data[i].Subject.includes("Purchase Pending") && data[i].Statusofminute.includes("Completed")) {
+
+                                ic = ic + 1;
+                                var html = '';
+                                if (data[i].Priority == 'Normal') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                //if (data[i].Priority == 'High') {
+                                //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                                //}
+                                if (data[i].Priority == 'High') {
+                                    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                                }
+
+                                var flag = '';
+                                var htmlStatus = '';
+                                if (data[i].Statusofminute == 'For Info') {
+                                    htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                } else if (data[i].Statusofminute.split('~')[0] == "Approved") {
+
+                                    htmlStatus = ' <button type="button"   class="btn btn-success btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+                                    flag = '<span  data-toggle="tooltip" title="Approved" data-original-title="Approved"  class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;" ></span>'
+                                }
+                                else {
+                                    htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute.split('~')[0] + ' </button>'
+
+
+                                }
+
+
+                                var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                                var fwd = '';
+                                if (data[i].ForwardTo != null) {
+                                    fwd = data[i].ForwardTo
+                                }
+
+
+
+                                //$('#UserTable').DataTable(
+
+                                //    ).row.add([
+                                //    flag + (i + 1), data[i].MinuteCode,
+                                //     '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                //         data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                //       data[i]. Initiatedby +'  ' +fwd,
+                                //        data[i].Priority, htmlPendingDays, htmlStatus
+                                //     //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                //    ]).draw();
+
+
+                                newh = newh + '<tr>' +
+                                    '<td>' + flag + (+i + 1) + '</td>' +
+                                    '<td>' + data[i].MinuteCode + '</td>' +
+                                    '<td><span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate + '</td>' +
+                                    '<td>' + data[i].Subject.split('~')[0] + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[0] + '</strong> </td>' +
+                                    '<td>' + data[i].Initiatedby + '  ' + fwd + '</td>' +
+                                    '<td>' + data[i].Priority + '</td>' +
+                                    '<td> <strong>' + data[i].Subject.split('~')[1].split('^^')[1] + '</strong> </td>' +
+                                    '<td aligen="center">' + htmlStatus + '<button type="button" class="btn btn-default btn-xs" style="width: 100%;  background-color: transparent;border: none;">  ' + data[i].Statusofminute.split('~')[1] + ' </button> </td>' +
+
+                                    //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                    ' </tr >';
+
+                            }
+                        }
+
+                        var tab2 = $('#UserTable').DataTable();
+                        tab2.destroy();
+                        $("#ProductTableID").children().remove();
+
+                        $("#ProductTableID").append(newh);
+
+                        document.getElementById("divtohide").style.display = "block";
+                        document.getElementById("toview").innerHTML = "Completed> PO Not Issued >>"+ic;
+                        datatablecreation();
+                    }
+                }
+
+            },
+
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+    function sp_getAllCompletedMinute() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCompletedMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+
+                            var flag = '';
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else if (data[i].Statusofminute == "Completed") {
+
+                                htmlStatus = ' <button type="button"   class="btn btn-primary btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                                flag = '<span  data-toggle="tooltip" title="Completed" data-original-title="Completed"  class="fa fa-check fa-2x" aria-hidden="true" style="color:#0088cc;" ></span>'
+
+                            }
+
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+
+
+
+
+
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays   != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">  </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"> </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+                            }
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                               flag+(i + 1), data[i].MinuteCode,
+                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                   data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i].Initiatedby + '  ' + fwd,
+                                    data[i].Priority, htmlPendingDays, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCancelMinute() {
+        $('#loadingid').show();
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCancelMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+
+                            }
+
+
+                            var htmlPendingDays = '';
+
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large"></button></td>'
+
+
+
+
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                              '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                  data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + fwd,
+                                    data[i].Priority, htmlPendingDays, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllForInfoMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllForInfoMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+                            var fwd = '';
+                            if (data[i].ForwardTo != null) {
+                                fwd = data[i].ForwardTo
+                            }
+
+
+                            var htmlStatus = '';
+                            if (data[i].Statusofminute == 'For Info') {
+                                htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+                            }
+                            else {
+                                htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                  data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i].Initiatedby + '  ' + fwd,
+                                    data[i].Priority, htmlStatus
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllIONMinute() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllIONMinute",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                 '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                               data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html
+                                 //, ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;"> ION </button>', '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+    function ViewMinute(elment0) {
+
+
+        window.location.href = "/Eminute/Edit/" + elment0
+
+    }
+
+
+
+
+
+
+
+    function loadPendigminutes3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/loadPendingComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+
+                    console.log(Response)
+
+                    var data = Response;
+
+                    if (data != '') {
+
+                        $("#UserTable").DataTable().clear();
+
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            //    \''+post['itm_code']+'\'
+
+                            var splitedata = data[i].MinuteCode.split('-')
+                            ///        + splitedata[0] + ',' + splitedata[1] + ',' + splitedata[2]+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                              '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                html
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+                                ]).draw();
+
+                        }
+                    }
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function loadnewminutes3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/LoadNewComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                              '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                              data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                html
+                                //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllApprovedMinute3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllApprovedComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                               '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                  data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCompletedMinute3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCompletedComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                                '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                   data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function sp_getAllCancelMinute3() {
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllCancelComp",
+            data: Data,
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var html = '';
+                            if (data[i].Priority == 'Normal') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+                            //if (data[i].Priority == 'High') {
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+                            //}
+                            if (data[i].Priority == 'High') {
+                                html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1), data[i].MinuteCode,
+                           '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+                                    data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+                                   data[i]. Initiatedby +'  ' + data[i].ForwardTo,
+                                 html
+                                 //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                                ]).draw();
+
+                        }
+                    }
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+

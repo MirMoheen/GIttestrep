@@ -1,0 +1,345 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+
+
+
+@{
+    ViewBag.Title = "E-Minute Day Wise Pending List";
+}
+
+<style>
+    .redz {
+        background-color: #f1d0d0;
+    }
+</style>
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<br />
+<br />
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      Minute Guideline
+                </a>
+            </li>
+
+            @*<li><span>@ViewBag.Title</span></li>*@
+        </ol>
+
+        <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+       <h3><strong style="color:#137324;">E-Minute Day Wise Pending List</strong>  </h3>
+       
+       
+  
+        <h5><p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and high priority rows are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+
+        <table class="table table-bordered  mb-none  " id="UserTable">
+            <thead>
+                <tr  class="bg-primary">
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">EM-No</span></th>
+                    <th style="width:80px">Date </th>
+                
+                    <th style="width:80px">Department</th>
+                    <th>Subject </th>
+                    <th style="width:300px;">Forwarded Info </th>
+                    <th  style="width:60px;"><strong> Pending days</strong></th>
+
+                    <th style="width:80px">Priority </th>
+                    <th width="80px">Status</th>
+                    @*<th width="40px">View</th>*@
+                </tr>
+            </thead>
+            <tbody id="ProductTableID">
+
+
+                @{
+                    int counter = 1;
+
+                    foreach (var item in Model.listDayWise)
+                    {
+
+                                <tr>
+
+
+                                    @if (item.Statusofminute == "Approved" && item.IsReminder)
+                                    {
+
+
+                                        <td> <span data-toggle="tooltip" title="Approved" data-original-title="Approved" class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;"></span><strong> @counter </strong>  <span style="background-color:#ed9c28" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span></td>
+
+                                    }
+                                    else if (item.IsReminder)
+                                    {
+
+                                        <td>  <strong> @counter </strong>  <span style="background-color:#ed9c28" data-toggle="tooltip" title="Reminder" class="btn badge badge-danger">R</span></td>
+
+
+                                    }
+
+                                    else if (item.IsDiscuss)
+                                    {
+
+                                        <td>  <strong> @counter </strong>  <span style="background-color:#3e28ed" data-toggle="tooltip" title="Discuss" class="btn badge badge-danger">D</span></td>
+
+
+                                    }
+
+                                    else if (item.IsHold)
+                                    {
+
+                                        <td>  <strong> @counter </strong>  <span style="background-color:#A833FF" data-toggle="tooltip" title="Hold" class="btn badge badge-danger">H</span></td>
+
+
+                                    }
+                                    else if (item.Statusofminute == "Approved")
+                                    {
+
+                                        <td> <span data-toggle="tooltip" title="Approved" data-original-title="Approved" class="fa fa-check fa-2x" aria-hidden="true" style="color: darkgreen;"></span><strong> @counter </strong>  </td>
+
+
+                                    }
+                                    else
+                                    {
+                                        <td><strong> @counter</strong> </td>
+                                    }
+
+
+
+                                    <td>@item.MinuteCode</td>
+                                    <td> <span style="display:none">@item.MinuteDate.Split('/')[2] +@item.MinuteDate.Split('/')[1] + @item.MinuteDate.Split('/')[0] + '</span> @item.MinuteDate</td>
+                                    <td>@item.InitiatedDepartment</td>
+
+                                    @if (item.NoAttach > 0)
+                                    {
+
+
+                                    
+
+                                        var c = new HtmlString(item.Subject);
+
+
+                                        <td><strong>  @c  </strong>  <span style="background-color:red" data-toggle="tooltip" title="Attachment" class="btn badge badge-danger"> @item.NoAttach</span></td>
+
+                                    }
+                                    else
+
+                                    {
+
+                                        var c = new HtmlString(item.Subject);
+                                        <td><strong>  @c  </strong> </td>
+
+
+                                    }
+
+
+                                    <td>@item.Initiatedby - @item.ForwardTo</td>
+
+                                    @if (item.totalDays > 0)
+                                    {
+                                        <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">  @item.totalDays </button></td>
+
+                                    }
+                                    else
+
+                                    {
+                                        <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:large">  Today </button></td>
+
+
+                                    }
+
+                                    <td>@item.Priority</td>
+
+                                    @if (item.Statusofminute == "Approved")
+                                    {
+
+                                        <td><button type="button" class="btn btn-success btn-xs" style="width: 100%;"> @item.Statusofminute </button> </td>
+
+                                    }
+                                    else
+
+                                    {
+                                        <td><button type="button" class="btn btn-default btn-xs" style="width: 100%;"> @item.Statusofminute </button> </td>
+
+
+                                    }
+
+
+                                </tr>
+                        counter++;
+                    }
+
+
+                }
+
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+    $(document).ready(function () {
+        //$("#UserTable").on("click", "tr", function (e) {
+        //    console.log($('td:second', $(this).parents('tr')).text());
+        //});
+        $("#ProductTableID").on('click', 'tr', function (e) {
+            //console.log($(this).children().first().next().text());
+            if ($(this).children().first().next().text()!="") {
+                ViewMinute($(this).children().first().next().text());
+
+            }
+
+
+        });
+
+        //$("UserTables").delegate("tr.rows", "click", function () {
+        //    alert("Click!");
+        //});
+
+           
+        
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+
+        $("#UserTable").dataTable(
+             {
+                 "aoColumns": [{ "bSearchable": true }, { "bSearchable": true },
+
+
+                     { "bSearchable": true }, { "bSearchable": true }
+
+
+
+
+                     , { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }
+                    ],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 pageLength: 50,
+                 buttons: [],
+
+
+
+
+                 "createdRow": function (row, data, dataIndex) {
+
+                     if (data[7] == "High") {
+                         $(row).addClass('redz');
+
+                     }
+
+
+                 },
+                 columnDefs: [{ targets: 7, visible: false }],
+
+             })
+
+
+
+        @*var a = '@TempData["Dependancy"]'
+        if (a != "") {
+            $("#basicDendent").modal('show');
+        }*@
+    })
+
+
+ 
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+    
+
+    function ViewMinute(elment0) {
+
+
+      window.location.href = "/Eminute/pendminuteLoadEdit/" + elment0
+
+    }
+
+
+</script>
+
+
+
+
+
+

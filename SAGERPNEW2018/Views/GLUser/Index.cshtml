@@ -1,0 +1,374 @@
+﻿@model HRandPayrollSystemModel.DBModel.GLUser
+
+@{
+    ViewBag.Title = "Search User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2>User Information</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li><span>Setup</span></li>
+            <li><span>User Information</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All User Information Data</h2>
+    </header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped mb-none table-hover" id="UserTable">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Employee </th>
+                    <th>Group </th>
+                    <th align="center" width="80px">Discuss </th>
+
+                    <th align="center" width="80px">Reminder </th>
+
+
+                    <th align="center" width="80px">Is Hold </th>
+
+                    <th align="center" width="80px">Petty Cash </th>
+
+                    <th align="center" width="80px">Techical Person </th>
+                    <th align="center" width="80px">For Payment </th>
+                    <th align="center" width="80px">Is SMS </th>
+                    <th align="center" width="80px">Status </th>
+                    <th align="center" width="80px">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="ProductTableID">
+                @foreach (var item in Model.getAllUserdata(new SAGERPNEW2018.Models. SystemLogin().GetUser().ProjectIDs))
+                {
+                <tr>
+                    <td> @item.UserName </td>
+
+
+                    @{ var result = new HRandPayrollSystemModel.DBModel.tblEmployee().getAlldataByID(item.EmployeeID);}
+                    @if (result != null)
+                    {
+
+                        <td>    @result.EmployeeName</td>
+                    }
+                    else
+                    {
+
+                        <td>  N/A </td>
+                    }
+
+
+                    <td> @item.GroupTitle </td>
+
+
+                    @if (@item.IsDiscuss)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+                    }
+
+
+                    @if (@item.IsReminder)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+                    }
+
+
+                    @if (@item.IsHold)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+                    }
+
+
+                    @if (@item.IspettyCash)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+
+
+
+                    }
+
+
+                    @if (@item.IsTechicalPerson)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+
+
+
+                    }
+
+
+                    @if (@item.ForPayment)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+
+
+
+                    }
+
+                    @if (@item.AllowSendSMS)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success  btn-xs"> Yes</button> </td>
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger  btn-xs"> No</button> </td>
+
+
+
+                    }
+
+
+
+
+                    @if (@item.Active)
+                    {
+                        <td align="center">  <button type="button" class="btn btn-danger btn-xs"> InActive</button> </td>
+
+
+                    }
+                    else
+                    {
+                        <td align="center">  <button type="button" class="btn btn-success btn-xs"> Active</button> </td>
+
+
+
+
+                    }
+                    <td>
+                        @if (Convert.ToBoolean(Model.Isedit))
+                        {
+
+                            <a href="#basicEdit" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim" title="Edit" onclick="Edit(@item.Userid)">
+                                <i class="fa fa-pencil"></i>
+
+                            </a>
+                        }
+                        @if (Convert.ToBoolean(Model.Isdelete))
+                        {
+                            <a href="#basic" class="on-default edit-row mb-xs mt-xs mr-xs modal-with-zoom-anim" title="Delete" onclick="Del(@item.Userid)">
+                                <i class="glyphicon glyphicon-trash"></i>
+
+                            </a>
+                        }
+                        <a href="#" class="on-default edit-row" title="View" onclick="view(@item.Userid)">
+                            <i class="fa fa-table"></i>
+
+                        </a>
+                        @*<button class="btn btn-success btn-xs" onclick="view(@item["Voucherid"])"><span class="glyphicon glyphicon-blackboard"></span> View</button>*@
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+</section>
+
+
+<script>
+
+    $(document).ready(function () {
+        //$('#btnTriggerEdit').click();
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+            $("#UserTable").dataTable(
+               {
+                    "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false },{ "bSearchable": false }, { "bSearchable": false }, { "bSearchable": false }, { "bSearchable": true },
+                       { "bSearchable": false }],
+                   "bSort": true,
+                   pageLength: 20,
+                   dom: 'Bfrtip',
+                   buttons: [
+                              {
+                                  extend: 'copy',
+                                  text: '<span class="glyphicon glyphicon-floppy-disk"></span><span><strong> Copy</strong></span>',
+                                  className: 'btn btn-primary  btn-sm',
+
+                                  title: 'User Information',
+
+                                  exportOptions: {
+                                      columns: ':visible'
+                                  }
+
+                              },
+
+                            {
+                                extend: 'pdf',
+                                text: '  <span class="glyphicon glyphicon-file"></span><span> PDF</strong></span>',
+                                className: 'btn btn-primary  btn-sm',
+                                title: 'User Information',
+                                orientation: 'portrait',
+                                pageSize: 'A4',
+                                exportOptions: {
+                                    columns: ':visible'
+                                },
+
+                                customize: function (doc) {
+
+                                    doc.styles.title = {
+                                        color: 'red',
+                                        fontSize: '40',
+                                        // background: 'blue',
+                                        alignment: 'center'
+                                    }
+                                },
+
+
+
+                            },
+
+                             {
+
+                                 title: 'User Information',
+                                 text: '<span class="glyphicon glyphicon-th"></span><span><strong> Excel</strong></span>',
+                                 className: 'btn btn-primary  btn-sm',
+                                 orientation: 'portrait',
+                                 pageSize: 'A4',
+                                 extend: 'excel',
+                                 footer: true,
+                                 exportOptions: {
+                                     columns: ':visible'
+                                 }
+                             },
+
+
+                           {
+                               extend: 'csv',
+
+                               title: 'User Information',
+                               text: '<span class="	glyphicon glyphicon-list-alt"></span><span><strong> CSV</strong></span>',
+                               className: 'btn btn-primary  btn-sm',
+                               exportOptions: {
+                                   columns: ':visible'
+                               }
+
+                           },
+                         {
+                             extend: 'print',
+                             title: 'User Information',
+                             text: '<span class="glyphicon glyphicon-print"></span><span><strong> Print</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             exportOptions: { columns: ':visible' }
+
+                         },
+                         {
+
+                             extend: 'colvis',
+                             text: '<span class="glyphicon glyphicon-blackboard"></span><span><strong> Column visibility</strong></span>',
+                             className: 'btn btn-primary  btn-sm',
+
+                             //  'colvis'
+                         }
+
+                   ],
+                   columnDefs: [{ targets: -1, visible: true }]
+                   //paging: false
+               })
+            var a = '@TempData["Dependancy"]'
+            if (a != "") {
+                $("#basicDendent").modal('show');
+            }
+        })
+
+        function add() {
+            window.location.href = "/GLUser/create/"
+        }
+
+        var EditID = 0;
+        var DeleteID = 0;
+        function confirmPopupEdit()
+        {
+            window.location.href = "/GLUser/Edit/" + EditID + "|1"
+        }
+
+        function Edit(id) {
+            EditID=id
+        }
+
+        function confirmPopupDelete() {
+            window.location.href = "/GLUser/delete/" + DeleteID
+
+        }
+        function Del(id) {
+            DeleteID = id
+        }
+
+        function view(id) {
+            window.location.href = "/GLUser/Edit/" + id + "|0"
+
+        }
+
+</script>
+
+
+
+

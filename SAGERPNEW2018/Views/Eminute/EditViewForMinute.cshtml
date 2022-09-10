@@ -1,0 +1,1119 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblEminuteInfo
+@{
+    ViewBag.Title = "E-Minute";
+}
+
+@*@using (@Html.BeginForm("Save", "Eminute", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))*@
+    
+@*@using (@Html.BeginForm("UpdateMinute", "Eminute", FormMethod.Post, new { @id = "myform", enctype = "multipart/form-data" }))*@
+
+    
+@using(@Html.BeginForm("UpdateHtmlBox", "Eminute", FormMethod.Post, new
+{
+    @id = "myform",
+    enctype = "multipart/form-data" }))
+
+{
+
+    <style>
+        .newimg {
+        border: 1px solid #ddd;
+            border-radius: 4px;
+        padding: 5px;
+        width: 150px;
+        }
+
+    img:hover {
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+    </style>
+
+
+    @Html.Partial("_minuteGudie")
+
+
+
+
+    <div class="modal fade" id="Favmodel" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Add Favourite  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Please Enter Favourite Text</h3>
+                    <div class="input-single">
+                        <input type="text" id="txtfavtxt" name="txtfavtxt" class="form-control" />
+                        @*<textarea id="note-textarea" class="form-control" placeholder="Create a new note by typing or using voice recognition." rows="6"></textarea>*@
+                    </div>
+                    <br />
+                    <table class="table table-bordered table-striped mb-none table-hover" id="tblfav">
+                        <thead>
+                            <tr>
+                                <th>Favourite  </th>
+
+                                <th align="center" width="50px">Actions</th>
+                            </tr>
+                        </thead>
+               
+                    </table>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                    <button type="button" id="btnSavefav" name="btnSavefav" data-dismiss="modal" class="btn btn-success">Save</button>
+
+
+                    @*<button type="button" id="pause-record-btn" onclick="assignDatatextToHtmlbox()" class="btn btn-default" data-dismiss="modal">Close</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="basicEdit" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Speech to text  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Speech to text service</h3>
+                    <div class="input-single">
+                        <textarea id="note-textarea" class="form-control" placeholder="Create a new note by typing or using voice recognition." rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" id="pause-record-btn" >Stop</button>*@
+
+                    <button type="button" id="pause-record-btn" onclick="assignDatatextToHtmlbox()" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="TechnicalPid" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:902px;margin-left:-143px;">
+                <div class="modal-header " style="background:#820606;">
+                    <button type="button" class="close" style="opacity: 1;" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:white"> E-Minute Techincal Person Comment  </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Techincal Person Comment</h3>
+                    <div class="input-single">
+                        <div id="divtechbox" style="height:auto; overflow: auto;background-color:#deeef3;padding: 10px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" id="pause-record-btn" >Stop</button>*@
+
+                    <button type="button" id="techclose" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Animation -->
+    @*<div id="basicEdit" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+            <section class="panel">
+                <header class="panel-heading">
+                    <h2 class="panel-title">Are you sure?</h2>
+                </header>
+                <div class="panel-body">
+                    <div class="modal-wrapper">
+                        <div class="modal-icon">
+                            <i class="fa fa-question-circle"></i>
+                        </div>
+                        <div class="modal-text">
+                            <p>Are you sure that you want to edit this record?</p>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-default modal-dismiss">Cancel</button>
+                            <button type="button" class="btn btn-primary " onclick="confirmPopupEdit()">Confirm</button>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </div>*@
+
+
+
+    <input type="hidden" id="DocDetailRowNo" />
+    <input type="hidden" id="BudgetDetailRowNo" />
+
+    <input type="hidden" id="htmlboxValue" name="htmlboxValue" value="@Model.HtmlBox" />
+
+
+
+
+    if (Model.MinuteID > 0)
+    {
+        if (Model.fldStatus != null)
+        {
+            ViewBag.Title = ViewBag.Title + " ( Read Only )";
+        }
+        else
+        {
+            ViewBag.Title = ViewBag.Title + " ( New )";
+        }
+
+    }
+    else
+    {
+
+        ViewBag.Title = ViewBag.Title + " Create";
+
+    }
+
+    <header class="page-header">
+        <h2>@ViewBag.Title</h2>
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+
+
+                <li>
+                    <a href="~/home/index">
+                        <i class="fa fa-home" style="color:chartreuse;"></i>
+
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//create">
+                        Create E-Minute      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a style="color:chartreuse" href="/Eminute//AllMinutesReport">
+                        Report      @*<i class="fa fa-home"></i>*@
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                        <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                    </a>
+                </li>
+
+
+
+            </ol>
+            <a class="sidebar-right-toggle" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+    @Html.HiddenFor(model => model.MinuteID)
+    @Html.HiddenFor(model => model.MinuteCode)
+    @Html.HiddenFor(model => model.EntryID)
+    @Html.HiddenFor(model => model.ModifiedID)
+    @*@Html.HiddenFor(model => model.BillClear)
+    @Html.HiddenFor(model => model.ReminderMinute)
+    @Html.HiddenFor(model => model.Minuteopen)
+    @Html.HiddenFor(model => model.HoldMinute)*@
+
+    <input type="hidden" id="techpesonReq" name="techpesonReq" value="@Model.IsTech.ToString()" />
+
+
+
+
+
+
+
+
+    <input type="hidden" id="minuteStatusPre" name="minuteStatusPre" value="@Model.Status" />
+
+
+    <input type="hidden" id="divdata" name="divdata" value="@Model.HtmlBox" />
+
+
+    <br />
+    <br />
+
+    <br />
+    <div class="panel">
+
+        <!-- start: page -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <section class="panel">
+
+                    @*<header class="panel-heading">
+                            <div class="panel-actions">
+                                <a href="#" class="fa fa-caret-down"></a>
+                                <a href="#" class="fa fa-times"></a>
+                            </div>
+                            <h2 class="panel-title">EmployeeType Info</h2>
+                            <p class="panel-subtitle">
+                                Form control for input EmployeeType data .
+                            </p>
+                        </header>*@
+                    <div class="panel-body">
+                        <label class="">   <span><strong style="color:red">Note:</strong> <strong> For recommendations and updates please contact to IT department.</strong>  </span> </label>
+
+                        <a class="sidebar-right-toggle" style="float:right;" href="~/Eminute/ViewList/@Session["MinuteList"]"><i class="fa fa-chevron-left"></i><strong> BACK</strong> </a>
+                        <div class="tabs tabs-primary">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#ItemsInfo" data-toggle="tab"><i class="fa fa-user"></i> Minute Sheet</a>
+                                </li>
+                                @*<li>
+                                    <a href="#ItemsMinuteDoc" data-toggle="tab"><i class="fa fa-building-o"></i> Attach File  <span style="background-color:red" class="badge badge-danger"> @ViewData["NumberAttachment"] </span></a>
+                                </li>
+
+
+                                <li>
+                                    <a href="#ItemsFix" data-toggle="tab"><i class="fa fa-box"></i> Fixed Asset List</a>
+                                </li>
+                                @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment) || Convert.ToBoolean(Model.IsBudget))
+                                {
+                                    <li>
+                                        <a href="#BudgetInfo" data-toggle="tab"><i class="fa fa-box"></i> Budget Info</a>
+                                    </li>
+                                }*@
+
+
+
+                            </ul>
+                            <div class="tab-content">
+                                <div id="ItemsInfo" class="tab-pane active ">
+                                    <br />
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> EM No :</strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.MinuteCode, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+
+                                        <label class="col-sm-1 control-label"><strong> Date :</strong> </label>
+                                        <div class="col-sm-2">
+                                            @Html.TextBoxFor(model => model.MinuteDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        <label class="col-sm-1 control-label"><strong>Location:</strong> </label>
+                                        <div class="col-sm-2 ">
+                                            @Html.TextBoxFor(model => model.LocationProject, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong> Initiating Department: </strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.TextBoxFor(model => model.InitiatedDepartment, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+
+
+                                        <label class="col-sm-1 control-label" style="padding-right: 0px;"><strong> Initiated by: </strong> </label>
+                                        <div class="col-sm-5">
+                                            @Html.TextBoxFor(model => model.Initiatedby, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                        </div>
+                                        @*<label class="col-sm-1 control-label"> </label>*@
+                                        @*<label class="col-sm-1 control-label">Date : </label>
+                                            <div class="col-sm-3 ">
+                                                @Html.TextBoxFor(model => model.MinuteDate, new { @class = "form-control uneditable-input ", required = "required", @readonly = "readonly" })
+                                            </div>*@
+                                    </div>
+
+                                    <div class="form-group">
+
+
+
+
+                                        <label class="col-sm-2 control-label"><strong> Type:</strong>  </label>
+                                        <div class="col-sm-3 ">
+
+
+                                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                @Html.DropDownListFor(model => model.Type, Model.LoadMinuteTypeEdit(), new { @class = "form-control selectpicker " })
+
+                                            }
+                                            else
+                                            {
+
+                                                @Html.DropDownListFor(model => model.Type, Model.LoadMinuteType(new SAGERPNEW2018.Models.SystemLogin().GetUser().DepartmentID).OrderBy(x => x.Text), new { @class = "form-control selectpicker ", @onchange = "loadSubtype()" })
+
+                                            }
+
+
+
+                                        </div>
+
+
+
+                                        <label class="col-sm-1 control-label"><strong>  Sub Type: </strong> </label>
+                                        <div class="col-sm-5 ">
+                                            @Html.DropDownListFor(model => model.Subtype, Model.loadSubtype(Convert.ToInt32(Model.Type)).OrderBy(x => x.Text), new { @class = "form-control selectpicker ", @onchange = "loadFixedAssitListTypeSubWise() " })
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="form-group">
+
+
+
+
+                                    </div>
+
+                                    @*<div class="form-group">
+                                            <label class="col-sm-2 control-label">Sub Type: </label>
+                                            <div class="col-sm-4 ">
+                                                @Html.DropDownListFor(model => model.Subtype,Model. loadSubtype(), new { @class = "form-control  ", required = "required" })
+                                            </div>
+                                            <label class="col-sm-1 control-label"> </label>
+
+                                            <label class="col-sm-2 control-label">Estimated Cost: </label>
+                                            <div class="col-sm-3 ">
+                                                @Html.TextBoxFor(model => model.estimatedcost, new { @class = "form-control number  ", required = "required" })
+                                            </div>
+
+                                        </div>*@
+
+
+                                    <div class="form-group">
+
+                                        <label class="col-sm-2 control-label"><strong>  Priority: </strong> </label>
+                                        <div class="col-sm-3 ">
+                                            @Html.DropDownListFor(model => model.Priority, Model.LoadPriority(), new { @class = "form-control selectpicker " })
+                                        </div>
+
+
+                                        @if (Model.BudgetAmount != null && Model.BudgetAmount > 0)
+                                        {
+                                            <label class="col-sm-1 control-label"><strong>Total:</strong> </label>
+                                            <div class="col-sm-3 ">
+
+                                                <input type="text" id="BudgetAmountabc" name="BudgetAmountabc" readonly="readonly" style="font-weight:800;font-size: x-large;color:red" class="form-control number" value="@string.Format("{0:N0}", Model.totalPayableamt)" />
+
+
+                                                @if (!Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                                                {
+
+                                                    <input type="hidden" id="BudgetAmount" name="BudgetAmount" readonly="readonly" style="font-weight:800;font-size: x-large;color:red" class="form-control number" value="@Model.BudgetAmount" />
+
+
+                                                }
+
+
+                                            </div>
+                                        }
+
+                                        @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                        {
+                                            if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IspettyCash))
+                                            {
+
+
+                                                <div class="col-sm-2">
+                                                    @Html.CheckBoxFor(model => model.IspettyCash, new { })
+                                                    <label class="" for="IspettyCash">IsPettyCash</label>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.HiddenFor(model => model.IspettyCash)
+
+                                                if (Model.IspettyCash)
+                                                {
+                                                    <label class="col-sm-1 control-label"> </label>
+                                                    <div class="col-sm-2">
+                                                        <label class=""> <strong style="font-weight: 800;color: red;">Petty Cash Applied</strong></label>
+                                                    </div>
+                                                }
+
+                                            }
+                                        }
+
+
+                                        @*@if ((Convert.ToBoolean(ViewData["Editmode"]) && !Convert.ToBoolean(ViewData["forinfo"])))//&& !Convert.ToBoolean(ViewData["minInit"]))
+                                            {
+                                                if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment) && string.IsNullOrWhiteSpace(Model.fldStatus))
+                                                {
+
+                                                    <div class="col-sm-2">
+                                                        @Html.CheckBoxFor(model => model.IsBudget, new { })
+                                                        <label class="" for="IsBudget">For Payment</label>
+                                                    </div>
+
+                                                }
+                                            }
+
+                                            @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().ForPayment))
+                                                {
+
+
+                                                    <div class="col-sm-2">
+                                                        @Html.CheckBoxFor(model => model.IsBudget, new { })
+                                                        <label class="" for="IsBudget">For Payment</label>
+                                                    </div>
+                                                }
+                                            }*@
+
+
+
+
+                                    </div>
+
+
+      
+
+
+                                    <div class="form-group">
+
+                                        <label class="col-sm-2 control-label"><strong> Subject:</strong><span class="required">*</span> </label>
+                                        <div class="col-sm-9 ">
+                                            @Html.TextBoxFor(model => model.Subject, new { @class = "form-control  ", required = "required", @spellcheck = "true" })
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label"><strong>Details:</strong>  </label>
+                                        <div class="col-sm-9 ">
+
+                                            <label class=""><span class="required"><strong> Short Keys:</strong> ( Select All = Ctrl+A )  ( Copy = Ctrl+C )       ( Cut = Ctrl+X )        ( Paste = Ctrl+V )</span> </label>
+                                     
+                                            @if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                <a id="start-record-btn" data-toggle="tooltip" title="" data-original-title="Speak Here" href="#" onclick="StartMic()" style="color:green;margin-top:5px;float:right;display:block">
+                                                    <i class="fa fa-microphone fa-2x"></i>
+                                                </a>
+                                            }
+
+
+
+                                            @if (Convert.ToBoolean(ViewData["Editmode"]))
+                                            {
+                                                @*<div id="divhtmlbox" style="height:500px; overflow: auto;background-color:#deeef3;padding: 10px;"></div>*@
+                                                @Html.TextAreaFor(model => model.HtmlBox, new { @id = "HtmlBox", @name = "HtmlBox", @class = "form-control uneditable-input " })
+
+                                            }
+                                            else
+                                            {
+                                                @Html.TextAreaFor(model => model.HtmlBox, new { @id = "HtmlBox", @name = "HtmlBox", @class = "form-control uneditable-input " })
+
+
+                                            }
+
+
+
+
+                                        </div>
+                                    </div>
+
+                                    @{
+
+                                        if (!Convert.ToBoolean(ViewData["Editmode"]))
+                                        {<br />
+
+                                        <div class="form-group">
+
+
+                                            <label class="col-sm-2 control-label"><strong> Forward to:</strong> </label>
+                                            <div class="col-sm-3 ">
+
+                                                @*, @onchange = "loadCC()"*@
+                                                @Html.DropDownListFor(model => model.ForwardTo, Model.LoadForwardDesginationWise(new SAGERPNEW2018.Models.SystemLogin().GetUser().Userid, Convert.ToInt32(new SAGERPNEW2018.Models.SystemLogin().GetUser().ProjectIDs)), new { @class = "form-control selectpicker ", @onchange = "loadCC()" })
+                                            </div>
+
+                                        
+
+                                        </div>
+                                        }
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["Editmode"]) && string.IsNullOrWhiteSpace(Model.fldStatus))
+                                    {
+
+                                        <div class="form-group">
+
+                                            <label class="col-sm-2 control-label"> </label>
+                                            <div class="col-sm-9 ">
+
+                                                <label><span class="required">Note: Send back option forward back minute to sender.  </span></label>
+
+
+                                            </div>
+
+                                        </div>
+                                    }
+                                    <br />
+ 
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12"></div>
+                            </div>
+                        </div>
+                        <footer class="panel-footer">
+                            <div class="row">
+                                <div class="col-sm-9">
+
+                                    <button type="button" onclick="postform()" class="btn btn-primary">Update <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+
+                                    @if (string.IsNullOrWhiteSpace(Model.fldStatus))
+                                    {
+
+                                        @*<button type="button" onclick="postform()" class="btn btn-primary">Process <i class="fa fa-paper-plane" aria-hidden="true"></i></button>*@
+                                    }
+                                    @if (Convert.ToBoolean(Model.IsPrint))
+                                    {
+                                        @*<button type="button" onclick="print()" class="btn btn-success">Preview <i class="fa fa-search" aria-hidden="true"></i></button>*@
+                                    }
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsReminder) && Convert.ToBoolean(ViewData["Editmode"]) && !string.IsNullOrWhiteSpace(Model.fldStatus) && (Model.Status == 1 || Model.Status == 0))
+                                    {
+                                        @*<button type="button" id="reminder" class="btn btn-warning" onclick="ReminderMinte()">Reminder <i class="fa fa-bell" aria-hidden="true"></i></button>*@
+
+                                    }
+
+
+                                    @if (Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsHold) && Convert.ToBoolean(ViewData["Editmode"]) && (!Model.IsHold) && (Model.Status == 1 || Model.Status == 0))
+                                    {
+                                        @*<button type="button" id="btnHold" class="btn btn-danger" onclick="setholdMinte()">Eminute Hold  <i class="fa fa-stop" aria-hidden="true"></i></button>*@
+
+                                    }
+
+
+
+
+                                
+
+                                    <button type="button" id="cancelll" class="btn btn-default" onclick="location.href = '../../Eminute/ViewList/@Session["MinuteList"]'">Cancel <i class="fa fa-times" aria-hidden="true"></i></button>
+
+                                    </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+                                                                                    }
+
+<script src="~/assets/vendor/jquery-cookie/jquery.cookie.js"></script>
+<script src="~/ckeditor/ckeditor.js"></script>
+<script src="~/Scripts/AutoType/script.js"></script>
+
+<script>
+    //   / ['mode', 'document', 'doctools', 'clipboard', 'undo', 'find', 'selection', 'spellchecker', 'editing', 'forms', 'basicstyles', 'cleanup', 'list', 'indent', 'blocks', 'styles', 'align', 'bidi', 'paragraph', 'links', 'insert', 'colors', 'tools', 'others']
+
+    if ('@ViewData["Editmode"]' == 'True') {
+
+        CKEDITOR.replace('HtmlBox', {
+            toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+            uiColor: '#c5fff0',
+            height: 500,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            allowedContent: true,
+            //EnterMode:"BR",
+            //ShiftEnterMode:"DIV",
+            removeButtons: 'Save,Print,Preview,Find,About',
+
+
+        });
+    }
+
+    if ('@ViewData["Editmode"]' == 'True' && '@Model.fldStatus' == '') {
+
+        CKEDITOR.replace('Remarks', {
+            toolbarGroups: [{ name: 'document', groups: ['clipboard', 'selection', 'spellchecker', 'basicstyles', 'blocks', 'align', 'insert'] }],
+
+            toolbar: 'Custom',
+            //toolbar_Custom: [],
+
+            // uiColor: '#c5fff0',
+            height: 200,
+            removePlugins: 'elementspath',
+            resize_enabled: false,
+            allowedContent: true,
+
+            //EnterMode:"BR",
+            //ShiftEnterMode:"DIV",
+            removeButtons: 'Save,Print,Preview,Find,About',
+
+        });
+
+    }
+
+   
+
+    function postform() {
+        var ReturnValue = true
+        debugger
+        if ('@ViewData["Editmode"]' == 'True') {
+
+            if ($("#Type").val() == "0") {
+                $('#Type').selectpicker('setStyle', 'btn-danger');
+                $('#Type').selectpicker('refresh');
+
+                bootbox.alert("Please Select Type.")
+
+                ReturnValue = false;
+            }
+
+
+            var desc = CKEDITOR.instances['HtmlBox'].getData();
+
+
+            if (desc.length <= 13) {
+
+                bootbox.alert("Detail limit greater then 5 character")
+                ReturnValue = false;
+
+            }
+
+
+
+
+        }
+
+        if ($("#ForwardTo").val() == "0")
+        {
+            $('#ForwardTo').selectpicker('setStyle', 'btn-danger');
+            $('#ForwardTo').selectpicker('refresh');
+
+            bootbox.alert("Please Select forward to.")
+
+            ReturnValue = false;
+        }
+
+
+
+
+
+
+
+        $("#myform").validate({ ignore: ".ui-tabs-hide :input" });
+
+
+        if (ReturnValue) {
+
+            bootbox.confirm("Are you sure to update this minute!", function (result) {
+
+                if (result) {
+                    $("#myform").submit();
+
+                }
+
+
+            });
+        }
+
+    }
+
+
+
+    function saveautodata() {
+        var editor_data = CKEDITOR.instances['HtmlBox'].getData();
+        var url = '@Url.Action("SaveAuto", "Eminute")';
+        var data = { Html: editor_data, Remarks: $('#Remarks').val() };
+        $.post(url, data, function (result) {
+
+        });
+
+    }
+
+
+
+    $(document).ready(function () {
+        // $('#Myform :input').select()
+
+        $('#SelectInfo').selectpicker('val', [@Model.ForInfo]);
+        //    $("#Priority").attr('disabled', 'disabled');
+        $("#Type").attr('disabled', 'disabled');
+        $("#Subtype").attr('disabled', 'disabled');
+
+
+        $("#estimatedcostRange").attr('disabled', 'disabled');
+
+        $("#Subtype").attr('disabled', 'disabled');
+        $("#Priority").attr('disabled', 'disabled');
+
+        $('#Subject').prop('readonly', false);
+       
+      
+
+        $('#HtmlBox').prop('readonly', false);
+        $('#estimatedcost').prop('readonly', true);
+
+        var htmlboxdata = $('#divdata').val();
+        $('#divhtmlbox').html(htmlboxdata.replace('&lt', '<').replace('&gt', '>'));
+
+        $('#divhtmlbox').scrollTop($('#divhtmlbox')[0].scrollHeight);
+
+
+
+        if ('@Convert.ToBoolean(new SAGERPNEW2018.Models.SystemLogin().GetUser().IsDeleteAT)' == 'True') {
+            $(".userDellbtn").show();
+        }
+
+        if ('@ViewData["Editmode"]' == 'False') {
+
+            var x = setInterval(function () {
+                saveautodata();
+
+            }, 10000)
+            $('#myModal').modal();
+
+            var d = new Date();
+            $('#FinancialYear').val(d.getFullYear());
+
+        }
+
+        if ('@ViewData["Editmode"]' == 'True') {
+
+            debugger
+
+            $('#SelectInfo').selectpicker('val', [@Model.ForInfo]);
+            //    $("#Priority").attr('disabled', 'disabled');
+            //$("#Type").attr('disabled', 'disabled');
+            $("#estimatedcostRange").attr('disabled', 'disabled');
+
+            $("#Subtype").attr('disabled', 'disabled');
+            $("#Priority").attr('disabled', 'disabled');
+
+            $('#Subject').prop('readonly', false);
+            $("#Type").attr('disabled', 'disabled');
+
+            $('#HtmlBox').prop('readonly', false);
+            $('#estimatedcost').prop('readonly', true);
+
+            var htmlboxdata = $('#divdata').val();
+            $('#divhtmlbox').html(htmlboxdata.replace('&lt', '<').replace('&gt', '>'));
+
+            $('#divhtmlbox').scrollTop($('#divhtmlbox')[0].scrollHeight);
+
+        }
+
+
+
+       // calcultebudget();
+
+        $("#MinuteDate").datepicker({
+            format: "dd-M-yyyy",
+            autoclose: true,
+            todayBtn: true,
+
+
+        });
+
+
+
+        var DateOfB = '@Model.MinuteDate.Value.Day' + '/' + '@Model.MinuteDate.Value.Month' + '/' + '@Model.MinuteDate.Value.Year';
+
+
+
+
+        $('#MinuteDate').datepicker('setDate', DateOfB);
+
+
+        $('.selectpicker').selectpicker('refresh');
+        if ('@Model.IsView' == 'True') {
+            $('#myform :input').attr('disabled', true);
+            $('#cancelll').attr('disabled', false);
+
+        }
+
+    });
+
+
+
+
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+
+    function loadCC() {
+
+        var Data = { id: $('#ForwardTo').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/loadFarwardUser1",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var SelectInfo = $('#SelectInfo');
+                    SelectInfo.empty();
+
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            SelectInfo.append(datafil);
+                        });
+
+
+                    SelectInfo.selectpicker('refresh');
+
+                    SelectInfo.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+    }
+
+
+
+
+    function print() {
+
+
+        var currentdate = new Date();
+        var datetime = "Now: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth() + 1) + "/"
+                    + currentdate.getFullYear() + " Time: "
+                    + currentdate.getHours() + ":"
+                    + currentdate.getMinutes() + ":"
+                    + currentdate.getSeconds();
+
+
+        var origin = window.location.origin;
+
+
+      //  let popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+        let popupWin = window.open('', '_blank', 'height=500, width=500');
+
+        popupWin.document.open();
+
+
+        var minuteStatusPre = '';
+        if ($('#minuteStatusPre').val() == "0") {
+            minuteStatusPre = 'New';
+
+        }
+        else if ($('#minuteStatusPre').val() == "1") {
+            minuteStatusPre = 'Pending';
+
+        }
+        else if ($('#minuteStatusPre').val() == "2") {
+            minuteStatusPre = 'Approved';
+
+        }
+        else if ($('#minuteStatusPre').val() == "3") {
+            minuteStatusPre = 'Completed';
+
+        }
+        else if ($('#minuteStatusPre').val() == "4") {
+            minuteStatusPre = 'Disapproved';
+
+        }
+
+
+        var status = '';
+        if ($('#BillClear').val() != 'False') {
+            status = 'CLEARED';
+        }
+        else {
+            status = '';
+        }
+
+        var form = '';
+        form += '<!DOCTYPE html>';
+        form += '<html><head><title>Minute -Al-Shifa Trust Eye Hospitals</title><link rel="stylesheet" media="print" href="print.css" />';
+        form += '<link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class ="img-rounded" type="image/x-icon"> <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon">';
+        form += '<style> #background { position: absolute; z-index: 0; background: white;display: block;min-height: 50%; min-width: 50%;color: yellow; } #content {position: absolute;z-index: 1;}#bg-text { color: lightgrey;font-size: 120px; transform: rotate(300deg);-webkit-transform: rotate(300deg);margin-top:340px; } </style>   </head>';
+        form += '<body   style="overflow-y:auto;font-family: sans-serif;font-size: 12px">    <button id="btnid" onclick="printDiv()">Print</button><div id="background">    <p id="bg-text">' + status + '  </p> </div>    <div id="content"> <div id="divName"><table><tbody> ';
+        form += '<tr><td><img src="' + origin + '/AppFiles/Images/logo.png" height="100" width="100"></td>'
+        form += '<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td>'
+        form += '<td><center  > <h2>Al-Shifa Trust Eye Hospital</h2></center><br /><h3 style="margin-top:-24px;">E-Minute Sheet</h3></td>'
+        form += '</tr></tbody></table> <hr />';
+        form += '<table> <tbody> <tr>';
+        form += '<td><label><strong>EM No: </strong></label></td>';
+        form += '<td><label ><strong style="color: red;"> ' + $('#MinuteCode').val() + '  </strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Location: </strong></label></td>';
+        form += '<td><label><strong >' + $('#LocationProject').val() + '</strong></la.combel></td> </tr><tr>';
+        form += '<td><label><strong>Department: </strong></label></td><td><label><strong >' + $('#InitiatedDepartment').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Date: </strong></label></td><td><label><strong> ' + $('#MinuteDate').val() + '</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Initiated By: </strong></label></td><td><label><strong>' + $('#Initiatedby').val() + '</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Priority: </strong></label></td><td><label><strong>' + $("#Priority option:selected").text(); +'</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Type: </strong></label></td><td><label><strong>' + $("#Type option:selected").text().toUpperCase(); +'</strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong>Status:</strong></label></td><td><label><strong  style="font-weight: 1000;font-size: medium;" >' + minuteStatusPre + '</strong></label></td>';
+        form += '</tr><tr><td><label><strong>Subject/Title: </strong></label></td><td><label><strong>' + $('#Subject').val() + ' </strong></label></td>';
+        form += '<td style="padding-left: 100px;"><label><strong></strong></label></td><td><label><strong></strong></label></td>';
+        form += ' </tr><tr><td colspan="4"><hr /></td><td></td><td></td><td></td><td></td></tr>';
+        form += '<tr><td colspan="4">' + $('#htmlboxValue').val() + '</td><td></td><td ></td><td></td></tr></tbody>';
+        form += '</table><hr /><p>Printed By ' + $('#Activeuser').text() + ' ' + datetime + ' </p>  <br/><span id="abcid" style="color:Green;font-weight:bold;"><span style="font-size:large;">P</span>lease consider the environment before printing this document. <span style="font-size:large;">D</span>on\'t print this unless you really need to.</span> </div></div>';
+
+        // form += '<button onclick="printDiv()" >Print</button>';
+        //form += '<script>function printDiv() {var printContents = document.getElementById("divName").innerHTML;var originalContents = document.body.innerHTML; document.body.innerHTML = printContents; window.print();document.body.innerHTML = originalContents; }'
+        form += '<script>function printDiv() { var x = document.getElementById("btnid"); x.style.display = "none"; var printContents = document.getElementById("content").innerHTML; var originalContents = document.body.innerHTML; document.body.innerHTML = printContents; document.body.innerHTML = originalContents; window.print("","", "height=500, width=500"); }'
+
+        form += '</'
+        form += 'script>'
+        form += '</body></html>'
+
+        console.log(form)
+
+        popupWin.document.write(form);
+        popupWin.document.close();
+
+
+
+
+        //      onload = "window.print();window.close()"
+        //  <!DOCTYPE html>
+        //  <html>
+        //    <head>
+        //      <title>Minute -Al-Shifa Trust Eye Hospitals</title>
+        //      <meta http-equiv=content-type content="text/html; charset=UTF-8">
+        //        <link rel="shortcut icon" href="~/AppFiles/Images/logo2.png" class="img-rounded" type="image/x-icon">
+        //        <link rel="icon" href="~/AppFiles/Images/logo2.png" type="image/x-icon">
+        //     </head>
+        //<body onload="window.print();window.close()">
+
+
+
+
+        //</body>
+        //  </html>
+
+    }
+
+
+
+
+    function loadSubtype() {
+
+
+        if ($('#Type').val() == "0") {
+
+            var TypeSub = $('#Subtype');
+            TypeSub.empty();
+            TypeSub.append(new Option("--Please Select--", "0"));
+            TypeSub.selectpicker('refresh');
+
+            return;
+        }
+
+
+        var Data = { type: $('#Type').val() }
+
+        $.ajax({
+            async: false,
+            url: "/Eminute/getSubtype",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+
+                    var TypeSub = $('#Subtype');
+                    TypeSub.empty();
+                    TypeSub.append(new Option("--Please Select--", "0"));
+                    $.each(data,
+                        function (index, item) {
+                            var datafil = new Option(item.Text, item.Value);
+                            TypeSub.append(datafil);
+                        });
+
+                    TypeSub.selectpicker('refresh');
+
+                    TypeSub.selectpicker({
+                        liveSearch: true,
+                        size: 10,
+
+                        // width: 'auto',
+                        container: "body"
+                    });
+
+
+
+                }
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+        loadFixedAssitListTypeWise();
+
+    }
+
+
+
+
+
+    $("#Subject").keypress(function (event) {
+        var inputValue = event.charCode;
+        //alert(inputValue);
+        if (!((inputValue > 64 && inputValue < 91) || (inputValue > 96 && inputValue < 123) || (inputValue == 32) || (inputValue > 47 && inputValue < 58) || (inputValue == 32) || (inputValue == 0))) {
+            event.preventDefault();
+        }
+    });
+
+
+
+    window.onload = function () {
+        var oTextbox = new AutoSuggestControl("Subject");
+
+    }
+
+
+
+
+
+    function StartMic() {
+
+        $('#basicEdit').modal();
+    }
+
+
+    function assignDatatextToHtmlbox() {
+
+      var textdata=  $('#note-textarea').val();
+
+
+      if ('@ViewData["Editmode"]' == 'False') {
+          CKEDITOR.instances['HtmlBox'].setData('<p> ' + textdata + '</p>')
+      } else {
+
+          CKEDITOR.instances['Remarks'].setData('<p> ' + textdata + '</p>')
+
+      }
+
+    }
+
+
+</script>

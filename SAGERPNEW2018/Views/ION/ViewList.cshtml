@@ -1,0 +1,655 @@
+﻿@model HRandPayrollSystemModel.DBModel.tblIonInfo
+
+@{
+    ViewBag.Title = "ION List";
+}
+
+<style>
+    .redz {
+        background-color: #adf0f0;
+    }
+</style>
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+</style>
+
+
+<div id="modals"></div>
+
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute//create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                @*<a style="color: chartreuse;" href="/Eminute/CreateION">
+                        Create ION      @*<i class="fa fa-home"></i>
+                    </a>*@
+                <a style="color: chartreuse;" href="/ION/Create1">
+                    Create ION      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+
+            @*<li>
+                    <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                       Report      <i class="fa fa-home"></i>
+                    </a>
+                </li>*@
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+            @*<li><span>Setup</span></li>
+                <li><span>@ViewBag.Title</span></li>*@
+        </ol>
+
+        @*<a class="sidebar-right-toggle" data-open="sidebar-right" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>*@
+        <a class="sidebar-right-toggle" href="~/Home/Index"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        @*<h3><strong style="color:#137324;">ION </strong>  </h3>*@
+        @if (TempData["St"].ToString() == "5")
+        {
+            <h3><strong style="color:#137324;">For-Info </strong>  </h3>
+        }
+        @if (TempData["St"].ToString() == "6")
+        {
+            <h3><strong style="color:#137324;">ION </strong>  </h3>
+        }
+
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        @*<div class="modal fade" id="DescModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">�</button>
+                            <h3 class="modal-title">Job Requirements & Description</h3>
+
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="text-center">Hello. Below is the descripton and/or requirements for hiring consideration.</h5>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default " data-dismiss="modal">Apply!</button>
+                            <button type="button" class="btn btn-primary">Close</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>*@
+
+        @if (TempData["St"].ToString() == "5")
+        {
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-8 col-md-9 col-md-offset-0" style="top:10px">
+                    <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row.  </strong> </p></h5>
+                </div>
+            </div>
+        }
+        @if (TempData["St"].ToString() == "6")
+        {
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-8 col-md-9 col-md-offset-0" style="top:10px">
+                    <h5> <p><strong style="color:red">Note :</strong> <strong>To preview, click on your desired row and unread ION are shown in <button class="btn btn-ms redz"></button> </strong> color. </p></h5>
+                </div>
+            </div>
+        }
+
+
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        @*addTable Here*@
+        @*<table class="table table-bordered table-striped modal-block-primary table-hover" id="UserTable">*@
+
+        <div id="logidof"></div>
+        <table class="table table-bordered  mb-none  table-hover " id="UserTable">
+            <thead>
+                <tr class="bg-primary">
+                    <th style="width:40px">S/N</th>
+                    <th style="width:80px"> <span id="na">ION-No</span></th>
+                    <th>Subject </th>
+                    <th style="width:230px">Initiated By  </th>
+                    <th class="sorting" style="width:80px">Date </th>
+                    <th width="70px">Days</th>
+                    @*<th width="70px">Status</th>*@
+
+
+                </tr>
+            </thead>
+            <tbody id="ProductTableID"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+        $("#ProductTableID").on('click', 'tr', function (e) {
+
+            ViewION($(this).children().first().next().text());
+
+
+
+        });
+
+
+        //$('#UserTable tr').hover(function () {
+        //    alert('sadasd')
+        //});
+
+
+
+
+
+        //$('#ProductTableID tr').hover(function () {
+
+
+
+        // ViewhoverList($(this).children().first().next().text());
+
+        //});
+
+        //$("#ProductTableID").on('hover', 'tr', function (e) {
+
+        //    alert('asdasd')
+
+
+
+
+        //});
+
+
+
+
+
+
+
+        var a = '@TempData["St"]'
+
+        if (a == "6") {
+            $('#headtitle').text("List of ION")
+            sp_getAllION();
+        }
+        if (a == "5") {
+            $('#headtitle').text("List of Readed ION")
+            sp_getAllReadedION();
+        }
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        $("#UserTable").dataTable(
+            {
+                "aoColumns": [{ "bSearchable": false }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+                     { "bSearchable": true }],
+                 "bSort": true,
+
+                 dom: 'Bfrtip',
+                 buttons: [],
+                 "pageLength": 50,
+                 "paging": true,
+
+                 "createdRow": function (row, data, dataIndex) {
+
+                     if (data[5] == 1) {
+                         $(row).addClass('redz');
+
+                     }
+
+
+                 },
+                columnDefs: [{ targets: 5, visible: false }],
+                 //columnDefs: [{ targets: -1, visible: true }],
+
+
+             })
+
+
+        @*var a = '@TempData["Dependancy"]'
+        if (a != "") {
+            $("#basicDendent").modal('show');
+        }*@
+    })
+
+
+
+    function sp_getAllION() {
+
+        $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllION",
+            data: Data,
+
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            //var html = '';
+                            //if (data[i].Priority == 'Normal')
+                            //{
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;">  ' + data[i].Priority + ' </button>'
+                            //}
+
+                            //if (data[i].Priority == 'Height')
+                            //{
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" >  ' + data[i].Priority + ' </button>'
+                            //}
+                            //if (data[i].Priority == 'Very Height')
+                            //{
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  ' + data[i].Priority + ' </button>'
+                            //}
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small">Today</button></td>'
+
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                    data[i].IonCode,
+                                    '<strong>' + data[i].Subject + '</strong>',
+                                    data[i].InitiatedDepartment,
+                                 data[i].IonDate,
+
+
+                                 //  data[i].Displayfornew,
+                                     htmlPendingDays
+                                    //,
+                                //' <button type="button" id="StatusCheck"  class="btn btn-primary  btn-xs" style="width: 100%;">ION</button>'
+
+
+                                ]).draw();
+
+                            //$('#UserTable').DataTable(
+
+                            // ).row.add([
+                            //  (i + 1),
+                            //  data[i].IonCode,
+                            //  data[i].IonDate,
+                            //    data[i].InitiatedDepartment,
+                            //    data[i].Subject,
+                            //    data[i].Displayfornew,
+
+                            // ' <button type="button" id="StatusCheck"  class="btn btn-danger  btn-xs" style="width: 100%;">Unread</button>',
+                            // '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                            // ]).draw();
+
+
+
+                        }
+
+
+                    }
+
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+
+            },
+
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+
+
+    function sp_getAllReadedION() {
+
+        $('#loadingid').show();
+
+        var Data = { id: 0 }
+        $.ajax({
+            async: true,
+            url: "/Home/sp_getAllReadedION",
+            data: Data,
+
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+                        $("#UserTable").DataTable().clear();
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+
+                            //var html = '';
+                            //if (data[i].Priority == 'Normal')
+                            //{
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;">  ' + data[i].Priority + ' </button>'
+                            //}
+
+                            //if (data[i].Priority == 'Height')
+                            //{
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" >  ' + data[i].Priority + ' </button>'
+                            //}
+                            //if (data[i].Priority == 'Very Height')
+                            //{
+                            //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  ' + data[i].Priority + ' </button>'
+                            //}
+                            var htmlPendingDays = '';
+                            if (data[i].totalDays > 0 && data[i].totalDays != 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Days' + ' </button></td>'
+                            }
+                            else if (data[i].totalDays == 1) {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small"> ' + data[i].totalDays + ' ' + 'Day' + ' </button></td>'
+                            }
+                            else {
+                                htmlPendingDays = ' <td align="center"><button type="button" class="btn btn-danger  btn-xs" style="font-size:small">Today</button></td>'
+
+
+                            }
+
+
+                            $('#UserTable').DataTable(
+
+                                ).row.add([
+                                 (i + 1),
+                                    data[i].IonCode,
+                                    '<strong>' + data[i].Subject + '</strong>',
+                                    data[i].InitiatedDepartment,
+                                 data[i].IonDate,
+
+
+                               //    data[i].Displayfornew,
+                                    htmlPendingDays
+
+                                //    ,
+                                //' <button type="button" id="StatusCheck"  class="btn btn-primary  btn-xs" style="width: 100%;">ION</button>'
+
+
+                                ]).draw();
+
+                            //$('#UserTable').DataTable(
+
+                            // ).row.add([
+                            //  (i + 1),
+                            //  data[i].IonCode,
+                            //  data[i].IonDate,
+                            //    data[i].InitiatedDepartment,
+                            //    data[i].Subject,
+                            //    data[i].Displayfornew,
+
+                            // ' <button type="button" id="StatusCheck"  class="btn btn-danger  btn-xs" style="width: 100%;">Unread</button>',
+                            // '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+                            // ]).draw();
+
+
+
+                        }
+
+
+                    }
+
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+
+            },
+
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+    }
+
+
+    //function sp_getAllForInfoMinute() {
+
+    //    //FOR INFO
+    //    // WHERE STATUS ==0
+    //    var Data = { id: 0 }
+    //    $.ajax({
+    //        async: true,
+    //        url: "/Home/sp_getAllReadedION",
+    //        data: Data,
+    //        success: function (Response) {
+
+    //            if (Response != null) {
+    //                console.log(Response)
+    //                var data = Response;
+    //                if (data != '') {
+    //                    $("#UserTable").DataTable().clear();
+    //                    var html = '';
+    //                    for (var i = 0; i < data.length; i++) {
+
+    //                        var html = '';
+    //                        if (data[i].Priority == 'Normal') {
+    //                            html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;"> <strong>  ' + data[i].Priority + ' </strong> </button>'
+    //                        }
+
+    //                        //if (data[i].Priority == 'High') {
+    //                        //    html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #de5bc8;border-color: #de5bc8" > <strong>  ' + data[i].Priority + ' </strong></button>'
+    //                        //}
+    //                        if (data[i].Priority == 'High') {
+    //                            html = ' <button type="button" class="btn btn-info btn-xs" style="width: 100%;background-color: #ff0101;border-color: #ff0101" >  <strong>  ' + data[i].Priority + ' </strong> </button>'
+    //                        }
+    //                        var fwd = '';
+    //                        if (data[i].ForwardTo != null) {
+    //                            fwd = data[i].ForwardTo
+    //                        }
+
+
+    //                        var htmlStatus = '';
+    //                        if (data[i].Statusofminute == 'For Info') {
+    //                            htmlStatus = ' <button type="button"  style="BACKGROUND-COLOR:#ed9c28" class="btn btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+    //                        }
+    //                        else {
+    //                            htmlStatus = ' <button type="button"   class="btn btn-default btn-xs" style="width: 100%;">  ' + data[i].Statusofminute + ' </button>'
+
+    //                        }
+
+
+    //                        $('#UserTable').DataTable(
+
+    //                            ).row.add([
+    //                             (i + 1), data[i].MinuteCode,
+    //                            '<span style="display:none" >' + data[i].MinuteDate.split('/')[2] + data[i].MinuteDate.split('/')[1] + data[i].MinuteDate.split('/')[0] + '</span>' + data[i].MinuteDate,
+    //                              data[i].Subject.split('~')[0], '<strong>' + data[i].Subject.split('~')[1] + '</strong>',
+    //                               data[i].Initiatedby + '  ' + fwd,
+    //                                data[i].Priority, htmlStatus
+    //                             //, '<button  class="btn btn-success btn-xs" title="View" onclick="ViewMinute( \'' + data[i].MinuteCode + '\')">  View  </button>'
+
+    //                            ]).draw();
+
+    //                    }
+    //                }
+    //            }
+    //        },
+    //        error: function () {
+    //            ReturnValue = false;
+
+    //        }
+    //    })
+
+
+
+    //}
+    function ViewION(elment0) {
+
+
+        window.location.href = "/ION/Edit/" + elment0
+
+    }
+
+
+    function ViewhoverList(element) {
+
+
+
+
+
+        var Data = { Ionid: element }
+        $.ajax({
+            async: true,
+            url: "/ION/loadgetviewedEmployee",
+            data: Data,
+
+            success: function (Response) {
+
+                if (Response != null) {
+                    console.log(Response)
+                    var data = Response;
+                    if (data != '') {
+
+                        console.log(  data) ;
+                        $("#spanidviewd_" + element).attr('title', data);
+
+                    }
+
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+
+            },
+
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+
+
+
+      //  window.location.href = "/ION/Edit/" + elment0
+
+    }
+
+</script>
+
+
+
+
+
+

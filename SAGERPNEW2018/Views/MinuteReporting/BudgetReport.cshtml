@@ -1,0 +1,761 @@
+﻿@model SAGERPNEW2018.Models.ReportModel
+@{
+    ViewBag.Title = "Budget Head Wise Summary";
+}
+
+<style>
+    .no-js #loader {
+        display: block;
+    }
+
+    .js #loader {
+        display: block;
+        position: absolute;
+        left: 100px;
+        top: 0;
+    }
+
+    .se-pre-con {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        opacity: 70%;
+        background: url(../../AppFiles/Preloader_1.gif) center no-repeat #fff;
+    }
+
+    .body {
+        font-size: 14px;
+    }
+
+
+
+
+
+
+
+</style>
+
+
+
+@Html.Partial("_minuteGudie")
+<div id="modals"></div>
+<header class="page-header">
+    <h2 id="headtitle">@ViewBag.Title</h2>
+    <div class="right-wrapper pull-right">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="~/home/index">
+                    <i class="fa fa-home" style="color:chartreuse;"></i>
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/create">
+                    Create E-Minute      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a style="color: chartreuse;" href="/Eminute/AllMinutesReport">
+                    Report      @*<i class="fa fa-home"></i>*@
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showInstruction()" style="color: chartreuse;">
+                    <i class="fa fa-info-circle"></i>      E-Minute Guideline
+                </a>
+            </li>
+        </ol>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+    </div>
+</header>
+<!-- start: page -->
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+        </div>
+        <h2 class="panel-title">All @ViewBag.Title Data</h2>
+    </header>
+    <div class="panel-body">
+        @if (TempData["ActionMessage"] != null)
+        {
+            if (Convert.ToBoolean(TempData["ActionMessage"]))
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> Record Save Successfully .
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Record Save Error .
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <h3>Budget Head Summary (2021-2022)</h3>
+        <div class="form-group" style="display:none">
+      
+            <div class="col-sm-2 " style="padding: 5px;">
+                <strong>Project</strong>
+                <select class="form-control selectpicker" id="projectID" name="projectID" style="font-size: small;padding: 1px;" onchange="loadDepartment()">
+                    @{
+                        var Project = new HRandPayrollSystemModel.DBModel.tblEmployee().loadProject().ToList();
+                        @*<option value="0" name="">--All--</option>*@
+                    foreach (var item in Project)
+                    {
+
+                        <option value="@item.Value" name="">@item.Text</option>
+
+
+
+                    }
+
+
+                    }
+
+                </select>
+            </div>
+
+           
+
+            <div class="col-sm-2 " style="padding: 5px;">
+                <strong>Budget Head Wise Summary</strong>
+                <select class="form-control selectpicker" id="BudgetHeadID" name="BudgetHeadID" style="font-size: small;padding: 1px;" onchange="loadSubHead()">
+                    @{
+                        var headlist = new HRandPayrollSystemModel.InventryModel.tbl_Head().gethead().OrderBy(x => x.Text);
+                        <option value="0" name="">--All--</option>
+                        foreach (var item in headlist)
+                        {
+
+                            <option value="@item.Value" name="">@item.Text</option>
+
+
+
+                        }
+
+
+                    }
+
+                </select>
+            </div>
+
+            <div class="col-sm-2 " style="padding: 5px;">
+                <strong>Sub Head</strong>
+                <select class="form-control selectpicker" id="BudgetSubID" name="BudgetSubID" style="font-size: small;padding: 1px;">
+                    <option value="0" name="">--All--</option>
+                </select>
+            </div>
+
+
+            <a type="button" class="btn btn-success btn-sm" style="margin-top:28px" onclick="loadBudgetSummery()"> View Report </a>
+            @* <button type="button" class="btn btn-info btn-sm" style="width: 100%;height: 148px;"></button>*@
+
+        </div>
+        <div id="loadingid" style="display:none" class="se-pre-con"></div>
+        <div class="row" style="display:none">
+            <div class="col-sm-6">
+                <div class="mb-md">
+                    @if (Model.IsNew)
+                    {
+                        <button type="button" id="Add" onclick="add()" class="btn btn-primary"> <i class="fa fa-plus"></i> Add New</button>
+                        @* <button type="button" id="cancelll" onclick="window.history.back()" class="btn btn-primary">Cancel</button>*@
+                    }
+                </div>
+            </div>
+        </div>
+        @*addTable Here*@
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered mb-none table-hover" id="UserTable">
+                    <thead>
+                        <tr class="bg-primary">
+                            <th width="500px"> @*<span style="background-color:red" class="badge badge-danger" id="countof"> </span><br />*@Heads</th>
+
+                            <th   style="text-align:right" width="200px">Budget Provision</th>
+                            <th  style="text-align:right" width="200px">Budget Expense</th>
+                            <th style="text-align:center" width="200px">Percentage</th>
+
+
+                        </tr>
+
+                    </thead>
+                    <tbody id="fixBodyID"></tbody>
+                </table>
+
+            </div>
+        </div>
+      
+    </div>
+</section>
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+
+
+        $("#modals").load('/CustomClasses/IndexModaling.html')
+
+        //$("#UserTable").dataTable(
+        //     {
+        //         "aoColumns": [{ "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true }, { "bSearchable": true },
+        //             { "bSearchable": false }],
+        //         "bSort": true,
+
+        //         dom: 'Bfrtip',
+        //         buttons: [],
+        //         columnDefs: [{ targets: -1, visible: true }]
+
+        //     })
+    })
+
+    loadBudgetSummery()
+
+
+
+
+
+    function showInstruction() {
+
+
+        $('#myModal').modal();
+    }
+
+
+
+
+
+
+    function loadBudgetSummery() {
+        $('#loadingid').show();
+        var dataset = '';
+
+        var Data = { project: $('#projectID').val(), headid: $('#BudgetHeadID').val(), subheadid: $('#BudgetSubID').val() }
+
+        $.ajax({
+            async: false,
+            url: "/MinuteReporting/LoadBudgetData",
+            data: Data,
+            success: function (data) {
+
+                if (data != null) {
+                    debugger
+
+                    console.log(data)
+                    dataset = data
+
+
+                    const arr1 = data.filter(d => d.ProjectID == 1);
+                    var budgetsumpriject1 = 0;
+                    var budgetsumprijectex1 = 0;
+    
+                    var budgetsumprijectPercent1 = 0;
+
+
+
+                    for (var p = 0; p < arr1.length; p++) {
+
+                        budgetsumpriject1 += arr1[p].TotalBudget
+                        budgetsumprijectex1 += arr1[p].TotalExpense
+                    }
+                    budgetsumprijectPercent1 = (parseFloat(budgetsumprijectex1) / parseFloat(budgetsumpriject1)) * 100
+
+
+                    const arr2 = data.filter(d => d.ProjectID == 2);
+                    var budgetsumpriject2 = 0;
+                    var budgetsumprijectex2 = 0;
+        
+                    var budgetsumprijectPercent2 = 0;
+
+                    for (var p = 0; p < arr2.length; p++) {
+
+                        budgetsumpriject2 += arr2[p].TotalBudget
+                        budgetsumprijectex2 += arr2[p].TotalExpense
+                    }
+                    budgetsumprijectPercent2 = (parseFloat(budgetsumprijectex2) / parseFloat(budgetsumpriject2)) * 100
+
+
+                    const arr3 = data.filter(d => d.ProjectID == 3);
+                    var budgetsumpriject3 = 0;
+                    var budgetsumprijectex3 = 0;
+                    var budgetsumprijectPercent3 = 0;
+
+                    for (var p = 0; p < arr3.length; p++) {
+
+                        budgetsumpriject3 += arr3[p].TotalBudget
+                        budgetsumprijectex3 += arr3[p].TotalExpense
+                    }
+                    budgetsumprijectPercent3 = (parseFloat(budgetsumprijectex3) / parseFloat(budgetsumpriject3)) * 100
+
+
+
+                    
+
+                    const arr4 = data.filter(d => d.ProjectID == 4);
+                    var budgetsumpriject4 = 0;
+                    var budgetsumprijectex4 = 0;
+                    var budgetsumprijectPercent4 = 0;
+
+                    for (var p = 0; p < arr4.length; p++) {
+
+                        budgetsumpriject4 += arr4[p].TotalBudget
+                        budgetsumprijectex4 += arr4[p].TotalExpense
+                    }
+                    budgetsumprijectPercent4 = (parseFloat(budgetsumprijectex4) / parseFloat(budgetsumpriject4)) * 100
+
+                  
+                    const arr5 = data.filter(d => d.ProjectID == 5);
+                    var budgetsumpriject5 = 0;
+                    var budgetsumprijectex5 = 0;
+                    var budgetsumprijectPercent5 = 0;
+
+                    for (var p = 0; p < arr5.length; p++) {
+
+                        budgetsumpriject5 += arr5[p].TotalBudget
+                        budgetsumprijectex5 += arr5[p].TotalExpense
+                    }
+                    budgetsumprijectPercent5 = (parseFloat(budgetsumprijectex5) / parseFloat(budgetsumpriject5)) * 100
+
+
+                    const arr6 = data.filter(d => d.ProjectID == 6);
+                    var budgetsumpriject6 = 0;
+                    var budgetsumprijectex6 = 0;
+                    var budgetsumprijectPercent6 = 0;
+
+                    for (var p = 0; p < arr6.length; p++) {
+
+                        budgetsumpriject6 += arr6[p].TotalBudget
+                        budgetsumprijectex6 += arr6[p].TotalExpense
+                    }
+                    budgetsumprijectPercent6 = (parseFloat(budgetsumprijectex6) / parseFloat(budgetsumpriject6)) * 100
+
+
+                    const arr7 = data.filter(d => d.ProjectID == 7);
+                    var budgetsumpriject7 = 0;
+                    var budgetsumprijectex7 = 0;
+                    var budgetsumprijectPercent7 = 0;
+
+                    for (var p = 0; p < arr7.length; p++) {
+
+                        budgetsumpriject7 += arr7[p].TotalBudget
+                        budgetsumprijectex7 += arr7[p].TotalExpense
+                    }
+                    budgetsumprijectPercent7 = (parseFloat(budgetsumprijectex7) / parseFloat(budgetsumpriject7)) * 100
+
+
+                    const arr8 = data.filter(d => d.ProjectID == 8);
+                    var budgetsumpriject8 = 0;
+                    var budgetsumprijectex8 = 0;
+                    var budgetsumprijectPercent8 = 0;
+
+                    for (var p = 0; p < arr8.length; p++) {
+
+                        budgetsumpriject8 += arr8[p].TotalBudget
+                        budgetsumprijectex8 += arr8[p].TotalExpense
+                    }
+                    budgetsumprijectPercent8 = (parseFloat(budgetsumprijectex8) / parseFloat(budgetsumpriject8)) * 100
+
+
+                    const arr9 = data.filter(d => d.ProjectID == 9);
+                    var budgetsumpriject9 = 0;
+                    var budgetsumprijectex9 = 0;
+                    var budgetsumprijectPercent9 = 0;
+
+                    for (var p = 0; p < arr9.length; p++) {
+
+                        budgetsumpriject9 += arr9[p].TotalBudget
+                        budgetsumprijectex9 += arr9[p].TotalExpense
+                    }
+                    budgetsumprijectPercent9 = (parseFloat(budgetsumprijectex9) / parseFloat(budgetsumpriject9)) * 100
+
+
+                    const arr10 = data.filter(d => d.ProjectID == 10);
+                    var budgetsumpriject10 = 0;
+                    var budgetsumprijectex10 = 0;
+                    var budgetsumprijectPercent10 = 0;
+
+                    for (var p = 0; p < arr10.length; p++) {
+
+                        budgetsumpriject10 += arr10[p].TotalBudget
+                        budgetsumprijectex10 += arr10[p].TotalExpense
+                    }
+
+                    budgetsumprijectPercent10 = (parseFloat(budgetsumprijectex10) / parseFloat(budgetsumpriject10)) * 100
+                        
+
+
+
+                    var Projectcount = 0;
+
+                    var headcount = 0;
+                    var counter = 0;
+                    var b = 1;
+                    var head = "";
+                    var html = '';
+                    var SubHeadName = "";
+                    var Description = "";
+                    var budgetsumpriject = 0;
+                    var budgetsumprijectex = 0;
+                    var budgetsumprijectPercent = 0;
+
+                    
+
+
+                    for (var i = 0; i < data.length; i++) {
+
+
+            
+                        
+                        
+               
+
+                        if (Description == "") {
+
+                            
+
+
+                            if (data[i].ProjectID == "1") {
+                                budgetsumpriject = budgetsumpriject1.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex1.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent1
+
+                            }
+                            if (data[i].ProjectID == "2") {
+                                budgetsumpriject = budgetsumpriject2.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex2.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent2
+
+                            }
+
+                            if (data[i].ProjectID == "3") {
+                                budgetsumpriject = budgetsumpriject3.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex3.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent3
+
+                            }
+                            if (data[i].ProjectID == "4") {
+                                budgetsumpriject = budgetsumpriject4.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex4.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent4
+
+                            }
+
+                            if (data[i].ProjectID == "5") {
+                                budgetsumpriject = budgetsumpriject5.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex5.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent5
+
+                            }
+                            if (data[i].ProjectID == "6") {
+                                budgetsumpriject = budgetsumpriject6.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex6.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent6
+
+                            }
+
+                            if (data[i].ProjectID == "7") {
+
+                                budgetsumpriject = budgetsumpriject7.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex7.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent7
+
+                            }
+                            if (data[i].ProjectID == "8") {
+
+                                budgetsumpriject = budgetsumpriject8.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex8.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent8
+
+                            }
+
+                            if (data[i].ProjectID == "9") {
+
+                                budgetsumpriject = budgetsumpriject9.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex9.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent9
+
+                            }
+                            if (data[i].ProjectID == "10") {
+
+                                budgetsumpriject = budgetsumpriject10.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex10.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent10
+
+                            }
+
+
+                            html += '<tr  data-toggle="collapse" style="background-color:lightskyblue;"><td data-target=".collapseContentP_' + Projectcount + '" data-toggle="collapse" data-group-id="grandparent"  data-role="expander" ><strong>  '
+                                  + data[i].Description.toUpperCase() + '</strong></td> <td align="right"  ><strong> '
+                                  + budgetsumpriject + '</strong></td><td align="right" ><strong> '
+                                  + budgetsumprijectex + '</strong></td><td > '
+                                  + ' <div class="col-md-12" style="height:1px;" > <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow="' + budgetsumprijectPercent.toFixed(2) + '" aria-valuemin="0" aria-valuemax="100" style="width:' + budgetsumprijectPercent.toFixed(2) + '%">' + budgetsumprijectPercent.toFixed(2) + ' % </div></div></div> </td> </tr>'
+
+                            Projectcount++;
+                          
+
+                        }
+                        else if (Description.toLowerCase() != data[i].Description.toLowerCase()) {
+
+                            if (data[i].ProjectID == "1") {
+                                budgetsumpriject = budgetsumpriject1.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex1.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent1
+
+                            }
+                            if (data[i].ProjectID == "2") {
+                                budgetsumpriject = budgetsumpriject2.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex2.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent2
+
+                            }
+
+                            if (data[i].ProjectID == "3") {
+                                budgetsumpriject = budgetsumpriject3.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex3.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent3
+
+                            }
+                            if (data[i].ProjectID == "4") {
+                                budgetsumpriject = budgetsumpriject4.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex4.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent4
+
+                            }
+
+                            if (data[i].ProjectID == "5") {
+                                budgetsumpriject = budgetsumpriject5.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex5.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent5
+
+                            }
+                            if (data[i].ProjectID == "6") {
+                                budgetsumpriject = budgetsumpriject6.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex6.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent6
+
+                            }
+
+                            if (data[i].ProjectID == "7") {
+
+                                budgetsumpriject = budgetsumpriject7.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex7.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent7
+
+                            }
+                            if (data[i].ProjectID == "8") {
+
+                                budgetsumpriject = budgetsumpriject8.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex8.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent8
+
+                            }
+
+                            if (data[i].ProjectID == "9") {
+
+                                budgetsumpriject = budgetsumpriject9.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex9.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent9
+
+                            }
+                            if (data[i].ProjectID == "10") {
+
+                                budgetsumpriject = budgetsumpriject10.toLocaleString()
+                                budgetsumprijectex = budgetsumprijectex10.toLocaleString()
+                                budgetsumprijectPercent = budgetsumprijectPercent10
+
+                            }
+
+                            html += '<tr  data-toggle="collapse" style="background-color:lightskyblue;"><td data-target=".collapseContentP_' + Projectcount + '" data-toggle="collapse" data-group-id="grandparent"  data-role="expander" ><strong> '
+                                     + data[i].Description.toUpperCase() + '</strong></td> <td align="right"><strong> '
+                                     + budgetsumpriject + '</strong></td><td align="right"><strong> '
+                                     + budgetsumprijectex + '</strong></td><td > '
+                                     + ' <div class="col-md-12" style="height:1px;" > <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow="' + budgetsumprijectPercent.toFixed(2) + '" aria-valuemin="0" aria-valuemax="100" style="width:' + budgetsumprijectPercent.toFixed(2) + '%">' + budgetsumprijectPercent.toFixed(2) + ' % </div></div></div> </td> </tr>'
+                            Projectcount++;
+                            b = 1;
+                           
+                        }
+                        
+
+                        if (head == "") {
+                            html += '<tr  class="collapse collapseContentP_' + (Projectcount - 1) + '" aria-expanded="true"    data-toggle="collapse" style="background-color:bisque;" > <input type="hidden" id="rowid_' + headcount + '"  value=' + data[i].HeadID + ' />  <td data-target=".collapseContent_' + headcount + '" data-toggle="collapse" data-group-id="grandparent"  data-role="expander"><strong>'
+                                  + ' <span id="haedname_' + headcount + '">' + data[i].head.toUpperCase() + '</span> </strong></td><td align="right"><strong>'
+
+                              + '<span id="TotalheadBudge_' + headcount + '"></span></strong></td><td align="right"><strong>'
+                              + '<span id="TotalheadBudgetex_' + headcount + '"></span></strong></td><td ><strong>'
+                              + '<span id="TotalPercentage_' + headcount + '" ></span></strong>    </td> </tr>'
+                            headcount++;
+
+
+                        }
+                        else if (head.toLowerCase() != data[i].head.toLowerCase()) {
+
+                            html += '<tr class="collapse collapseContentP_' + (Projectcount - 1) + '" aria-expanded="true"    data-toggle="collapse" style="background-color:bisque;" > <input type="hidden" id="rowid_' + headcount + '"  value=' + data[i].HeadID + ' />  <td data-target=".collapseContent_' + headcount + '" data-toggle="collapse" data-group-id="grandparent"  data-role="expander"><strong>'
+                                 + ' <span id="haedname_' + headcount + '">' + data[i].head.toUpperCase() + '</span> </strong></td><td align="right" ><strong>'
+
+                             + '<span id="TotalheadBudge_' + headcount + '"></span></strong></td><td align="right"><strong>'
+                             + '<span id="TotalheadBudgetex_' + headcount + '"></span></strong></td><td ><strong>'
+                             + '<span id="TotalPercentage_' + headcount + '" ></span></strong>    </td> </tr>'
+                            headcount++;
+                        }
+
+                        Description = data[i].Description;
+
+
+                        head = data[i].head;
+
+                        if (SubHeadName == "") {
+                            html += '<tr class="collapse collapseContent_' + (headcount - 1) + '" aria-expanded="true" style="background-color: lightgreen;"> <input type="hidden" id="Subrowid_' + i + '"  value=' + data[i].HeadID + ' /> <td><strong> '
+                                 + data[i].SubHeadName.toUpperCase() + '</strong></td> <td align="right"><strong>'
+                                 + ' <span id="SubTotalheadBudge_' + i + '">' + data[i].TotalBudget.toLocaleString() + '</span>  </strong></td><td align="right"><strong>'
+                                + ' <span id="SubTotalheadBudgeex_' + i + '">' + data[i].TotalExpense.toLocaleString() + '</span>    </strong></td><td>'
+                                + '<div class="col-md-12" style="height:1px;" > <div  class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow="' + data[i].Percentage.toFixed(2) + '" aria-valuemin="0" aria-valuemax="100" style="width:' + data[i].Percentage.toFixed(2) + '%">' + data[i].Percentage.toFixed(2) + ' % </div></div></div></td></tr>'
+
+                           
+
+                        }
+                        else if (SubHeadName.toLowerCase() != data[i].SubHeadName.toLowerCase()) {
+                            html += '<tr class="collapse collapseContent_' + (headcount - 1) + '" aria-expanded="true" style="background-color: lightgreen;"> <input type="hidden" id="Subrowid_' + i + '"  value=' + data[i].HeadID + ' /> <td><strong> '
+                                  + data[i].SubHeadName.toUpperCase() + '</strong></td> <td align="right"><strong>'
+                                  + ' <span id="SubTotalheadBudge_' + i + '">' + data[i].TotalBudget.toLocaleString() + '</span>  </strong></td><td align="right"><strong>'
+                                 + ' <span id="SubTotalheadBudgeex_' + i + '">' + data[i].TotalExpense.toLocaleString() + '</span>    </strong></td><td>'
+                                 + '<div class="col-md-12"  style="height:1px;" > <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow="' + data[i].Percentage.toFixed(2) + '" aria-valuemin="0" aria-valuemax="100" style="width:' + data[i].Percentage.toFixed(2) + '%">' + data[i].Percentage.toFixed(2) + ' % </div></div></div></td></tr>'
+
+                        }
+                      
+                        b++;
+                        counter++;
+                    }
+
+
+
+
+                    $('#fixBodyID').html(html);
+
+                    $('#countof').text(counter);
+                 //   loadFixedAssitListTypeSubWise()
+                }
+
+            },
+            complete: function () {
+                $('#loadingid').hide();
+            },
+            error: function () {
+                ReturnValue = false;
+
+            }
+        })
+
+        debugger
+        var row = 0;
+        for (var l = 0; l < $('#fixBodyID tr').length ; l++) {
+
+            var headid = $('#rowid_' + l).val();
+            var budgetheadAmount = 0;
+            var budgetheadAmountex = 0;
+            var budgetheadAmountPercentage = 0;
+            var headname = $('#haedname_' + l).text();
+
+          
+
+            for (var j = 0; j < dataset.filter(d => d.HeadID == headid).length ; j++) {
+
+                var subheadid = $('#Subrowid_' + row).val();
+             if (headid == subheadid) {
+
+                 budgetheadAmount += parseFloat($('#SubTotalheadBudge_' + row).text().replace(",", "").replace(",", "").replace(",", "").replace(",", ""));
+                 budgetheadAmountex += parseFloat($('#SubTotalheadBudgeex_' + row).text().replace(",", "").replace(",", "").replace(",", "").replace(",", ""));
+                 row++
+             }
+          }
+          
+            var headPercentage = parseFloat(budgetheadAmountex) / parseFloat(budgetheadAmount) * 100
+
+            $('#TotalheadBudge_' + l).text(budgetheadAmount.toLocaleString())
+            $('#TotalheadBudgetex_' + l).text(budgetheadAmountex.toLocaleString())
+
+            var tagdata = '<div class="col-md-12" style="height:1px;" > <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow="' + headPercentage.toFixed(2) + '" aria-valuemin="0" aria-valuemax="100" style="width:' + headPercentage.toFixed(2).toLocaleString() + '%">' + headPercentage.toFixed(2) + ' % </div></div>'
+
+
+            $('#TotalPercentage_' + l).html(tagdata)
+
+        }
+
+
+    }
+
+
+
+
+
+
+    function loadSubHead() {
+
+        debugger
+        var group = "";
+        group = { headid: $("#BudgetHeadID").val() }
+        // group = $("#" + a.id).val();
+        $.ajax({
+            type: "POST",
+            url: "/Eminute/getSubHead",
+            data: group,
+            dataType: "json",
+            success: function (data) {
+                //var c = JSON.parse(data);
+                //console.log(c);
+
+                //alert(c)
+                for (var i = 0; i < data.length; i++) {
+                    group += "<option value = '" + data[i]["Value"] + "'>" + data[i]["Text"] + "   </option>";
+                }
+
+                $("#BudgetSubID").empty();
+                $('#BudgetSubID').append(new Option("-- All--", "0"));
+                $("#BudgetSubID").append(group);
+
+                $('.selectpicker').selectpicker('refresh');
+
+            },
+            error: function () {
+                //location.reload();
+            }
+        });
+
+    }
+
+
+
+    $('.collapse').on('show.bs.collapse', function () {
+        var groupId = $('#expander').attr('data-group-id');
+        
+        if (groupId) {
+            $('#grandparentIcon').html('v');
+        }
+    });
+
+    $('.collapse').on('hide.bs.collapse', function () {
+        var groupId = $('#expander').attr('data-group-id');
+        if (groupId) {
+            $('#' + groupId + 'Icon').html('>');
+        }
+    });
+
+
+</script>
+
+
+

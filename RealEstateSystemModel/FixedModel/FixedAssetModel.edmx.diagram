@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="166998bc6b304a929e8f0c0315564323" Name="Diagram1">
+        <EntityTypeShape EntityType="FixedAssetModel.Department" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tbl_EngineerDetail" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tbl_MachineJob" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblMachine_Detail" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblMachine_Master" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblMachine_Master_log" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.Asset_no" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.Fixed_Asset_Category" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.Fixed_Asset_SubCategory" Width="1.5" PointX="8.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.FixedAssetEmployee" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.Hospital" Width="1.5" PointX="10.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblAssetLedger" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblcurrency" Width="1.5" PointX="12.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblDisposal" Width="1.5" PointX="12.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblFinancialYear" Width="1.5" PointX="0.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblmenuName" Width="1.5" PointX="2.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblMovement" Width="1.5" PointX="4.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblRight" Width="1.5" PointX="6.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblRoleDetail" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblRoom" Width="1.5" PointX="14.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblSection" Width="1.5" PointX="14.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblSupplier" Width="1.5" PointX="14.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblUnprintedTag" Width="1.5" PointX="14.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.TblUserRole" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblUsersLogin" Width="1.5" PointX="0.75" PointY="16.75" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblAsset" Width="1.5" PointX="9.375" PointY="11.75" />
+        <EntityTypeShape EntityType="FixedAssetModel.AssetDocDetail" Width="1.5" PointX="11.375" PointY="16.75" />
+        <EntityTypeShape EntityType="FixedAssetModel.tbl_FixedAssetAttachment" Width="1.5" PointX="17.375" PointY="3.75" />
+        <EntityTypeShape EntityType="FixedAssetModel.tblAssetService" Width="1.5" PointX="17.375" PointY="7.75" />
+        <EntityTypeShape EntityType="FixedAssetModel.ServiceConfiguration" Width="1.5" PointX="17.375" PointY="12.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
